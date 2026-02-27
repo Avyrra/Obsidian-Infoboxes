@@ -77,3 +77,5 @@ _Copy and paste into a document to see it in action._
 ## What I want to know most
 Lemme know how the syntax works out for you. I couldn't get it to break. Maybe you can. I tried everything I could think of that uses an -> and // in their syntax and I couldn't find one that conflicts with my implementation yet. Lemme know if you find anything and if I gotta change something. But I'd hate to change to an uglier set of symbols.
 
+## How does it compare?
+This solution to wiki-style callouts is far from the first and I doubt it'll be the last. Let me know what everyone else does better and where I need to improve.
