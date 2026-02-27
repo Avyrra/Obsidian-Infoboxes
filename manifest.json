@@ -1,0 +1,11 @@
+{
+	"id": "infoboxes",
+	"name": "Infoboxes",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Create wiki-style infoboxes.",
+	"author": "Avyrra",
+	"authorUrl": "https://obsidian.md",
+	"fundingUrl": "https://obsidian.md/pricing",
+	"isDesktopOnly": false
+}

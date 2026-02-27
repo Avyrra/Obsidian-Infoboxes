@@ -1,0 +1,758 @@
+/* @settings
+
+name: Infoboxes
+id: infobox-callouts
+settings:
+    -
+        id: ic-general-appearance-heading
+        title: General
+        type: heading
+        level: 1
+        collapsed: true
+
+    -
+        id: ic-width
+        title: Callout Width
+        type: variable-number
+        default: 300
+        format: px
+
+    -
+        id: ic-outside-padding
+        title: Outside Padding
+        description: Determines how close outside content can get to the callout box
+        type: variable-number
+        default: 20
+        format: px
+
+    -
+        id: ic-inside-padding
+        title: Inside Padding
+        description: Determines margins within the callout box
+        type: variable-number
+        default: 24
+        format: px
+
+    -
+        id: ic-round-corners
+        title: Round Corners
+        type: variable-number
+        default: 0
+        format: px
+
+    -
+        id: ic-border
+        title: Border
+        type: variable-number
+        default: 1
+        format: px
+
+    -
+        id: ic-horizontal-rule-size
+        title: Horizontal Rule Size
+        type: variable-number
+        default: 1
+        format: px
+
+    -
+        id: ic-infobox-title-heading
+        title: Infobox Title
+        type: heading
+        level: 1
+        collapsed: true
+
+    -
+        id: ic-title-alignment
+        title: Alignment
+        type: variable-select
+        default: Center
+        options:
+            - Left
+            - Center
+            - Right
+
+    -
+        id: ic-title-size
+        title: Size
+        type: variable-number
+        default: 1.2
+        format: rem
+
+    -
+        id: ic-title-margin
+        title: Margin
+        type: variable-number
+        default: 0
+        format: rem
+
+    -
+        id: ic-title-extended-typography
+        title: Extended Typography
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: ic-title-typography-disclaimer
+        title: Disclaimer
+        description: Other themes, snippets, or plugins may interfere with these settings and cause them to work incorrectly.
+        type: info-text
+        markdown: false
+
+    -
+        id: ic-title-typography-toggle
+        title: Use Extended Typography
+        type: class-toggle
+
+    -
+        id: ic-title-font
+        title: Font
+        type: variable-text
+        default: Noto Sans
+
+    -
+        id: ic-title-stylistic-sets
+        title: Stylistic Sets
+        type: variable-select
+        default: "\"ss00\""
+        options:
+            -
+                label: Default
+                value: "\"ss00\""
+            -
+                label: Set 1
+                value: "\"ss01\""
+            -
+                label: Set 2
+                value: "\"ss02\""
+            -
+                label: Set 3
+                value: "\"ss03\""
+            -
+                label: Set 4
+                value: "\"ss04\""
+            -
+                label: Set 5
+                value: "\"ss05\""
+            -
+                label: Set 6
+                value: "\"ss06\""
+            -
+                label: Set 7
+                value: "\"ss07\""
+            -
+                label: Set 8
+                value: "\"ss08\""
+            -
+                label: Set 9
+                value: "\"ss09\""
+            -
+                label: Set 10
+                value: "\"ss10\""
+            -
+                label: Set 11
+                value: "\"ss11\""
+            -
+                label: Set 12
+                value: "\"ss12\""
+            -
+                label: Set 13
+                value: "\"ss13\""
+            -
+                label: Set 14
+                value: "\"ss14\""
+            -
+                label: Set 15
+                value: "\"ss15\""
+            -
+                label: Set 16
+                value: "\"ss16\""
+            -
+                label: Set 17
+                value: "\"ss17\""
+            -
+                label: Set 18
+                value: "\"ss18\""
+            -
+                label: Set 19
+                value: "\"ss19\""
+            -
+                label: Set 20
+                value: "\"ss20\""
+
+    -
+        id: ic-title-smallcaps
+        title: Small Caps
+        type: class-toggle
+
+
+
+    -
+        id: ic-section-header-heading
+        title: Section Class
+        type: heading
+        level: 1
+        collapsed: true
+
+    -
+        id: ic-section-alignment
+        title: Alignment
+        type: variable-select
+        default: Center
+        options:
+            - Left
+            - Center
+            - Right
+
+    -
+        id: ic-section-background-toggle
+        title: Toggle Section Background
+        type: class-toggle
+        default: true
+
+    -
+        id: ic-section-size
+        title: Size
+        type: variable-number
+        default: 1
+        format: rem
+
+    -
+        id: ic-section-weight
+        title: Weight
+        type: variable-number
+        default: 700
+
+    -
+        id: ic-section-border
+        title: Border
+        type: variable-number
+        default: 0
+        format: px
+
+    -
+        id: ic-section-corners
+        title: Round Corners
+        type: variable-number
+        default: 0
+        format: px
+
+    -
+        id: ic-section-horizontal-padding
+        title: Horizontal Padding
+        type: variable-number
+        default: 0.3
+        format: rem
+
+    -
+        id: ic-section-vertical-padding
+        title: Vertical Padding
+        type: variable-number
+        default: 0.125
+        format: rem
+    -
+        id: ic-section-extended-typography
+        title: Extended Typography
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: ic-section-typography-disclaimer
+        title: Disclaimer
+        description: Other themes, snippets, or plugins may interfere with these settings and cause them to work incorrectly.
+        type: info-text
+        markdown: false
+
+    -
+        id: ic-section-typography-toggle
+        title: Use Extended Typography
+        type: class-toggle
+
+    -
+        id: ic-section-font
+        title: Font
+        type: variable-text
+        default: Noto Sans
+
+    -
+        id: ic-section-stylistic-sets
+        title: Stylistic Sets
+        type: variable-select
+        default: "\"ss00\""
+        options:
+            -
+                label: Default
+                value: "\"ss00\""
+            -
+                label: Set 1
+                value: "\"ss01\""
+            -
+                label: Set 2
+                value: "\"ss02\""
+            -
+                label: Set 3
+                value: "\"ss03\""
+            -
+                label: Set 4
+                value: "\"ss04\""
+            -
+                label: Set 5
+                value: "\"ss05\""
+            -
+                label: Set 6
+                value: "\"ss06\""
+            -
+                label: Set 7
+                value: "\"ss07\""
+            -
+                label: Set 8
+                value: "\"ss08\""
+            -
+                label: Set 9
+                value: "\"ss09\""
+            -
+                label: Set 10
+                value: "\"ss10\""
+            -
+                label: Set 11
+                value: "\"ss11\""
+            -
+                label: Set 12
+                value: "\"ss12\""
+            -
+                label: Set 13
+                value: "\"ss13\""
+            -
+                label: Set 14
+                value: "\"ss14\""
+            -
+                label: Set 15
+                value: "\"ss15\""
+            -
+                label: Set 16
+                value: "\"ss16\""
+            -
+                label: Set 17
+                value: "\"ss17\""
+            -
+                label: Set 18
+                value: "\"ss18\""
+            -
+                label: Set 19
+                value: "\"ss19\""
+            -
+                label: Set 20
+                value: "\"ss20\""
+
+    -
+        id: ic-section-smallcaps
+        title: Small Caps
+        type: class-toggle
+
+    -
+        id: ic-label-info-heading
+        title: Label and Info Classes
+        type: heading
+        level: 1
+        collapsed: true
+
+    -
+        id: ic-label-width
+        title: Label Width
+        type: variable-number
+        default: 80
+        format: px
+
+    -
+        id: ic-label-padding
+        title: Label to Info Padding
+        description: Space between end of label and start of info
+        type: variable-number
+        default: 0.5
+        format: rem
+
+    -
+        id: ic-label-alignment
+        title: Label Alignment
+        type: variable-select
+        default: Left
+        options:
+            - Left
+            - Center
+            - Right
+
+    -
+        id: ic-images-heading
+        title: Images
+        type: heading
+        level: 1
+        collapsed: true
+
+    -
+        id: ic-image-round-corners
+        title: Round Corners
+        type: variable-number
+        default: 0
+        format: px
+
+    -
+        id: ic-image-border
+        title: Border
+        type: variable-number
+        default: 0
+        format: px
+
+
+
+
+
+
+    -
+        id: ic-colors-heading
+        title: Colors
+        type: heading
+        level: 1
+        collapsed: true
+        
+    -
+        id: ic-light-colors-heading
+        title: Light
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: ic-infobox-color-light
+        title: Infobox
+        type: variable-text
+        default: 'var(--background-secondary)'
+
+    -
+        id: ic-section-background-color-light
+        title: Section Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), transparent 50%)'
+
+    -
+        id: ic-border-color-light
+        title: Infobox Border
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-image-border-color-light
+        title: Image Border
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-section-border-color-light
+        title: Section Border
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-horizontal-rule-color-light
+        title: Horizontal Rule
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-infobox-title-color-light
+        title: Title Color
+        type: variable-text
+        default: '#000000'
+        
+        
+        
+        
+        
+    -
+        id: ic-dark-colors-heading
+        title: Dark
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: ic-infobox-color-dark
+        title: Infobox
+        type: variable-text
+        default: 'var(--background-secondary)'
+
+    -
+        id: ic-section-background-color-dark
+        title: Section Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), transparent 50%)'
+
+    -
+        id: ic-border-color-dark
+        title: Infobox Border
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-image-border-color-dark
+        title: Image Border
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-section-border-color-dark
+        title: Section Border
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-horizontal-rule-color-dark
+        title: Horizontal Rule
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-infobox-title-color-dark
+        title: Title Color
+        type: variable-text
+        default: 'var(--color-accent)'
+
+*/
+
+:root {
+  --ic-width: 300px;
+  --ic-outside-padding: 20px;
+  --ic-inside-padding: 24px;
+  --ic-round-corners: 0px;
+  --ic-title-alignment: center;
+  --ic-title-size: 1.2rem;
+  --ic-title-margin: 0rem;
+  --ic-title-word-spacing: 0rem;
+  --ic-title-tracking: 1rem;
+  --ic-title-font: "Noto Sans";
+  --ic-border: 1px;
+  --ic-horizontal-rule-size: 1px;
+
+  --ic-section-size: 1rem;
+  --ic-section-weight: 700;
+  --ic-section-alignment: Center;
+  --ic-section-border: 0px;
+  --ic-section-corners: 0px;
+  --ic-section-horizontal-padding: 0.3rem;
+  --ic-section-vertical-padding: 0.125rem;
+
+  --ic-label-width: 80px;
+  --ic-label-padding: 0.5rem;
+  --ic-label-alignment: left;
+  --ic-image-border: 0px;
+
+  --ic-image-round-corners: 0px;
+}
+
+.theme-light {
+	--ic-infobox-color: var(--ic-infobox-color-light, var(--background-secondary));
+    --ic-border-color: var(--ic-border-color-light, #000000);
+    --ic-image-border-color: var(--ic-image-border-color-light, #000000);
+    --ic-section-background-color: var(--ic-section-background-color-light, color-mix(in srgb, var(--color-accent), transparent 50%));
+    --ic-section-border-color: var(--ic-section-border-color-light, #000000);
+    --ic-horizontal-rule-color: var(--ic-horizontal-rule-color-light, #000000);
+    --ic-infobox-title-color: var(--ic-infobox-title-color-light, #000000);
+}
+
+.theme-dark {
+	--ic-infobox-color: var(--ic-infobox-color-dark, var(--background-secondary));
+    --ic-border-color: var(--ic-border-color-dark, #808080);
+    --ic-image-border-color: var(--ic-image-border-color-dark, #808080);
+    --ic-section-background-color: var(--ic-section-background-color-dark, color-mix(in srgb, var(--color-accent), transparent 50%));
+    --ic-section-border-color: var(--ic-section-border-color-dark, #808080);
+    --ic-horizontal-rule-color: var(--ic-horizontal-rule-color-dark, #808080);
+    --ic-infobox-title-color: var(--ic-infobox-title-color-dark, var(--color-accent));
+}
+
+/* Clear Styles by everyone but me */
+.callout[data-callout="infobox"],
+.callout[data-callout="infoboxright"],
+.callout[data-callout="infoboxleft"] {
+    all: unset;
+}
+
+/* Reading Mode */
+
+.callout[data-callout="infobox"],
+.callout[data-callout="infoboxright"] {
+    float: right;
+    width: var(--ic-width);
+    margin-left: var(--ic-outside-padding);
+    background: var(--ic-infobox-color);
+
+    padding: var(--ic-inside-padding);
+    border-radius: var(--ic-round-corners);
+    border: var(--ic-border) solid;
+    border-color: var(--ic-border-color);
+}
+
+.callout[data-callout="infoboxleft"] {
+    float: left;
+    width: var(--ic-width);
+    margin-right: var(--ic-outside-padding);
+    background-color: var(--ic-infobox-color);
+
+    padding: var(--ic-inside-padding);
+    border-radius: var(--ic-round-corners);
+    border: var(--ic-border) solid;
+    border-color: var(--ic-border-color);
+}
+
+/* INFOBOX / INFOBOXRIGHT - Float Right in Live Preview */
+/* Make the embed block inline so it doesn't take full width */
+.markdown-source-view.is-live-preview .cm-embed-block.cm-callout:has(.callout[data-callout="infobox"]),
+.markdown-source-view.is-live-preview .cm-embed-block.cm-callout:has(.callout[data-callout="infoboxright"]) {
+    display: inline;
+    z-index: 30;
+}
+
+/* Also try without .cm-callout class in case structure differs */
+.markdown-source-view.is-live-preview .cm-embed-block:has(.callout[data-callout="infobox"]),
+.markdown-source-view.is-live-preview .cm-embed-block:has(.callout[data-callout="infoboxright"]) {
+    display: inline;
+    z-index: 30;
+}
+
+/* Float the callout itself to the right */
+.markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infobox"],
+.markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infoboxright"] {
+    float: right;
+    clear: right;
+    z-index: 30;
+    margin-left: var(--ic-outside-padding);
+    margin-bottom: var(--ic-outside-padding);
+}
+
+/* INFOBOXLEFT - Float Left in Live Preview */
+
+.markdown-source-view.is-live-preview .cm-embed-block.cm-callout:has(.callout[data-callout="infoboxleft"]),
+.markdown-source-view.is-live-preview .cm-embed-block:has(.callout[data-callout="infoboxleft"]) {
+    display: inline;
+    z-index: 30;
+}
+
+.markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infoboxleft"] {
+    float: left;
+    clear: left;
+    z-index: 30;
+    margin-right: var(--ic-outside-padding);
+    margin-bottom: var(--ic-outside-padding);
+}
+
+/* Hide the edit button that appears on hover for floated callouts */
+.markdown-source-view.is-live-preview .cm-embed-block:has(.callout[data-callout="infobox"]) > .edit-block-button,
+.markdown-source-view.is-live-preview .cm-embed-block:has(.callout[data-callout="infoboxright"]) > .edit-block-button,
+.markdown-source-view.is-live-preview .cm-embed-block:has(.callout[data-callout="infoboxleft"]) > .edit-block-button {
+    display: none;
+}
+
+/* Remove Icon */
+.callout[data-callout="infobox"] .callout-icon,
+.callout[data-callout="infoboxright"] .callout-icon,
+.callout[data-callout="infoboxleft"] .callout-icon {
+    display: none;
+}
+
+/* Infobox Title */
+.callout[data-callout="infobox"] .callout-title-inner,
+.callout[data-callout="infoboxright"] .callout-title-inner,
+.callout[data-callout="infoboxleft"] .callout-title-inner {
+    all: unset;
+    display: block;
+    text-align: var(--ic-title-alignment);
+    font-size: var(--ic-title-size);
+    width: 100%;
+    margin: var(--ic-title-margin) 0;
+    color: var(--ic-infobox-title-color);
+}
+
+
+/*Extended Typography for Infobox Title*/
+.ic-title-typography-toggle .callout[data-callout="infobox"] .callout-title-inner,
+.ic-title-typography-toggle .callout[data-callout="infoboxright"] .callout-title-inner,
+.ic-title-typography-toggle .callout[data-callout="infoboxleft"] .callout-title-inner {
+    font-family: var(--ic-title-font);
+    font-feature-settings: var(--ic-title-stylistic-sets);
+}
+
+.ic-title-typography-toggle.ic-title-smallcaps .callout[data-callout="infobox"] .callout-title-inner,
+.ic-title-typography-toggle.ic-title-smallcaps .callout[data-callout="infoboxright"] .callout-title-inner,
+.ic-title-typography-toggle.ic-title-smallcaps .callout[data-callout="infoboxleft"] .callout-title-inner {
+    font-variant: small-caps;
+}
+
+
+/* Images */
+.callout[data-callout="infobox"] img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--ic-image-round-corners);
+    border: var(--ic-image-border) solid;
+    border-color: var(--ic-image-border-color);
+}
+
+/* Horizontal Rule*/
+.callout[data-callout="infobox"] hr {
+    border: none;
+    border-top: var(--ic-horizontal-rule-size) solid var(--ic-horizontal-rule-color, #cccccc);
+    margin: 1rem 0;
+}
+
+/* Section Class */
+.section,
+.s {
+    display: block;
+    text-align: var(--ic-section-alignment);
+    font-size: var(--ic-section-size);
+    font-weight: var(--ic-section-weight);
+    padding: var(--ic-section-vertical-padding) var(--ic-section-horizontal-padding);
+    border: var(--ic-section-border) solid;
+    border-radius: var(--ic-section-corners);
+    border-color: var(--ic-section-border-color);
+}
+
+.ic-section-background-toggle .section,
+.ic-section-background-toggle .s {
+    background-color: var(--ic-section-background-color);
+}
+
+.ic-section-typography-toggle .section,
+.ic-section-typography-toggle .s {
+    font-family: var(--ic-section-font);
+    font-feature-settings: var(--ic-section-stylistic-sets);
+}
+
+.ic-section-typography-toggle.ic-section-smallcaps .section,
+.ic-section-typography-toggle.ic-section-smallcaps .s {
+    font-variant: small-caps;
+}
+
+.label,
+.l {
+    font-weight: bold;
+    width: var(--ic-label-width);
+    display: inline-block;
+    margin-right: var(--ic-label-padding);
+    text-align: var(--ic-label-alignment);
+}
+
+.info,
+.i {
+    display: block;
+    padding-left: calc(var(--ic-label-width) + var(--ic-label-padding));
+}
+
+.label-line {
+  display: block;
+  padding-left: calc(var(--ic-label-width) + var(--ic-label-padding));
+}
+
+.label-line .label {
+  margin-left: calc(-1 * (var(--ic-label-width) + var(--ic-label-padding)));
+}
