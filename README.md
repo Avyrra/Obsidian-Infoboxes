@@ -69,10 +69,11 @@ _Copy and paste into a document to see it in action._
 	
 	- **Get Extended Typography Styles.** If you want even more customization, check out my Extended Typography Styles snippet. Also customized via Style Settings.
 
+	- **Customize with snippets.** The .css file for infoboxes does not utilize the `!important` functionality in any way. If you'd like to make adjustments to infoboxes, you can do so with a snippet.
+
 
 # Still in Early Development
 
 ## What I want to know most
 Lemme know how the syntax works out for you. I couldn't get it to break. Maybe you can. I tried everything I could think of that uses an -> and // in their syntax and I couldn't find one that conflicts with my implementation yet. Lemme know if you find anything and if I gotta change something. But I'd hate to change to an uglier set of symbols.
-	
-- **Customize with snippets.** The .css file for infoboxes does not utilize the `!important` functionality in any way. If you'd like to make adjustments to infoboxes, you can do so with a snippet.
+
