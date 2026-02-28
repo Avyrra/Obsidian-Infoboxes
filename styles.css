@@ -516,7 +516,45 @@ settings:
         title: Title Color
         type: variable-text
         default: 'var(--color-accent)'
-
+        
+    -
+        id: ic-tweaks-heading
+        title: Additional Tweaks
+        type: heading
+        level: 1
+        collapsed: true
+        
+    -
+        id: ic-scrollable-infoboxes
+        title: Scrollable Infoboxes
+        type: heading
+        level: 2
+        collapsed: true
+        
+    -
+        id: ic-scroll-tweaks-info
+        title: Information
+        type: info-text
+        description: By default, reading mode may struggle to scroll very long infoboxes. Enable these tweaks to limit the infobox height in reading mode and make it scrollable.
+        
+    -
+        id: ic-scrollable-toggle
+        title: Enable Scrollable Infoboxes
+        type: class-toggle
+        default: false
+    
+    -
+        id: ic-scrollbar-toggle
+        title: Disable Scrollbar
+        type: class-toggle
+        default: false
+        
+    -
+        id: ic-height-limit
+        title: Height Limit
+        type: variable-number
+        default: 1100
+        format: px
 */
 
 :root {
@@ -742,12 +780,15 @@ settings:
     text-align: var(--ic-label-alignment);
 }
 
+/* Legacy - The old info class. Keeping for backwards compatibility with snippet version */
 .info,
 .i {
     display: block;
     padding-left: calc(var(--ic-label-width) + var(--ic-label-padding));
 }
 
+
+/* Markdown Labels using Slashes */
 .label-line {
   display: block;
   padding-left: calc(var(--ic-label-width) + var(--ic-label-padding));
@@ -755,4 +796,32 @@ settings:
 
 .label-line .label {
   margin-left: calc(-1 * (var(--ic-label-width) + var(--ic-label-padding)));
+}
+
+
+
+
+
+
+
+/* Make Scrollable for Reading Mode to Account for DOM Unload issues */
+/* Hide scrollbar but keep scrolling */
+.ic-scrollable-toggle .markdown-preview-view .callout[data-callout="infobox"],
+.ic-scrollable-toggle .markdown-preview-view .callout[data-callout="infoboxright"],
+.ic-scrollable-toggle .markdown-preview-view .callout[data-callout="infoboxleft"],
+.ic-scrollable-toggle .markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infobox"],
+.ic-scrollable-toggle .markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infoboxright"],
+.ic-scrollable-toggle .markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infoboxleft"] {
+    max-height: var(--ic-height-limit, 1000px);
+    overflow-y: auto;
+}
+
+/* Scrollbar Toggle */
+.ic-scrollable-toggle.ic-scrollbar-toggle .markdown-preview-view .callout[data-callout="infobox"],
+.ic-scrollable-toggle.ic-scrollbar-toggle .markdown-preview-view .callout[data-callout="infoboxright"],
+.ic-scrollable-toggle.ic-scrollbar-toggle .markdown-preview-view .callout[data-callout="infoboxleft"],
+.ic-scrollable-toggle.ic-scrollbar-toggle .markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infobox"],
+.ic-scrollable-toggle.ic-scrollbar-toggle .markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infoboxright"],
+.ic-scrollable-toggle.ic-scrollbar-toggle .markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infoboxleft"] {
+    scrollbar-width: none;
 }
