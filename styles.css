@@ -9,6 +9,13 @@ settings:
         type: heading
         level: 1
         collapsed: true
+        
+    -
+        id: ic-body-font-size
+        title: Body Font Size
+        type: variable-number
+        default: 1
+        format: rem
 
     -
         id: ic-width
@@ -56,7 +63,7 @@ settings:
 
     -
         id: ic-infobox-title-heading
-        title: Infobox Title
+        title: Title
         type: heading
         level: 1
         collapsed: true
@@ -73,10 +80,16 @@ settings:
 
     -
         id: ic-title-size
-        title: Size
+        title: Font Size
         type: variable-number
         default: 1.2
         format: rem
+        
+    -
+        id: ic-title-weight
+        title: Font Weight
+        type: variable-number
+        default: 700
 
     -
         id: ic-title-margin
@@ -189,7 +202,7 @@ settings:
 
     -
         id: ic-section-header-heading
-        title: Section Class
+        title: Section
         type: heading
         level: 1
         collapsed: true
@@ -209,17 +222,33 @@ settings:
         title: Toggle Section Background
         type: class-toggle
         default: true
+        
+    -
+        id: ic-section-background-mode
+        title: Background Width
+        type: class-select
+        default: ic-section-bg-margins
+        options:
+            -
+                label: To Margins
+                value: ic-section-bg-margins
+            -
+                label: Full Width
+                value: ic-section-bg-full
+            -
+                label: To Text
+                value: ic-section-bg-text
 
     -
         id: ic-section-size
-        title: Size
+        title: Font Size
         type: variable-number
         default: 1
         format: rem
 
     -
         id: ic-section-weight
-        title: Weight
+        title: Font Weight
         type: variable-number
         default: 700
 
@@ -239,14 +268,14 @@ settings:
 
     -
         id: ic-section-horizontal-padding
-        title: Horizontal Padding
+        title: Inside Horizontal Padding
         type: variable-number
         default: 0.3
         format: rem
 
     -
         id: ic-section-vertical-padding
-        title: Vertical Padding
+        title: Inside Vertical Padding
         type: variable-number
         default: 0.125
         format: rem
@@ -352,7 +381,7 @@ settings:
 
     -
         id: ic-label-info-heading
-        title: Label and Info Classes
+        title: Labels
         type: heading
         level: 1
         collapsed: true
@@ -360,6 +389,7 @@ settings:
     -
         id: ic-label-width
         title: Label Width
+        description: How wide a label can be before it wraps to a new line
         type: variable-number
         default: 80
         format: px
@@ -367,7 +397,7 @@ settings:
     -
         id: ic-label-padding
         title: Label to Info Padding
-        description: Space between end of label and start of info
+        description: Space added after label width before information is presented
         type: variable-number
         default: 0.5
         format: rem
@@ -558,33 +588,35 @@ settings:
 */
 
 :root {
-  --ic-width: 300px;
-  --ic-outside-padding: 20px;
-  --ic-inside-padding: 24px;
-  --ic-round-corners: 0px;
-  --ic-title-alignment: center;
-  --ic-title-size: 1.2rem;
-  --ic-title-margin: 0rem;
-  --ic-title-word-spacing: 0rem;
-  --ic-title-tracking: 1rem;
-  --ic-title-font: "Noto Sans";
-  --ic-border: 1px;
-  --ic-horizontal-rule-size: 1px;
-
-  --ic-section-size: 1rem;
-  --ic-section-weight: 700;
-  --ic-section-alignment: Center;
-  --ic-section-border: 0px;
-  --ic-section-corners: 0px;
-  --ic-section-horizontal-padding: 0.3rem;
-  --ic-section-vertical-padding: 0.125rem;
-
-  --ic-label-width: 80px;
-  --ic-label-padding: 0.5rem;
-  --ic-label-alignment: left;
-  --ic-image-border: 0px;
-
-  --ic-image-round-corners: 0px;
+    --ic-body-font-size: 1rem;
+    --ic-width: 300px;
+    --ic-outside-padding: 20px;
+    --ic-inside-padding: 24px;
+    --ic-round-corners: 0px;
+    --ic-title-alignment: center;
+    --ic-title-size: 1.2rem;
+    --ic-title-weight: 700;
+    --ic-title-margin: 0rem;
+    --ic-title-word-spacing: 0rem;
+    --ic-title-tracking: 1rem;
+    --ic-title-font: "Noto Sans";
+    --ic-border: 1px;
+    --ic-horizontal-rule-size: 1px;
+    
+    --ic-section-size: 1rem;
+    --ic-section-weight: 700;
+    --ic-section-alignment: Center;
+    --ic-section-border: 0px;
+    --ic-section-corners: 0px;
+    --ic-section-horizontal-padding: 0.3rem;
+    --ic-section-vertical-padding: 0.125rem;
+    
+    --ic-label-width: 80px;
+    --ic-label-padding: 0.5rem;
+    --ic-label-alignment: left;
+    --ic-image-border: 0px;
+    
+    --ic-image-round-corners: 0px;
 }
 
 .theme-light {
@@ -614,9 +646,14 @@ settings:
     all: unset;
 }
 
+/* Font Size */
+.callout[data-callout="infobox"] .callout-content,
+.callout[data-callout="infoboxright"] .callout-content,
+.callout[data-callout="infoboxleft"] .callout-content {
+    font-size: var(--ic-body-font-size);
+}
 
 /* Reading Mode */
-
 .callout[data-callout="infobox"],
 .callout[data-callout="infoboxright"] {
     float: right;
@@ -705,6 +742,7 @@ settings:
     display: block;
     text-align: var(--ic-title-alignment);
     font-size: var(--ic-title-size);
+    font-weight: var(--ic-title-weight);
     width: 100%;
     margin: var(--ic-title-margin) 0;
     color: var(--ic-infobox-title-color);
@@ -773,6 +811,52 @@ settings:
     font-variant: small-caps;
 }
 
+/* Full Width Section Background */
+.ic-section-bg-full.ic-section-background-toggle .callout-content {
+    overflow: visible;
+}
+
+.ic-section-bg-full.ic-section-background-toggle .callout-content p:has(.section),
+.ic-section-bg-full.ic-section-background-toggle .callout-content p:has(.s) {
+    margin: 0;
+    padding: 0;
+}
+
+.ic-section-bg-full.ic-section-background-toggle .section,
+.ic-section-bg-full.ic-section-background-toggle .s {
+    width: calc(100% + 2 * var(--ic-inside-padding));
+    margin-left: calc(-1 * var(--ic-inside-padding));
+    padding-left: var(--ic-inside-padding);
+    padding-right: var(--ic-inside-padding);
+    padding-top: var(--ic-section-vertical-padding);
+    padding-bottom: var(--ic-section-vertical-padding);
+    box-sizing: border-box;
+    border-left: none;
+    border-right: none;
+    border-top: var(--ic-section-border) solid var(--ic-section-border-color);
+    border-bottom: var(--ic-section-border) solid var(--ic-section-border-color);
+    border-radius: 0;
+}
+
+
+/* To Text Section Background */
+.ic-section-bg-text.ic-section-background-toggle .section,
+.ic-section-bg-text.ic-section-background-toggle .s {
+    width: fit-content;
+    display: inline-block;
+}
+
+/* Parent alignment for To Text mode */
+.ic-section-bg-text .callout[data-callout="infobox"] .callout-content p:has(.section),
+.ic-section-bg-text .callout[data-callout="infobox"] .callout-content p:has(.s),
+.ic-section-bg-text .callout[data-callout="infoboxright"] .callout-content p:has(.section),
+.ic-section-bg-text .callout[data-callout="infoboxright"] .callout-content p:has(.s),
+.ic-section-bg-text .callout[data-callout="infoboxleft"] .callout-content p:has(.section),
+.ic-section-bg-text .callout[data-callout="infoboxleft"] .callout-content p:has(.s) {
+    text-align: var(--ic-section-alignment);
+}
+
+/* Labels*/
 .label,
 .l {
     font-weight: bold;
