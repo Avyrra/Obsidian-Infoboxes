@@ -790,17 +790,17 @@ settings:
 }
 
 
+
+
 /* Markdown Labels using Slashes */
 .label-line {
-  display: block;
-  padding-left: calc(var(--ic-label-width) + var(--ic-label-padding));
+  display: flex;
+  align-items: flex-start;
 }
 
 .label-line .label {
-  margin-left: calc(-1 * (var(--ic-label-width) + var(--ic-label-padding)));
+  flex-shrink: 0;
 }
-
-
 
 
 

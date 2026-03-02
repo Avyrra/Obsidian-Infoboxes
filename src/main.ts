@@ -11,12 +11,9 @@ export default class InfoboxPlugin extends Plugin {
 					'.callout[data-callout="infoboxleft"]'
 				);
 				if (!callout) return;
-
 				const nodes = Array.from(p.childNodes);
-
 				nodes.forEach((node) => {
 					if (node.nodeType !== Node.TEXT_NODE) return;
-
 					const text = node.textContent || "";
 
 					//Section example: // Section
@@ -34,21 +31,17 @@ export default class InfoboxPlugin extends Plugin {
 						const parts = text.split("->");
 						const label = parts[0]!.trim();
 						const info = parts.slice(1).join("->").trim();
-
 						const wrapper = p.createEl("span", {
 							cls: "label-line",
 						});
-
 						wrapper.createEl("span", {
 							cls: "label",
 							text: label,
 						});
-
 						wrapper.appendChild(document.createTextNode(info));
-
 						node.replaceWith(wrapper);
 					}
-				});
+                });
             });
         });
 	}
