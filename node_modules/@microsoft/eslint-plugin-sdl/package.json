@@ -1,0 +1,44 @@
+{
+  "name": "@microsoft/eslint-plugin-sdl",
+  "version": "1.1.0",
+  "description": "ESLint plugin focused on common security issues and misconfigurations discoverable during static testing as part of Microsoft Security Development Lifecycle (SDL)",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "sdl"
+  ],
+  "author": "Microsoft",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/eslint-plugin-sdl"
+  },
+  "homepage": "https://github.com/microsoft/eslint-plugin-sdl",
+  "bugs": "https://github.com/microsoft/eslint-plugin-sdl/issues",
+  "main": "lib/index.js",
+  "scripts": {
+    "check-fmt": "prettier . --check",
+    "fmt": "prettier . --write",
+    "test": "mocha tests --recursive"
+  },
+  "dependencies": {
+    "eslint-plugin-n": "17.10.3",
+    "eslint-plugin-react": "7.37.3",
+    "eslint-plugin-security": "1.4.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "~8.14.0",
+    "@typescript-eslint/parser": "~8.14.0",
+    "eslint": "~9.15.0",
+    "mocha": "~10.8.0",
+    "prettier": "~3.3.0",
+    "typescript": "~5.6.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

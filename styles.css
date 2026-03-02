@@ -746,7 +746,8 @@ settings:
 /* Section Class */
 .section,
 .s {
-    display: block;
+    display: inline-block;
+    width: 100%;
     text-align: var(--ic-section-alignment);
     font-size: var(--ic-section-size);
     font-weight: var(--ic-section-weight);
