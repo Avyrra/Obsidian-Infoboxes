@@ -42,6 +42,11 @@ export default class InfoboxPlugin extends Plugin {
 						node.replaceWith(wrapper);
 					}
                 });
+				
+				// Remove <br> between consecutive labels
+				p.querySelectorAll(".label-line + br").forEach(br => {
+					if (br.nextElementSibling?.hasClass("label-line")) br.remove();
+				});
             });
         });
 	}
