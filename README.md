@@ -14,9 +14,9 @@ Any content added after the callout will be rendered beside it or below it.
 
 ## Insert Properties Quickly
 
-Insert `/YAML/` to add all custom document properties as labels. All default obsidian properties, such as aliases or tags, are ignored. Properties are added in the order they appear in the properties block.
+Insert `~yaml` to add all custom document properties as labels. All default obsidian properties, such as aliases or tags, are ignored. Properties are added in the order they appear in the properties block. alternatively, you can use `~metadata`, `~properties`, `~meta`, `~data`, or `~fields` depending on your preference.
 
-You can also choose to add only select properties. For example `/YAML | Aliases, Color, Height, Weight/` will add the properties, Aliases, Color, Height, and Weight, as labels in that order. Spaces are optional.
+You can also choose to add only select properties. For example `~yaml, aliases, color, height, weight` will add the properties, Aliases, Color, Height, and Weight, as labels in that order. Spaces are optional. It is not case sensitive.
 
 When properties are updated, they will automatically be reflected in the infobox.
 
