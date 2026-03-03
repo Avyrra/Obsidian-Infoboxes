@@ -33,11 +33,15 @@ export default class InfoboxPlugin extends Plugin {
 						return;
 					}
 
-					// YAML Properties: /YAML/
-					if (nodeText.trim() === "/YAML/") {
+					// YAML Properties: /YAML/ or /YAML|key1,key2/
+					const yamlMatch = nodeText.trim().match(/^\/YAML\s*(?:\|\s*(.+?)\s*)?\/$/);
+					if (yamlMatch) {
+						const filter = yamlMatch[1]
+							? yamlMatch[1].split(",").map(k => k.trim().toLowerCase())
+							: null;
 						const container = document.createElement("span");
 						node.replaceWith(container);
-						const child = new YamlRenderChild(container, this, paragraph, context.sourcePath);
+						const child = new YamlRenderChild(container, this, paragraph, context.sourcePath, filter);
 						context.addChild(child);
 						return;
 					}
@@ -68,13 +72,15 @@ class YamlRenderChild extends MarkdownRenderChild {
 	private plugin: InfoboxPlugin;
 	private paragraph: HTMLElement;
 	private sourcePath: string;
+	private filter: string[] | null;
 	private generatedElements: HTMLElement[] = [];
 
-	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, paragraph: HTMLElement, sourcePath: string) {
+	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, paragraph: HTMLElement, sourcePath: string, filter: string[] | null) {
 		super(containerEl);
 		this.plugin = plugin;
 		this.paragraph = paragraph;
 		this.sourcePath = sourcePath;
+		this.filter = filter;
 	}
 
 	onload() {
@@ -94,8 +100,16 @@ class YamlRenderChild extends MarkdownRenderChild {
 		const frontmatter = this.plugin.app.metadataCache.getCache(this.sourcePath)?.frontmatter;
 		if (!frontmatter) return;
 
-		for (const key of Object.keys(frontmatter)) {
-			if (HIDDEN_FRONTMATTER_KEYS.has(key)) continue;
+		// Build a lowercase-to-actual-key map for case-insensitive matching
+		const keyMap = new Map(Object.keys(frontmatter).map(k => [k.toLowerCase(), k]));
+
+		const keys = this.filter
+			? this.filter.map(k => keyMap.get(k)).filter((k): k is string => k !== undefined)
+			: Object.keys(frontmatter).filter(k => !HIDDEN_FRONTMATTER_KEYS.has(k));
+
+		let insertAfter: Element = this.containerEl;
+
+		for (const key of keys) {
 
 			const value = frontmatter[key];
 			if (value == null || value === "") continue;
@@ -103,9 +117,12 @@ class YamlRenderChild extends MarkdownRenderChild {
 			const displayKey = this.formatKey(key);
 			const displayValue = this.formatValue(value);
 
-			const labelLine = this.paragraph.createEl("span", { cls: "label-line" });
+			const labelLine = document.createElement("span");
+			labelLine.addClass("label-line");
 			labelLine.createEl("span", { cls: "label", text: displayKey });
 			labelLine.appendChild(document.createTextNode(displayValue));
+			insertAfter.after(labelLine);
+			insertAfter = labelLine;
 			this.generatedElements.push(labelLine);
 		}
 	}
