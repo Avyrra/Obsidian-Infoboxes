@@ -1,9 +1,15 @@
-import {Plugin} from 'obsidian';
+import {MarkdownRenderChild, Plugin, TFile} from 'obsidian';
 
 const INFOBOX_SELECTOR =
 	'.callout[data-callout="infobox"],' +
 	'.callout[data-callout="infoboxright"],' +
 	'.callout[data-callout="infoboxleft"]';
+
+// Frontmatter keys that are internal/functional and shouldn't be displayed
+const HIDDEN_FRONTMATTER_KEYS = new Set([
+	'position', 'cssclasses', 'cssclass', 'publish', 'kanban-plugin',
+	'tags', 'tag', 'aliases', 'alias'
+]);
 
 export default class InfoboxPlugin extends Plugin {
 	async onload() {
@@ -27,6 +33,15 @@ export default class InfoboxPlugin extends Plugin {
 						return;
 					}
 
+					// YAML Properties: /YAML/
+					if (nodeText.trim() === "/YAML/") {
+						const container = document.createElement("span");
+						node.replaceWith(container);
+						const child = new YamlRenderChild(container, this, paragraph, context.sourcePath);
+						context.addChild(child);
+						return;
+					}
+
 					//Labels example: label -> info
 					if (nodeText.includes("->")) {
 						const labelParts = nodeText.split("->");
@@ -44,37 +59,67 @@ export default class InfoboxPlugin extends Plugin {
 					if (br.nextElementSibling?.hasClass("label-line")) br.remove();
 				});
 			});
-
-			// Watch each infobox's content container and toggle ic-centered when there isn't enough room for body text beside it.
-			element.querySelectorAll(INFOBOX_SELECTOR).forEach((callout) => {
-				const contentContainer = callout.closest('.markdown-preview-sizer') ??
-					callout.closest('.cm-sizer') ?? callout.parentElement;
-				if (!contentContainer) return;
-
-				const observer = new ResizeObserver(() => {
-					if (!callout.isConnected) return observer.disconnect();
-
-					// Read live CSS variables - Style Settings is King
-					const calloutStyle = getComputedStyle(callout);
-					const cssVar = (prop: string) => parseFloat(calloutStyle.getPropertyValue(prop));
-
-					// Total space the infobox needs: its full rendered width + outside margin + 172px minimum for body text
-					const infoboxFootprint = cssVar('--ic-width') + cssVar('--ic-inside-padding') * 2 + cssVar('--ic-border') * 2 + cssVar('--ic-outside-padding') + 172;
-					const availableWidth = (contentContainer as HTMLElement).clientWidth;
-
-					// Shrink inside padding as the container narrows, floor at 2px
-					const paddingScale = Math.max(2, Math.min(
-						parseFloat(calloutStyle.getPropertyValue('--ic-inside-padding')),
-						(availableWidth - cssVar('--ic-width') * 0.9) * 0.1
-					));
-					(callout as HTMLElement).style.padding = paddingScale + 'px';
-					callout.classList.toggle('ic-centered', availableWidth < infoboxFootprint);
-				});
-
-				//Shut up, observer
-				observer.observe(contentContainer);
-				this.register(() => observer.disconnect());
-			});
 		});
+	}
+}
+
+// ── Live-Updating YAML Render Child ────────────────────────────────────────────────────────────────────────
+class YamlRenderChild extends MarkdownRenderChild {
+	private plugin: InfoboxPlugin;
+	private paragraph: HTMLElement;
+	private sourcePath: string;
+	private generatedElements: HTMLElement[] = [];
+
+	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, paragraph: HTMLElement, sourcePath: string) {
+		super(containerEl);
+		this.plugin = plugin;
+		this.paragraph = paragraph;
+		this.sourcePath = sourcePath;
+	}
+
+	onload() {
+		this.render();
+		this.registerEvent(
+			this.plugin.app.metadataCache.on('changed', (file: TFile) => {
+				if (file.path === this.sourcePath) this.render();
+			})
+		);
+	}
+
+	private render() {
+		// Clear previously generated labels
+		for (const el of this.generatedElements) el.remove();
+		this.generatedElements = [];
+
+		const frontmatter = this.plugin.app.metadataCache.getCache(this.sourcePath)?.frontmatter;
+		if (!frontmatter) return;
+
+		for (const key of Object.keys(frontmatter)) {
+			if (HIDDEN_FRONTMATTER_KEYS.has(key)) continue;
+
+			const value = frontmatter[key];
+			if (value == null || value === "") continue;
+
+			const displayKey = this.formatKey(key);
+			const displayValue = this.formatValue(value);
+
+			const labelLine = this.paragraph.createEl("span", { cls: "label-line" });
+			labelLine.createEl("span", { cls: "label", text: displayKey });
+			labelLine.appendChild(document.createTextNode(displayValue));
+			this.generatedElements.push(labelLine);
+		}
+	}
+
+	// Convert frontmatter keys to readable labels: "date-of-birth" to "Date of Birth"
+	private formatKey(key: string): string {
+		return key
+			.replace(/[-_]/g, " ")
+			.replace(/\b\w/g, c => c.toUpperCase());
+	}
+
+	// Convert frontmatter values to display strings
+	private formatValue(value: unknown): string {
+		if (Array.isArray(value)) return value.join(", ");
+		return String(value);
 	}
 }

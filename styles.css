@@ -13,6 +13,7 @@ settings:
     -
         id: ic-body-font-size
         title: Body Font Size
+        description: Note - Labels inherit from Body Font by default
         type: variable-number
         default: 1
         format: rem
@@ -385,6 +386,22 @@ settings:
         type: heading
         level: 1
         collapsed: true
+        
+    -
+        id: ic-label-font-size
+        title: Label Font Size
+        description: Note - Overrides Body Font Size
+        type: variable-number
+        default: 1
+        format: rem
+
+    -
+        id: ic-info-font-size
+        title: Info Font Size
+        description: Note - Overrides Body Font Size
+        type: variable-number
+        default: 1
+        format: rem
 
     -
         id: ic-label-width
@@ -855,10 +872,11 @@ settings:
     text-align: var(--ic-section-alignment);
 }
 
-/* Labels*/
+/* Labels */
 .label,
 .l {
     font-weight: bold;
+    font-size: var(--ic-label-font-size);
     width: var(--ic-label-width);
     display: inline-block;
     margin-right: var(--ic-label-padding);
@@ -872,13 +890,11 @@ settings:
     padding-left: calc(var(--ic-label-width) + var(--ic-label-padding));
 }
 
-
-
-
-/* Markdown Labels using Slashes */
+/* Markdown Labels using Slashes - Replaces the legacy*/
 .label-line {
   display: flex;
   align-items: flex-start;
+  font-size: var(--ic-info-font-size);
 }
 
 .label-line .label {
@@ -923,12 +939,4 @@ settings:
 /* Fix the Live Preview wrapper */
 .cm-embed-block:has(.callout.ic-centered) {
     display: block !important;
-}
-
-
-/* Prevent infobox from exceeding container width on narrow screens */
-.callout[data-callout="infobox"],
-.callout[data-callout="infoboxright"],
-.callout[data-callout="infoboxleft"] {
-    max-width: calc(100% - var(--ic-inside-padding) * 2 - var(--ic-border) * 2);
 }
