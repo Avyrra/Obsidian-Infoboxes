@@ -12,6 +12,14 @@ If you want to add information without a label, you can use an arrow without tex
 
 Any content added after the callout will be rendered beside it or below it.
 
+## Insert Properties Quickly
+
+Insert `/YAML/` to add all custom document properties as labels. All default obsidian properties, such as aliases or tags, are ignored. Properties are added in the order they appear in the properties block.
+
+You can also choose to add only select properties. For example `/YAML | Aliases, Color, Height, Weight/` will add the properties, Aliases, Color, Height, and Weight, as labels in that order. Spaces are optional.
+
+When properties are updated, they will automatically be reflected in the infobox.
+
 # How to Install
 This plugin is not yet on the community plugins browser, however it can still be installed and updated via the BRAT plugin.
 
