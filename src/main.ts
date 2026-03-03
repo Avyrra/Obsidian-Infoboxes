@@ -33,8 +33,8 @@ export default class InfoboxPlugin extends Plugin {
 						return;
 					}
 
-					// YAML Properties: /YAML/ or /YAML|key1,key2/
-					const yamlMatch = nodeText.trim().match(/^\/YAML\s*(?:\|\s*(.+?)\s*)?\/$/);
+					// YAML Properties: ~yaml or ~yaml, property1, property2.... - Aliases included
+					const yamlMatch = nodeText.trim().match(/^~(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i);
 					if (yamlMatch) {
 						const filter = yamlMatch[1]
 							? yamlMatch[1].split(",").map(k => k.trim().toLowerCase())

@@ -902,9 +902,6 @@ settings:
 }
 
 
-
-
-
 /* Make Scrollable for Reading Mode to Account for DOM Unload issues */
 /* Hide scrollbar but keep scrolling */
 .ic-scrollable-toggle .markdown-preview-view .callout[data-callout="infobox"],
