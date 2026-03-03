@@ -748,7 +748,6 @@ settings:
     color: var(--ic-infobox-title-color);
 }
 
-
 /*Extended Typography for Infobox Title*/
 .ic-title-typography-toggle .callout[data-callout="infobox"] .callout-title-inner,
 .ic-title-typography-toggle .callout[data-callout="infoboxright"] .callout-title-inner,
@@ -910,4 +909,26 @@ settings:
 .ic-scrollable-toggle.ic-scrollbar-toggle .markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infoboxright"],
 .ic-scrollable-toggle.ic-scrollbar-toggle .markdown-source-view.is-live-preview .cm-embed-block .callout[data-callout="infoboxleft"] {
     scrollbar-width: none;
+}
+
+
+/* Center it if needed */
+.callout.ic-centered {
+    float: none !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+}
+
+/* Fix the Live Preview wrapper */
+.cm-embed-block:has(.callout.ic-centered) {
+    display: block !important;
+}
+
+
+/* Prevent infobox from exceeding container width on narrow screens */
+.callout[data-callout="infobox"],
+.callout[data-callout="infoboxright"],
+.callout[data-callout="infoboxleft"] {
+    max-width: calc(100% - var(--ic-inside-padding) * 2 - var(--ic-border) * 2);
 }
