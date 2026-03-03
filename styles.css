@@ -834,7 +834,6 @@ settings:
 
 .ic-section-bg-full.ic-section-background-toggle .callout-content p:has(.section),
 .ic-section-bg-full.ic-section-background-toggle .callout-content p:has(.s) {
-    margin: 0;
     padding: 0;
 }
 
