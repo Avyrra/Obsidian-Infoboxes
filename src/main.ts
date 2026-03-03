@@ -63,7 +63,7 @@ export default class InfoboxPlugin extends Plugin {
 	}
 }
 
-// ── Live-Updating YAML Render Child ────────────────────────────────────────────────────────────────────────
+// Live-Updating YAML Render Child
 class YamlRenderChild extends MarkdownRenderChild {
 	private plugin: InfoboxPlugin;
 	private paragraph: HTMLElement;
@@ -110,7 +110,7 @@ class YamlRenderChild extends MarkdownRenderChild {
 		}
 	}
 
-	// Convert frontmatter keys to readable labels: "date-of-birth" to "Date of Birth"
+	// Make it readable: eg., "date-of-birth" to "Date of Birth"
 	private formatKey(key: string): string {
 		return key
 			.replace(/[-_]/g, " ")
