@@ -33,15 +33,17 @@ export default class InfoboxPlugin extends Plugin {
 						return;
 					}
 
-					// YAML Properties: ~yaml or ~yaml, property1, property2.... - Aliases included
-					const yamlMatch = nodeText.trim().match(/^~(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i);
+					// YAML Properties: ~yaml or ~!yaml or ~yaml, property1, property2.... - Aliases included
+					// Use ! to exclude properties: ~!yaml, property1...
+					const yamlMatch = nodeText.trim().match(/^~(!)?(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i);
 					if (yamlMatch) {
-						const filter = yamlMatch[1]
-							? yamlMatch[1].split(",").map(k => k.trim().toLowerCase())
+						const exclude = yamlMatch[1] === "!";
+						const filter = yamlMatch[2]
+							? yamlMatch[2].split(",").map(k => k.trim().toLowerCase())
 							: null;
 						const container = document.createElement("span");
 						node.replaceWith(container);
-						const child = new YamlRenderChild(container, this, paragraph, context.sourcePath, filter);
+						const child = new YamlRenderChild(container, this, paragraph, context.sourcePath, filter, exclude);
 						context.addChild(child);
 						return;
 					}
@@ -73,14 +75,16 @@ class YamlRenderChild extends MarkdownRenderChild {
 	private paragraph: HTMLElement;
 	private sourcePath: string;
 	private filter: string[] | null;
+	private exclude: boolean;
 	private generatedElements: HTMLElement[] = [];
 
-	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, paragraph: HTMLElement, sourcePath: string, filter: string[] | null) {
+	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, paragraph: HTMLElement, sourcePath: string, filter: string[] | null, exclude = false) {
 		super(containerEl);
 		this.plugin = plugin;
 		this.paragraph = paragraph;
 		this.sourcePath = sourcePath;
 		this.filter = filter;
+		this.exclude = exclude;
 	}
 
 	onload() {
@@ -104,7 +108,9 @@ class YamlRenderChild extends MarkdownRenderChild {
 		const keyMap = new Map(Object.keys(frontmatter).map(k => [k.toLowerCase(), k]));
 
 		const keys = this.filter
-			? this.filter.map(k => keyMap.get(k)).filter((k): k is string => k !== undefined)
+			? this.exclude
+				? Object.keys(frontmatter).filter(k => !HIDDEN_FRONTMATTER_KEYS.has(k) && !this.filter!.includes(k.toLowerCase()))
+				: this.filter.map(k => keyMap.get(k)).filter((k): k is string => k !== undefined)
 			: Object.keys(frontmatter).filter(k => !HIDDEN_FRONTMATTER_KEYS.has(k));
 
 		let insertAfter: Element = this.containerEl;

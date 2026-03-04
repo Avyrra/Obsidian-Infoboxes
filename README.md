@@ -16,7 +16,9 @@ Any content added after the callout will be rendered beside it or below it.
 
 Insert `~yaml` to add all custom document properties as labels. All default obsidian properties, such as aliases or tags, are ignored. Properties are added in the order they appear in the properties block. alternatively, you can use `~metadata`, `~properties`, `~meta`, `~data`, or `~fields` depending on your preference.
 
-You can also choose to add only select properties. For example `~yaml, aliases, color, height, weight` will add the properties, Aliases, Color, Height, and Weight, as labels in that order. Spaces are optional. It is not case sensitive.
+You can also choose to add only select properties. For example `~yaml, aliases, location, time, date` will add the properties, Aliases, Location, Time, and Date, as labels in that order. Spaces are optional. It is not case sensitive.
+
+You can choose to add all custom document properties, but exclude certain ones when you add an exclaimation mark: For exmaple, `~!yaml, location, time` will add every except for Location and Time.
 
 When properties are updated, they will automatically be reflected in the infobox.
 
