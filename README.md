@@ -1,26 +1,7 @@
 ![](images/infobox-light.png)
 ![](images/infobox-dark.png)
 
-# How to Use
-Insert a callout and change the type to "infobox." Alternatively, you can type "infoboxright" (alias of infobox) or "infoboxleft" if you want it aligned to the left side of the document.
-
-To add a section, use two slashes within the callout. `// insert section name`
-
-To add a label, use an arrow after the label title. `Label Name -> Add information here`
-
-If you want to add information without a label, you can use an arrow without text beforehand. `-> Add text here`
-
-Any content added after the callout will be rendered beside it or below it.
-
-## Insert Properties Quickly
-
-Insert `~yaml` to add all custom document properties as labels. All default obsidian properties, such as aliases or tags, are ignored. Properties are added in the order they appear in the properties block. alternatively, you can use `~metadata`, `~properties`, `~meta`, `~data`, or `~fields` depending on your preference.
-
-You can also choose to add only select properties. For example `~yaml, aliases, location, time, date` will add the properties, Aliases, Location, Time, and Date, as labels in that order. Spaces are optional. It is not case sensitive.
-
-You can choose to add all custom document properties, but exclude certain ones when you add an exclaimation mark: For exmaple, `~!yaml, location, time` will add every except for Location and Time.
-
-When properties are updated, they will automatically be reflected in the infobox.
+This plugin allows you to create wiki-like sidebars. It utilizes callouts and custom syntax to make creating infoboxes simple and intuitive.
 
 # How to Install
 This plugin is not yet on the community plugins browser, however it can still be installed and updated via the BRAT plugin.
@@ -31,61 +12,57 @@ This plugin is not yet on the community plugins browser, however it can still be
 4. Copy and paste this repository's URL into the window that appears
 5. Select latest version
 6. Click Add Plugin
+   
+# How to use
+To create an infobox, insert a callout and change the type to **infobox:**
+`> [!infobox] Title Name` 
 
-## How to Customize
-1. Install and enable Style Settings from the community plugins.
-2. In the Style Settings menu, a new section called "Infoboxes" will be added. Click on it to reveal customization options.
+An infobox will float to the right of any content whose source written after the callout. If you would like the infobox to be on the left side, you can use `> [!infoboxleft]` instead.
 
+Within the callout, you can use two slashes to create a section. `// Section Name`
 
-# What if I used the snippet version?
-This plugin uses the same classes that the snippet does under the hood. If you previously used the snippet version, all your old notes should still appear as infoboxes without needed modifications. (Message me if this is not the case for you and I'll look into it to see if it's my fault). There are some differences however, mostly in the appearance settings.
+To create a label, use an arrow to separate the name of your label with the information that you'd like to to display next to it: `Label Name -> Add information here`
 
-Do note, you will likely have to reconfigure your settings if you modified them via style settings.
-
-## What's different from the snippet?
-For starters, you no longer have to type html classes, cluttering up your notes. Use // to create a section. To create a label, type the name of the label, then type -> to add information.
-
-The default appearance has changed. Gone is my weird, yet somewhat whimsical, green preset. The new defaults match the default obsidian theme quite a bit better.
-
-The color selectors are gone in favor of variable text. Personally, I found the color selectors to be a bit difficult to use. This allows you to have more flexibility in customizing your infoboxes, including using variables such as `var(--color-accent)` if you want something more dynamic.
-
-
-# EXAMPLE
-_Copy and paste into a document to see it in action._
-
-```
-> [!infobox] Title
-> ---
+### Example
+``` markdown
+> [!infobox] Title Name
 > ![](https://obsidian.md/images/2023-06-logo.png)
 > 
-> // Section
+> // Section Name
 > 
-> An infobox is a type of callout with special formatting that can be used to create wiki-style sidebars.
-> 
-> Label -> A label can be created by typing -> after text. All text afterwards will be added as information.
-> -> If you would like to add info without a label, you can still use a -> and write after it.
+> Label -> Info
 ```
 
-# Tips & Tricks
+## Dynamically Insert Properties
+You can use the `~yaml` command to dynamically insert properties within an infobox. All properties will be displayed as labels. Functional properties such as aliases or tags will not be displayed. When properties are updated, they will automatically be reflected in the infobox.
 
-- **Source View is your friend.** Even I can admit that editing an infobox in live preview can sometimes cause a headache. I prefer to work in a split view, with the source view on one side and reading mode or live preview on the other.
-  
-- **Add empty lines around Sections.** Sections use some techniques that make it a bit weird with the markdown. If you notice that your markdown is acting up and not working sometimes, you may need to add an empty line before or after a section.
+If you would like to display only a specific selection of properties, you can use commas to denote which properties you'd like to use. With this method, you can also choose to display functional properties that were previously filtered.
+Example: `~yaml, aliases, tags, size, color`
 
-- **Get Style Settings.** Grab the Style Settings plugin to adjust the appearance of your infoboxes.
-  
-	- ***Color Settings:*** The color picker is gone in favor of variable text. This allows you to make use of dynamic color options to match infoboxes to your themes or custom palettes. As an example, you can set a color to your obsidian accent by typing:
-	 `var(--color-accent)`
-	
-	- **Get Extended Typography Styles.** If you want even more customization, check out my Extended Typography Styles snippet. Also customized via Style Settings.
+Additionally, you can choose to render all but a selection by appending it with an exclamation point. All properties will be displayed as labels with the exception of functional properties and your selection.
+Example: `~!yaml, size, color`
 
-	- **Customize with snippets.** The .css file for infoboxes does not utilize the `!important` functionality in any way. If you'd like to make adjustments to infoboxes, you can do so with a snippet.
+### Example
+``` markdown
+> [!infobox] Title Name
+> 
+> // Section Name
+> 
+> ~yaml
+```
 
+### Aliases
+The following aliases can be used instead of `~yaml`
+`~metadata`
+`~properties`
+`~meta`
+`~data`
+`~fields`
 
-# Still in Early Development
+## Customization
 
-## What I want to know most
-Lemme know how the syntax works out for you. I couldn't get it to break. Maybe you can. I tried everything I could think of that uses an -> and // in their syntax and I couldn't find one that conflicts with my implementation yet. Lemme know if you find anything and if I gotta change something. But I'd hate to change to an uglier set of symbols.
+### Style Settings
+Styles, colors, and additional tweaks can be customized by installing the **Style Settings** plugin. Once installed, the infoboxes customization menu will be displayed within the Style Settings plugin options.
 
-## How does it compare?
-This solution to wiki-style callouts is far from the first and I doubt it'll be the last. Let me know what everyone else does better and where I need to improve.
+### Snippets
+The .css file for infoboxes does not utilize the `!important` rule. If you would like to make adjustments to infoboxes, you can do so with a snippet.
