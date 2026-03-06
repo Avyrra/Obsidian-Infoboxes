@@ -1,6 +1,6 @@
 {
 	"name": "infoboxes",
-	"version": "0.2.6",
+	"version": "0.2.7",
 	"description": "Create wiki-style infoboxes",
 	"main": "main.js",
 	"type": "module",
