@@ -53,6 +53,7 @@ Example: `~!yaml, size, color`
 
 ### Aliases
 The following aliases can be used instead of `~yaml`
+
 `~metadata`
 `~properties`
 `~meta`
