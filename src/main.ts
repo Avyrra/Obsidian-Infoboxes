@@ -1,11 +1,13 @@
 import {MarkdownRenderChild, Plugin, TFile} from 'obsidian';
 
+// The classes we're fuckin' dealing with
 const INFOBOX_SELECTOR =
 	'.callout[data-callout="infobox"],' +
 	'.callout[data-callout="infoboxright"],' +
 	'.callout[data-callout="infoboxleft"]';
 
-// Frontmatter keys that are internal/functional and shouldn't be displayed
+// Frontmatter keys that are internal/functional 
+// and shouldn't be displayed by default with ~yaml
 const HIDDEN_FRONTMATTER_KEYS = new Set([
 	'position', 'cssclasses', 'cssclass', 'publish', 'kanban-plugin',
 	'tags', 'tag', 'aliases', 'alias'
@@ -43,7 +45,7 @@ export default class InfoboxPlugin extends Plugin {
 							: null;
 						const container = document.createElement("span");
 						node.replaceWith(container);
-						const child = new YamlRenderChild(container, this, paragraph, context.sourcePath, filter, exclude);
+						const child = new YamlRenderChild(container, this, context.sourcePath, filter, exclude);
 						context.addChild(child);
 						return;
 					}
@@ -61,8 +63,8 @@ export default class InfoboxPlugin extends Plugin {
 				});
 
 				// Remove <br> between consecutive labels
-				paragraph.querySelectorAll(".label-line + br").forEach(br => {
-					if (br.nextElementSibling?.hasClass("label-line")) br.remove();
+				paragraph.querySelectorAll("br").forEach(br => {
+					if (br.previousElementSibling?.classList.contains("label-line") && br.nextElementSibling?.classList.contains("label-line")) br.remove();
 				});
 			});
 		});
@@ -72,16 +74,14 @@ export default class InfoboxPlugin extends Plugin {
 // Live-Updating YAML Render Child
 class YamlRenderChild extends MarkdownRenderChild {
 	private plugin: InfoboxPlugin;
-	private paragraph: HTMLElement;
 	private sourcePath: string;
 	private filter: string[] | null;
 	private exclude: boolean;
 	private generatedElements: HTMLElement[] = [];
 
-	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, paragraph: HTMLElement, sourcePath: string, filter: string[] | null, exclude = false) {
+	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, sourcePath: string, filter: string[] | null, exclude = false) {
 		super(containerEl);
 		this.plugin = plugin;
-		this.paragraph = paragraph;
 		this.sourcePath = sourcePath;
 		this.filter = filter;
 		this.exclude = exclude;
@@ -104,20 +104,33 @@ class YamlRenderChild extends MarkdownRenderChild {
 		const frontmatter = this.plugin.app.metadataCache.getCache(this.sourcePath)?.frontmatter;
 		if (!frontmatter) return;
 
-		// Build a lowercase-to-actual-key map for case-insensitive matching
-		const keyMap = new Map(Object.keys(frontmatter).map(k => [k.toLowerCase(), k]));
-
+		// Make it lower-case behind the scenes
+		const seenLower = new Set<string>();
+		const keyMap = new Map(
+			Object.keys(frontmatter)
+				.filter(k => {
+					const lower = k.toLowerCase();
+					if (seenLower.has(lower)) return false;
+					seenLower.add(lower);
+					return true;
+				})
+				.map(k => [k.toLowerCase(), k])
+		);
+		
+		// Determine which keys to render based on filter and exclude rules
 		const keys = this.filter
 			? this.exclude
 				? Object.keys(frontmatter).filter(k => !HIDDEN_FRONTMATTER_KEYS.has(k) && !this.filter!.includes(k.toLowerCase()))
 				: this.filter.map(k => keyMap.get(k)).filter((k): k is string => k !== undefined)
 			: Object.keys(frontmatter).filter(k => !HIDDEN_FRONTMATTER_KEYS.has(k));
-
+		
+		// Make it render in order
 		let insertAfter: Element = this.containerEl;
-
+		
+		// Render it, baby!
 		for (const key of keys) {
 
-			const value = frontmatter[key];
+			const value: unknown = frontmatter[key] as unknown;
 			if (value == null || value === "") continue;
 
 			const displayKey = this.formatKey(key);
@@ -140,7 +153,7 @@ class YamlRenderChild extends MarkdownRenderChild {
 			.replace(/\b\w/g, c => c.toUpperCase());
 	}
 
-	// Convert frontmatter values to display strings
+	// Convert your obsidian frontmatter values to text
 	private formatValue(value: unknown): string {
 		if (Array.isArray(value)) return value.join(", ");
 		return String(value);

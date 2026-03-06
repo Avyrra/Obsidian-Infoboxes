@@ -614,8 +614,6 @@ settings:
     --ic-title-size: 1.2rem;
     --ic-title-weight: 700;
     --ic-title-margin: 0rem;
-    --ic-title-word-spacing: 0rem;
-    --ic-title-tracking: 1rem;
     --ic-title-font: "Noto Sans";
     --ic-border: 1px;
     --ic-horizontal-rule-size: 1px;
@@ -781,7 +779,9 @@ settings:
 
 
 /* Images */
-.callout[data-callout="infobox"] img {
+.callout[data-callout="infobox"] img,
+.callout[data-callout="infoboxleft"] img,
+.callout[data-callout="infoboxright"] img {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -791,7 +791,9 @@ settings:
 }
 
 /* Horizontal Rule*/
-.callout[data-callout="infobox"] hr {
+.callout[data-callout="infobox"] hr,
+.callout[data-callout="infoboxleft"] hr,
+.callout[data-callout="infoboxright"] hr {
     border: none;
     border-top: var(--ic-horizontal-rule-size) solid var(--ic-horizontal-rule-color, #cccccc);
     margin: 1rem 0;
@@ -932,7 +934,7 @@ settings:
     display: block !important;
 }
 
-/* Fix the Live Preview wrapper */
+/* Live Preview if Centered */
 .cm-embed-block:has(.callout.ic-centered) {
     display: block !important;
 }
