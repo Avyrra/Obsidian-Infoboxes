@@ -66,4 +66,4 @@ The following aliases can be used instead of `~yaml`
 Styles, colors, and additional tweaks can be customized by installing the **Style Settings** plugin. Once installed, the infoboxes customization menu will be displayed within the Style Settings plugin options.
 
 ### Snippets
-The .css file for infoboxes does not utilize the `!important` rule. If you would like to make adjustments to infoboxes, you can do so with a snippet.
+The .css file for infoboxes does not utilize the `!important` rule. If you would like to make adjustments to infoboxes, you can do so with a snippet. 
