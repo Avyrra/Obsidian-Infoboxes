@@ -78,6 +78,7 @@ class YamlRenderChild extends MarkdownRenderChild {
 	private filter: string[] | null;
 	private exclude: boolean;
 	private generatedElements: HTMLElement[] = [];
+	private bodyClassObserver: MutationObserver | null = null;
 
 	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, sourcePath: string, filter: string[] | null, exclude = false) {
 		super(containerEl);
@@ -94,6 +95,17 @@ class YamlRenderChild extends MarkdownRenderChild {
 				if (file.path === this.sourcePath) this.render();
 			})
 		);
+
+		// Re-render when Style Settings toggles change
+		this.bodyClassObserver = new MutationObserver(() => this.render());
+		this.bodyClassObserver.observe(document.body, {
+			attributes: true,
+			attributeFilter: ["class"]
+		});
+	}
+
+	onunload() {
+		this.bodyClassObserver?.disconnect();
 	}
 
 	private render() {
@@ -103,6 +115,9 @@ class YamlRenderChild extends MarkdownRenderChild {
 
 		const frontmatter = this.plugin.app.metadataCache.getCache(this.sourcePath)?.frontmatter;
 		if (!frontmatter) return;
+
+		// Check if horizontal rules should be inserted between properties
+		const insertHorizontalRules = document.body.classList.contains('ic-frontmatter-horizontal-rule-toggle');
 
 		// Make it lower-case behind the scenes
 		const seenLower = new Set<string>();
@@ -126,6 +141,7 @@ class YamlRenderChild extends MarkdownRenderChild {
 		
 		// Make it render in order
 		let insertAfter: Element = this.containerEl;
+		let isFirstProperty = true;
 		
 		// Render it, baby!
 		for (const key of keys) {
@@ -133,6 +149,16 @@ class YamlRenderChild extends MarkdownRenderChild {
 			const value: unknown = frontmatter[key] as unknown;
 			if (value == null || value === "") continue;
 
+			// Insert horizontal rule between properties
+			if (insertHorizontalRules && !isFirstProperty) {
+				const horizontalRule = document.createElement("hr");
+				insertAfter.after(horizontalRule);
+				insertAfter = horizontalRule;
+				this.generatedElements.push(horizontalRule);
+			}
+			isFirstProperty = false;
+			
+			// The part that matters
 			const displayKey = this.formatKey(key);
 			const displayValue = this.formatValue(value);
 

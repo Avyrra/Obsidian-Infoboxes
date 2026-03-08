@@ -61,6 +61,26 @@ settings:
         type: variable-number
         default: 1
         format: px
+        
+    -
+        id: ic-horizontal-rule-margins
+        title: Horizontal Rule Margins
+        type: variable-number
+        default: 1
+        format: rem
+        
+    -
+        id: ic-horizontal-rule-mode
+        title: Horizontal Rule Width
+        type: class-select
+        default: ic-hr-margins
+        options:
+            -
+                label: To Margins
+                value: ic-hr-margins
+            -
+                label: Full Width
+                value: ic-hr-full
 
     -
         id: ic-infobox-title-heading
@@ -572,7 +592,7 @@ settings:
         collapsed: true
         
     -
-        id: ic-scrollable-infoboxes
+        id: ic-scrollable-infoboxes-heading
         title: Scrollable Infoboxes
         type: heading
         level: 2
@@ -602,6 +622,19 @@ settings:
         type: variable-number
         default: 1100
         format: px
+        
+    -
+        id: ic-frontmatter-tweaks-heading
+        title: Frontmatter Tweaks
+        type: heading
+        level: 2
+        collapsed: true
+        
+    -
+        id: ic-frontmatter-horizontal-rule-toggle
+        title: Add Horizontal Rules Between Properties
+        type: class-toggle
+        default: false
 */
 
 :root {
@@ -617,6 +650,7 @@ settings:
     --ic-title-font: "Noto Sans";
     --ic-border: 1px;
     --ic-horizontal-rule-size: 1px;
+    --ic-horizontal-rule-margins: 1rem;
     
     --ic-section-size: 1rem;
     --ic-section-weight: 700;
@@ -763,7 +797,7 @@ settings:
     color: var(--ic-infobox-title-color);
 }
 
-/*Extended Typography for Infobox Title*/
+/*Extended Typography for Infobox Title */
 .ic-title-typography-toggle .callout[data-callout="infobox"] .callout-title-inner,
 .ic-title-typography-toggle .callout[data-callout="infoboxright"] .callout-title-inner,
 .ic-title-typography-toggle .callout[data-callout="infoboxleft"] .callout-title-inner {
@@ -790,13 +824,40 @@ settings:
     border-color: var(--ic-image-border-color);
 }
 
-/* Horizontal Rule*/
+/* Horizontal Rule */
 .callout[data-callout="infobox"] hr,
 .callout[data-callout="infoboxleft"] hr,
 .callout[data-callout="infoboxright"] hr {
     border: none;
     border-top: var(--ic-horizontal-rule-size) solid var(--ic-horizontal-rule-color, #cccccc);
-    margin: 1rem 0;
+    margin: var(--ic-horizontal-rule-margins) 0;
+}
+
+.callout[data-callout="infobox"] .callout-content p:has(+ hr),
+.callout[data-callout="infoboxright"] .callout-content p:has(+ hr),
+.callout[data-callout="infoboxleft"] .callout-content p:has(+ hr) {
+    margin-bottom: 0;
+}
+
+.callout[data-callout="infobox"] .callout-content hr + p,
+.callout[data-callout="infoboxright"] .callout-content hr + p,
+.callout[data-callout="infoboxleft"] .callout-content hr + p {
+    margin-top: 0;
+}
+
+/* HR Mode: To Margins or Full Width */
+.ic-hr-full .callout[data-callout="infobox"] .callout-content,
+.ic-hr-full .callout[data-callout="infoboxright"] .callout-content,
+.ic-hr-full .callout[data-callout="infoboxleft"] .callout-content {
+    overflow: visible;
+}
+
+.ic-hr-full .callout[data-callout="infobox"] hr,
+.ic-hr-full .callout[data-callout="infoboxright"] hr,
+.ic-hr-full .callout[data-callout="infoboxleft"] hr {
+    width: calc(100% + 2 * var(--ic-inside-padding));
+    margin-left: calc(-1 * var(--ic-inside-padding));
+    box-sizing: border-box;
 }
 
 /* Section Class */
@@ -901,6 +962,7 @@ settings:
 .label-line .label {
   flex-shrink: 0;
 }
+
 
 
 /* Make Scrollable for Reading Mode to Account for DOM Unload issues */
