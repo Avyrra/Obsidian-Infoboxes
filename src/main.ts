@@ -15,6 +15,55 @@ const HIDDEN_FRONTMATTER_KEYS = new Set([
 
 export default class InfoboxPlugin extends Plugin {
 	async onload() {
+		
+        // COMMAND PALETTE
+		this.addCommand({
+			id: 'add-infobox',
+			name: 'Add an infobox',
+			editorCallback: (editor) => {
+				const template =
+					'> [!infobox] Title\n' +
+					'> Contents\n' +
+					'> \n' +
+					'> //Section\n' +
+					'> \n' +
+					'> Label -> Add information here\n';
+				editor.replaceSelection(template);
+			}
+		});
+		
+		this.addCommand({
+			id: 'add-infobox-left',
+			name: 'Add a left-sided infobox',
+			editorCallback: (editor) => {
+				const template =
+					'> [!infoboxleft] Title\n' +
+					'> Contents\n' +
+					'> \n' +
+					'> //Section\n' +
+					'> \n' +
+					'> Label -> Add information here\n';
+				editor.replaceSelection(template);
+			}
+		});
+		
+		this.addCommand({
+			id: 'add-infobox-right',
+			name: 'Add a right-sided infobox',
+			editorCallback: (editor) => {
+				const template =
+					'> [!infoboxright] Title\n' +
+					'> Contents\n' +
+					'> \n' +
+					'> //Section\n' +
+					'> \n' +
+					'> Label -> Add information here\n';
+				editor.replaceSelection(template);
+			}
+		}); 
+		
+		
+        // DO SHIT
 		this.registerMarkdownPostProcessor((element, context) => {
 			const paragraphs = element.querySelectorAll("p");
 			paragraphs.forEach((paragraph) => {
