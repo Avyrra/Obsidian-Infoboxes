@@ -117,6 +117,25 @@ export default class InfoboxPlugin extends Plugin {
 				});
 			});
 		});
+
+		// Center infobox when content pane is too narrow
+		const updateCentering = () => {
+			const style = getComputedStyle(document.body);
+			const width = parseFloat(style.getPropertyValue('--ic-width')) || 300;
+			const padding = parseFloat(style.getPropertyValue('--ic-outside-padding')) || 20;
+			const threshold = width + padding + 250;
+
+			document.querySelectorAll(INFOBOX_SELECTOR).forEach(el => {
+				const sizer = el.closest('.markdown-preview-sizer') || el.closest('.cm-sizer');
+				const areaWidth = sizer ? sizer.clientWidth : window.innerWidth;
+				el.classList.toggle('ic-centered', areaWidth < threshold);
+			});
+		};
+
+		this.registerEvent(this.app.workspace.on('resize', updateCentering));
+		this.registerEvent(this.app.workspace.on('layout-change', updateCentering));
+		this.registerEvent(this.app.workspace.on('css-change', updateCentering));
+		this.app.workspace.onLayoutReady(updateCentering);
 	}
 }
 
@@ -165,7 +184,7 @@ class YamlRenderChild extends MarkdownRenderChild {
 		const frontmatter = this.plugin.app.metadataCache.getCache(this.sourcePath)?.frontmatter;
 		if (!frontmatter) return;
 
-		// Check which property separation mode is active
+		// Which separation mode are we using?
 		const separationMode = document.body.classList.contains('ic-property-separation-horizontal') ? 'horizontal'
 			: document.body.classList.contains('ic-property-separation-spaces') ? 'spaces'
 			: null;
