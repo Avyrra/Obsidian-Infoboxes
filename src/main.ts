@@ -165,8 +165,10 @@ class YamlRenderChild extends MarkdownRenderChild {
 		const frontmatter = this.plugin.app.metadataCache.getCache(this.sourcePath)?.frontmatter;
 		if (!frontmatter) return;
 
-		// Check if horizontal rules should be inserted between properties
-		const insertHorizontalRules = document.body.classList.contains('ic-frontmatter-horizontal-rule-toggle');
+		// Check which property separation mode is active
+		const separationMode = document.body.classList.contains('ic-property-separation-horizontal') ? 'horizontal'
+			: document.body.classList.contains('ic-property-separation-spaces') ? 'spaces'
+			: null;
 
 		// Make it lower-case behind the scenes
 		const seenLower = new Set<string>();
@@ -199,7 +201,7 @@ class YamlRenderChild extends MarkdownRenderChild {
 			if (value == null || value === "") continue;
 
 			// Insert horizontal rule between properties
-			if (insertHorizontalRules && !isFirstProperty) {
+			if (separationMode === 'horizontal' && !isFirstProperty) {
 				const horizontalRule = document.createElement("hr");
 				insertAfter.after(horizontalRule);
 				insertAfter = horizontalRule;
@@ -215,9 +217,18 @@ class YamlRenderChild extends MarkdownRenderChild {
 			labelLine.addClass("label-line");
 			labelLine.createEl("span", { cls: "label", text: displayKey });
 			labelLine.appendChild(document.createTextNode(displayValue));
-			insertAfter.after(labelLine);
-			insertAfter = labelLine;
-			this.generatedElements.push(labelLine);
+
+			if (separationMode === 'spaces') {
+				const wrapper = document.createElement("p");
+				wrapper.appendChild(labelLine);
+				insertAfter.after(wrapper);
+				insertAfter = wrapper;
+				this.generatedElements.push(wrapper);
+			} else {
+				insertAfter.after(labelLine);
+				insertAfter = labelLine;
+				this.generatedElements.push(labelLine);
+			}
 		}
 	}
 

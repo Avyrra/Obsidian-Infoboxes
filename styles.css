@@ -453,7 +453,7 @@ settings:
         title: Label Width
         description: How wide a label can be before it wraps to a new line
         type: variable-number
-        default: 80
+        default: 110
         format: px
 
     -
@@ -647,19 +647,23 @@ settings:
         type: heading
         level: 2
         collapsed: true
-        
+    
     -
-        id: ic-frontmatter-horizontal-rule-toggle
-        title: Add Horizontal Rules Between Properties
-        type: class-toggle
-        default: true
-    
-    
-    
-    
-    
-    
-        
+        id: ic-property-separation
+        title: Property Separation
+        type: class-select
+        default: ic-property-separation-horizontal
+        options:
+            -
+                label: None
+                value: ic-property-separation-none
+            -
+                label: Add Spaces Between Properties
+                value: ic-property-separation-spaces
+            -
+                label: Add Horizontal Rules Between Properties
+                value: ic-property-separation-horizontal
+                
         
     -
         id: ic-colors-heading
@@ -863,7 +867,7 @@ settings:
     --ic-section-horizontal-padding: 0.3rem;
     --ic-section-vertical-padding: 0.125rem;
     
-    --ic-label-width: 80px;
+    --ic-label-width: 110px;
     --ic-label-padding: 0.5rem;
     --ic-label-alignment: left;
     
@@ -1432,11 +1436,6 @@ settings:
 .cm-embed-block:has(.callout.ic-centered) {
     display: block !important;
 }
-
-
-
-
-
 
 
 
