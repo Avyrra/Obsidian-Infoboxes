@@ -1047,8 +1047,12 @@ settings:
 }
 
 /* Section Class */
-.section,
-.s {
+.callout[data-callout="infobox"] .section,
+.callout[data-callout="infobox"] .s,
+.callout[data-callout="infoboxright"] .section,
+.callout[data-callout="infoboxright"] .s,
+.callout[data-callout="infoboxleft"] .section,
+.callout[data-callout="infoboxleft"] .s {
     display: inline-block;
     width: 100%;
     text-align: var(--ic-section-alignment);
@@ -1060,34 +1064,57 @@ settings:
     border-color: var(--ic-section-border-color);
 }
 
-.ic-section-background-toggle .section,
-.ic-section-background-toggle .s {
+.ic-section-background-toggle .callout[data-callout="infobox"] .section,
+.ic-section-background-toggle .callout[data-callout="infobox"] .s,
+.ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
+.ic-section-background-toggle .callout[data-callout="infoboxright"] .s,
+.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section,
+.ic-section-background-toggle .callout[data-callout="infoboxleft"] .s {
     background-color: var(--ic-section-background-color);
 }
 
-.ic-section-typography-toggle .section,
-.ic-section-typography-toggle .s {
+.ic-section-typography-toggle .callout[data-callout="infobox"] .section,
+.ic-section-typography-toggle .callout[data-callout="infobox"] .s,
+.ic-section-typography-toggle .callout[data-callout="infoboxright"] .section,
+.ic-section-typography-toggle .callout[data-callout="infoboxright"] .s,
+.ic-section-typography-toggle .callout[data-callout="infoboxleft"] .section,
+.ic-section-typography-toggle .callout[data-callout="infoboxleft"] .s {
     font-family: var(--ic-section-font);
     font-feature-settings: var(--ic-section-stylistic-sets);
 }
 
-.ic-section-typography-toggle.ic-section-smallcaps .section,
-.ic-section-typography-toggle.ic-section-smallcaps .s {
+.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infobox"] .section,
+.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infobox"] .s,
+.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxright"] .section,
+.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxright"] .s,
+.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxleft"] .section,
+.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxleft"] .s {
     font-variant: small-caps;
 }
 
 /* Full Width Section Background */
-.ic-section-bg-full.ic-section-background-toggle .callout-content {
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .callout-content,
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .callout-content,
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .callout-content {
     overflow: visible;
 }
 
-.ic-section-bg-full.ic-section-background-toggle .callout-content p:has(.section),
-.ic-section-bg-full.ic-section-background-toggle .callout-content p:has(.s) {
+/* Remove paragraph padding so negative margin can reach callout edges */
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .callout-content p:has(.section),
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .callout-content p:has(.s),
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .callout-content p:has(.section),
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .callout-content p:has(.s),
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .callout-content p:has(.section),
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .callout-content p:has(.s) {
     padding: 0;
 }
 
-.ic-section-bg-full.ic-section-background-toggle .section,
-.ic-section-bg-full.ic-section-background-toggle .s {
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .section,
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .s,
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .s,
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section,
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .s {
     width: calc(100% + 2 * var(--ic-inside-padding));
     margin-left: calc(-1 * var(--ic-inside-padding));
     padding-left: var(--ic-inside-padding);
@@ -1104,8 +1131,12 @@ settings:
 
 
 /* To Text Section Background */
-.ic-section-bg-text.ic-section-background-toggle .section,
-.ic-section-bg-text.ic-section-background-toggle .s {
+.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infobox"] .section,
+.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infobox"] .s,
+.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
+.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxright"] .s,
+.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section,
+.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxleft"] .s {
     width: fit-content;
     display: inline-block;
 }
@@ -1121,8 +1152,12 @@ settings:
 }
 
 /* Labels */
-.label,
-.l {
+.callout[data-callout="infobox"] .label,
+.callout[data-callout="infobox"] .l,
+.callout[data-callout="infoboxright"] .label,
+.callout[data-callout="infoboxright"] .l,
+.callout[data-callout="infoboxleft"] .label,
+.callout[data-callout="infoboxleft"] .l {
     font-weight: bold;
     font-size: var(--ic-label-font-size);
     width: var(--ic-label-width);
@@ -1139,13 +1174,17 @@ settings:
 }
 
 /* Markdown Labels using Slashes - Replaces the legacy*/
-.label-line {
+.callout[data-callout="infobox"] .label-line,
+.callout[data-callout="infoboxright"] .label-line,
+.callout[data-callout="infoboxleft"] .label-line {
   display: flex;
   align-items: flex-start;
   font-size: var(--ic-info-font-size);
 }
 
-.label-line .label {
+.callout[data-callout="infobox"] .label-line .label,
+.callout[data-callout="infoboxright"] .label-line .label,
+.callout[data-callout="infoboxleft"] .label-line .label {
   flex-shrink: 0;
 }
 
