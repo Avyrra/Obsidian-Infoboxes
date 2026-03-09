@@ -92,12 +92,18 @@ settings:
     -
         id: ic-title-alignment
         title: Alignment
-        type: variable-select
-        default: Center
+        type: class-select
+        default: ic-title-align-center
         options:
-            - Left
-            - Center
-            - Right
+            -
+                label: Left
+                value: ic-title-align-left
+            -
+                label: Center
+                value: ic-title-align-center
+            -
+                label: Right
+                value: ic-title-align-right
 
     -
         id: ic-title-size
@@ -118,6 +124,25 @@ settings:
         type: variable-number
         default: 0
         format: rem
+    
+    -
+        id: ic-fold-arrow-style
+        title: Collapsible Arrow Style
+        type: class-select
+        default: ic-arrow-style-infoboxes
+        options:
+            -
+                label: None
+                value: ic-arrow-style-none
+            -
+                label: Infoboxes
+                value: ic-arrow-style-infoboxes
+            -
+                label: Obsidian
+                value: ic-arrow-style-obsidian
+            -
+                label: Below Title
+                value: ic-arrow-style-below-title
 
     -
         id: ic-title-extended-typography
@@ -470,7 +495,18 @@ settings:
         default: 0
         format: px
         
-        
+    -
+        id: ic-image-width-mode
+        title: Image Width
+        type: class-select
+        default: ic-image-margins
+        options:
+            -
+                label: To Margins
+                value: ic-image-margins
+            -
+                label: Full Width
+                value: ic-image-full
         
         
 
@@ -811,7 +847,6 @@ settings:
     --ic-outside-padding: 20px;
     --ic-inside-padding: 24px;
     --ic-round-corners: 8px;
-    --ic-title-alignment: center;
     --ic-title-size: 1.2rem;
     --ic-title-weight: 700;
     --ic-title-margin: 0rem;
@@ -975,7 +1010,7 @@ settings:
 .callout[data-callout="infoboxleft"] .callout-title-inner {
     all: unset;
     display: block;
-    text-align: var(--ic-title-alignment);
+    text-align: center;
     font-size: var(--ic-title-size);
     font-weight: var(--ic-title-weight);
     width: 100%;
@@ -983,7 +1018,19 @@ settings:
     color: var(--ic-infobox-title-color);
 }
 
-/*Extended Typography for Infobox Title */
+.ic-title-align-left .callout[data-callout="infobox"] .callout-title-inner,
+.ic-title-align-left .callout[data-callout="infoboxright"] .callout-title-inner,
+.ic-title-align-left .callout[data-callout="infoboxleft"] .callout-title-inner {
+    text-align: left;
+}
+
+.ic-title-align-right .callout[data-callout="infobox"] .callout-title-inner,
+.ic-title-align-right .callout[data-callout="infoboxright"] .callout-title-inner,
+.ic-title-align-right .callout[data-callout="infoboxleft"] .callout-title-inner {
+    text-align: right;
+}
+
+/* Extended Typography for Infobox Title */
 .ic-title-typography-toggle .callout[data-callout="infobox"] .callout-title-inner,
 .ic-title-typography-toggle .callout[data-callout="infoboxright"] .callout-title-inner,
 .ic-title-typography-toggle .callout[data-callout="infoboxleft"] .callout-title-inner {
@@ -997,6 +1044,144 @@ settings:
     font-variant: small-caps;
 }
 
+/* Collapse Arrow Color */
+.callout[data-callout="infobox"] .callout-fold,
+.callout[data-callout="infoboxright"] .callout-fold,
+.callout[data-callout="infoboxleft"] .callout-fold {
+    color: var(--ic-infobox-title-color);
+}
+
+/* Collapse Arrow Style - None */
+.ic-arrow-style-none .callout[data-callout="infobox"] .callout-fold,
+.ic-arrow-style-none .callout[data-callout="infoboxright"] .callout-fold,
+.ic-arrow-style-none .callout[data-callout="infoboxleft"] .callout-fold {
+    display: none;
+}
+
+/* Collapse Arrow Style - Below Title */
+.ic-arrow-style-below-title .callout[data-callout="infobox"] .callout-title,
+.ic-arrow-style-below-title .callout[data-callout="infoboxright"] .callout-title,
+.ic-arrow-style-below-title .callout[data-callout="infoboxleft"] .callout-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ic-arrow-style-below-title .callout[data-callout="infobox"] .callout-fold,
+.ic-arrow-style-below-title .callout[data-callout="infoboxright"] .callout-fold,
+.ic-arrow-style-below-title .callout[data-callout="infoboxleft"] .callout-fold {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.ic-arrow-style-below-title .callout[data-callout="infobox"] .callout-fold svg,
+.ic-arrow-style-below-title .callout[data-callout="infoboxright"] .callout-fold svg,
+.ic-arrow-style-below-title .callout[data-callout="infoboxleft"] .callout-fold svg {
+    margin: 0;
+}
+
+.ic-title-align-center.ic-arrow-style-below-title .callout[data-callout="infobox"]:not(.is-collapsed) .callout-fold svg,
+.ic-title-align-center.ic-arrow-style-below-title .callout[data-callout="infoboxright"]:not(.is-collapsed) .callout-fold svg,
+.ic-title-align-center.ic-arrow-style-below-title .callout[data-callout="infoboxleft"]:not(.is-collapsed) .callout-fold svg {
+    transform: rotate(180deg);
+}
+
+.ic-arrow-style-below-title .callout[data-callout="infobox"].is-collapsed .callout-fold svg,
+.ic-arrow-style-below-title .callout[data-callout="infoboxright"].is-collapsed .callout-fold svg,
+.ic-arrow-style-below-title .callout[data-callout="infoboxleft"].is-collapsed .callout-fold svg {
+    transform: rotate(0deg);
+}
+
+
+
+
+
+/* Arrow Style - Infoboxes */
+.ic-arrow-style-infoboxes .callout[data-callout="infobox"] .callout-title,
+.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"] .callout-title,
+.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"] .callout-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ic-arrow-style-infoboxes .callout[data-callout="infobox"] .callout-fold,
+.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"] .callout-fold,
+.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"] .callout-fold {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    transform: scale(0);
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.2s ease, transform 0.2s ease, max-height 0.2s ease;
+}
+
+.ic-arrow-style-infoboxes .callout[data-callout="infobox"] .callout-fold svg,
+.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"] .callout-fold svg,
+.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"] .callout-fold svg {
+    margin: 0;
+}
+
+.ic-arrow-style-infoboxes .callout[data-callout="infobox"] .callout-title:hover .callout-fold,
+.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"] .callout-title:hover .callout-fold,
+.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"] .callout-title:hover .callout-fold {
+    opacity: 1;
+    transform: scale(1);
+    max-height: 2em;
+}
+
+/* Center: up when expanded, down when collapsed */
+.ic-title-align-center.ic-arrow-style-infoboxes .callout[data-callout="infobox"]:not(.is-collapsed) .callout-fold svg,
+.ic-title-align-center.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"]:not(.is-collapsed) .callout-fold svg,
+.ic-title-align-center.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"]:not(.is-collapsed) .callout-fold svg {
+    transform: rotate(180deg);
+}
+
+.ic-title-align-center.ic-arrow-style-infoboxes .callout[data-callout="infobox"].is-collapsed .callout-fold svg,
+.ic-title-align-center.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"].is-collapsed .callout-fold svg,
+.ic-title-align-center.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"].is-collapsed .callout-fold svg {
+    transform: rotate(0deg);
+}
+
+/* Left align: row layout, chevron on the right */
+.ic-title-align-left.ic-arrow-style-infoboxes .callout[data-callout="infobox"] .callout-title,
+.ic-title-align-left.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-align-left.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"] .callout-title {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.ic-title-align-left.ic-arrow-style-infoboxes .callout[data-callout="infobox"].is-collapsed .callout-fold svg,
+.ic-title-align-left.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"].is-collapsed .callout-fold svg,
+.ic-title-align-left.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"].is-collapsed .callout-fold svg {
+    transform: rotate(-90deg);
+}
+
+/* Right align: row-reverse layout, chevron on the left */
+.ic-title-align-right.ic-arrow-style-infoboxes .callout[data-callout="infobox"] .callout-title,
+.ic-title-align-right.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-align-right.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"] .callout-title {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.ic-title-align-right.ic-arrow-style-infoboxes .callout[data-callout="infobox"].is-collapsed .callout-fold svg,
+.ic-title-align-right.ic-arrow-style-infoboxes .callout[data-callout="infoboxright"].is-collapsed .callout-fold svg,
+.ic-title-align-right.ic-arrow-style-infoboxes .callout[data-callout="infoboxleft"].is-collapsed .callout-fold svg {
+    transform: rotate(90deg);
+}
+
+
+
+
+
 
 /* Images */
 .callout[data-callout="infobox"] img,
@@ -1008,6 +1193,28 @@ settings:
     border-radius: var(--ic-image-round-corners);
     border: var(--ic-image-border) solid;
     border-color: var(--ic-image-border-color);
+}
+
+/* Image Full Width */
+.ic-image-full .callout[data-callout="infobox"] .callout-content,
+.ic-image-full .callout[data-callout="infoboxright"] .callout-content,
+.ic-image-full .callout[data-callout="infoboxleft"] .callout-content {
+    overflow: visible;
+}
+
+.ic-image-full .callout[data-callout="infobox"] img,
+.ic-image-full .callout[data-callout="infoboxright"] img,
+.ic-image-full .callout[data-callout="infoboxleft"] img {
+    width: calc(100% + 2 * var(--ic-inside-padding));
+    max-width: calc(100% + 2 * var(--ic-inside-padding));
+    margin-left: calc(-1 * var(--ic-inside-padding));
+    margin-right: 0;
+    box-sizing: border-box;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: var(--ic-image-border) solid var(--ic-image-border-color);
+    border-bottom: var(--ic-image-border) solid var(--ic-image-border-color);
 }
 
 /* Horizontal Rule */
