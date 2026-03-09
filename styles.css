@@ -13,7 +13,7 @@ settings:
     -
         id: ic-body-font-size
         title: Body Font Size
-        description: Note - Labels inherit from Body Font by default
+        description: Note - Sections, labels, and tables inherit by default
         type: variable-number
         default: 1
         format: rem
@@ -45,14 +45,14 @@ settings:
         id: ic-round-corners
         title: Round Corners
         type: variable-number
-        default: 0
+        default: 8
         format: px
 
     -
         id: ic-border
         title: Border
         type: variable-number
-        default: 1
+        default: 0
         format: px
 
     -
@@ -66,7 +66,7 @@ settings:
         id: ic-horizontal-rule-margins
         title: Horizontal Rule Margins
         type: variable-number
-        default: 1
+        default: 0.5
         format: rem
         
     -
@@ -281,10 +281,10 @@ settings:
         format: px
 
     -
-        id: ic-section-corners
+        id: ic-section-round-corners
         title: Round Corners
         type: variable-number
-        default: 0
+        default: 8
         format: px
 
     -
@@ -460,7 +460,7 @@ settings:
         id: ic-image-round-corners
         title: Round Corners
         type: variable-number
-        default: 0
+        default: 8
         format: px
 
     -
@@ -469,120 +469,102 @@ settings:
         type: variable-number
         default: 0
         format: px
-
-
-
-
-
+        
+        
+        
+        
 
     -
-        id: ic-colors-heading
-        title: Colors
+        id: ic-tables-heading
+        title: Tables
         type: heading
         level: 1
         collapsed: true
+    
+    -
+        id: ic-table-pattern
+        title: Pattern
+        type: class-select
+        default: ic-table-pattern-infoboxes
+        options:
+            -
+                label: None
+                value: ic-table-pattern-none
+            -
+                label: Infoboxes (Default)
+                value: ic-table-pattern-infoboxes
+            -
+                label: Minimal All Borders
+                value: ic-table-pattern-minimal-all
+            -
+                label: Minimal Outside Borders
+                value: ic-table-pattern-minimal-outside
+            -
+                label: Minimal Inside Borders
+                value: ic-table-pattern-minimal-inside
+            -
+                label: Minimal Horizontal Borders
+                value: ic-table-pattern-minimal-horizontal
+            -
+                label: Minimal Vertical Borders
+                value: ic-table-pattern-minimal-vertical
+            -
+                label: Left Header
+                value: ic-table-pattern-left-header
+            -
+                label: Stripes
+                value: ic-table-pattern-stripes
+            -
+                label: Left Header Stripes
+                value: ic-table-pattern-left-header-stripes
+    
+    -
+        id: ic-table-font-size
+        title: Font Size
+        type: variable-number
+        default: 1
+        format: rem
+    
+    -
+        id: ic-table-width-mode
+        title: Table Width
+        type: class-select
+        default: ic-table-margins
+        options:
+            -
+                label: To Margins
+                value: ic-table-margins
+            -
+                label: Full Width
+                value: ic-table-full
+            -
+                label: Padded Content
+                value: ic-table-padded
+    
+    -
+        id: ic-table-round-corners
+        title: Round Corners
+        type: variable-number
+        default: 8
+        format: px
         
     -
-        id: ic-light-colors-heading
-        title: Light
-        type: heading
-        level: 2
-        collapsed: true
+        id: ic-table-border
+        title: Border
+        type: variable-number
+        default: 0
+        format: px
 
-    -
-        id: ic-infobox-color-light
-        title: Infobox
-        type: variable-text
-        default: 'var(--background-secondary)'
 
-    -
-        id: ic-section-background-color-light
-        title: Section Background
-        type: variable-text
-        default: 'color-mix(in srgb, var(--color-accent), transparent 50%)'
 
-    -
-        id: ic-border-color-light
-        title: Infobox Border
-        type: variable-text
-        default: '#000000'
 
-    -
-        id: ic-image-border-color-light
-        title: Image Border
-        type: variable-text
-        default: '#000000'
-
-    -
-        id: ic-section-border-color-light
-        title: Section Border
-        type: variable-text
-        default: '#000000'
-
-    -
-        id: ic-horizontal-rule-color-light
-        title: Horizontal Rule
-        type: variable-text
-        default: '#000000'
-
-    -
-        id: ic-infobox-title-color-light
-        title: Title Color
-        type: variable-text
-        default: '#000000'
+    
         
         
         
         
         
-    -
-        id: ic-dark-colors-heading
-        title: Dark
-        type: heading
-        level: 2
-        collapsed: true
-
-    -
-        id: ic-infobox-color-dark
-        title: Infobox
-        type: variable-text
-        default: 'var(--background-secondary)'
-
-    -
-        id: ic-section-background-color-dark
-        title: Section Background
-        type: variable-text
-        default: 'color-mix(in srgb, var(--color-accent), transparent 50%)'
-
-    -
-        id: ic-border-color-dark
-        title: Infobox Border
-        type: variable-text
-        default: '#808080'
-
-    -
-        id: ic-image-border-color-dark
-        title: Image Border
-        type: variable-text
-        default: '#808080'
-
-    -
-        id: ic-section-border-color-dark
-        title: Section Border
-        type: variable-text
-        default: '#808080'
-
-    -
-        id: ic-horizontal-rule-color-dark
-        title: Horizontal Rule
-        type: variable-text
-        default: '#808080'
-
-    -
-        id: ic-infobox-title-color-dark
-        title: Title Color
-        type: variable-text
-        default: 'var(--color-accent)'
+        
         
     -
         id: ic-tweaks-heading
@@ -634,7 +616,193 @@ settings:
         id: ic-frontmatter-horizontal-rule-toggle
         title: Add Horizontal Rules Between Properties
         type: class-toggle
-        default: false
+        default: true
+    
+    
+    
+    
+    
+    
+        
+        
+    -
+        id: ic-colors-heading
+        title: Colors
+        type: heading
+        level: 1
+        collapsed: true
+        
+    -
+        id: ic-light-colors-heading
+        title: Light
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: ic-infobox-color-light
+        title: Infobox
+        type: variable-text
+        default: 'var(--background-secondary)'
+
+    -
+        id: ic-section-background-color-light
+        title: Section Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), white 50%)'
+
+    -
+        id: ic-border-color-light
+        title: Infobox Border
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-image-border-color-light
+        title: Image Border
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-section-border-color-light
+        title: Section Border
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-horizontal-rule-color-light
+        title: Horizontal Rule
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-infobox-title-color-light
+        title: Title Color
+        type: variable-text
+        default: '#000000'
+        
+    -
+        id: ic-table-header-background-color-light
+        title: Table Header Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), white 75%)'
+
+    -
+        id: ic-table-row-background-color-light
+        title: Table Row Background
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: ic-table-alt-row-background-color-light
+        title: Table Alternating Row Background
+        type: variable-text
+        default: 'var(--background-modifier-hover)'
+
+    -
+        id: ic-table-header-text-color-light
+        title: Table Header Text
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: ic-table-body-text-color-light
+        title: Table Body Text
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: ic-table-border-color-light
+        title: Table Border
+        type: variable-text
+        default: '#000000'
+
+        
+    -
+        id: ic-dark-colors-heading
+        title: Dark
+        type: heading
+        level: 2
+        collapsed: true
+
+    -
+        id: ic-infobox-color-dark
+        title: Infobox
+        type: variable-text
+        default: 'var(--background-secondary)'
+
+    -
+        id: ic-section-background-color-dark
+        title: Section Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), black 25%)'
+
+    -
+        id: ic-border-color-dark
+        title: Infobox Border
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-image-border-color-dark
+        title: Image Border
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-section-border-color-dark
+        title: Section Border
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-horizontal-rule-color-dark
+        title: Horizontal Rule
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-infobox-title-color-dark
+        title: Title Color
+        type: variable-text
+        default: 'var(--color-accent)'
+        
+    -
+        id: ic-table-header-background-color-dark
+        title: Table Header Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), var(--background-secondary) 60%)'
+
+    -
+        id: ic-table-row-background-color-dark
+        title: Table Row Background
+        type: variable-text
+        default: 'transparent'
+
+    -
+        id: ic-table-alt-row-background-color-dark
+        title: Table Alternating Row Background
+        type: variable-text
+        default: 'var(--background-modifier-hover)'
+
+    -
+        id: ic-table-header-text-color-dark
+        title: Table Header Text
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: ic-table-body-text-color-dark
+        title: Table Body Text
+        type: variable-text
+        default: 'var(--text-normal)'
+
+    -
+        id: ic-table-border-color-dark
+        title: Table Border
+        type: variable-text
+        default: '#808080'
+                
 */
 
 :root {
@@ -642,50 +810,68 @@ settings:
     --ic-width: 300px;
     --ic-outside-padding: 20px;
     --ic-inside-padding: 24px;
-    --ic-round-corners: 0px;
+    --ic-round-corners: 8px;
     --ic-title-alignment: center;
     --ic-title-size: 1.2rem;
     --ic-title-weight: 700;
     --ic-title-margin: 0rem;
     --ic-title-font: "Noto Sans";
-    --ic-border: 1px;
+    --ic-border: 0px;
     --ic-horizontal-rule-size: 1px;
-    --ic-horizontal-rule-margins: 1rem;
+    --ic-horizontal-rule-margins: 0.5rem;
     
-    --ic-section-size: 1rem;
+    --ic-section-size: inherit;
     --ic-section-weight: 700;
     --ic-section-alignment: Center;
     --ic-section-border: 0px;
-    --ic-section-corners: 0px;
+    --ic-section-round-corners: 8px;
     --ic-section-horizontal-padding: 0.3rem;
     --ic-section-vertical-padding: 0.125rem;
     
     --ic-label-width: 80px;
     --ic-label-padding: 0.5rem;
     --ic-label-alignment: left;
-    --ic-image-border: 0px;
     
-    --ic-image-round-corners: 0px;
+    --ic-image-border: 0px;
+    --ic-image-round-corners: 8px;
+    
+    --ic-table-round-corners: 8px;
+    --ic-table-border: 0px;
+    --ic-table-font-size: inherit;
 }
 
 .theme-light {
 	--ic-infobox-color: var(--ic-infobox-color-light, var(--background-secondary));
     --ic-border-color: var(--ic-border-color-light, #000000);
     --ic-image-border-color: var(--ic-image-border-color-light, #000000);
-    --ic-section-background-color: var(--ic-section-background-color-light, color-mix(in srgb, var(--color-accent), transparent 50%));
+    --ic-section-background-color: var(--ic-section-background-color-light, color-mix(in srgb, var(--color-accent), white 50%));
     --ic-section-border-color: var(--ic-section-border-color-light, #000000);
     --ic-horizontal-rule-color: var(--ic-horizontal-rule-color-light, #000000);
     --ic-infobox-title-color: var(--ic-infobox-title-color-light, #000000);
+    
+    --ic-table-header-background-color: var(--ic-table-header-background-color-light, color-mix(in srgb, var(--color-accent), white 75%));
+	--ic-table-row-background-color: var(--ic-table-row-background-color-light, transparent);
+	--ic-table-alt-row-background-color: var(--ic-table-alt-row-background-color-light, var(--background-modifier-hover));
+	--ic-table-header-text-color: var(--ic-table-header-text-color-light, var(--text-normal));
+	--ic-table-body-text-color: var(--ic-table-body-text-color-light, var(--text-normal));
+	--ic-table-border-color: var(--ic-table-border-color-light, #000000);
 }
 
 .theme-dark {
 	--ic-infobox-color: var(--ic-infobox-color-dark, var(--background-secondary));
     --ic-border-color: var(--ic-border-color-dark, #808080);
     --ic-image-border-color: var(--ic-image-border-color-dark, #808080);
-    --ic-section-background-color: var(--ic-section-background-color-dark, color-mix(in srgb, var(--color-accent), transparent 50%));
+    --ic-section-background-color: var(--ic-section-background-color-dark, color-mix(in srgb, var(--color-accent), black 25%));
     --ic-section-border-color: var(--ic-section-border-color-dark, #808080);
     --ic-horizontal-rule-color: var(--ic-horizontal-rule-color-dark, #808080);
     --ic-infobox-title-color: var(--ic-infobox-title-color-dark, var(--color-accent));
+    
+    --ic-table-header-background-color: var(--ic-table-header-background-color-dark, color-mix(in srgb, var(--color-accent), var(--background-secondary) 60%));
+	--ic-table-row-background-color: var(--ic-table-row-background-color-dark, transparent);
+	--ic-table-alt-row-background-color: var(--ic-table-alt-row-background-color-dark, var(--background-modifier-hover));
+	--ic-table-header-text-color: var(--ic-table-header-text-color-dark, var(--text-normal));
+	--ic-table-body-text-color: var(--ic-table-body-text-color-dark, var(--text-normal));
+	--ic-table-border-color: var(--ic-table-border-color-dark, #808080);
 }
 
 /* Clear Styles by everyone but me */
@@ -870,7 +1056,7 @@ settings:
     font-weight: var(--ic-section-weight);
     padding: var(--ic-section-vertical-padding) var(--ic-section-horizontal-padding);
     border: var(--ic-section-border) solid;
-    border-radius: var(--ic-section-corners);
+    border-radius: var(--ic-section-round-corners);
     border-color: var(--ic-section-border-color);
 }
 
@@ -999,4 +1185,641 @@ settings:
 /* Live Preview if Centered */
 .cm-embed-block:has(.callout.ic-centered) {
     display: block !important;
+}
+
+
+
+
+
+
+
+
+/* Tables - Base */
+.callout[data-callout="infobox"] .callout-content,
+.callout[data-callout="infoboxright"] .callout-content,
+.callout[data-callout="infoboxleft"] .callout-content {
+    overflow: hidden;
+}
+
+/* Table Base */
+.callout[data-callout="infobox"] table,
+.callout[data-callout="infoboxright"] table,
+.callout[data-callout="infoboxleft"] table {
+    width: 100%;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    box-sizing: border-box;
+    table-layout: fixed;
+    --table-border-width: var(--ic-table-border);
+    --table-row-border-width: var(--ic-table-border);
+    --table-column-border-width: var(--ic-table-border);
+    --table-header-border-width: var(--ic-table-border);
+    --table-column-first-border-width: var(--ic-table-border);
+    --table-column-last-border-width: var(--ic-table-border);
+    --table-row-last-border-width: var(--ic-table-border);
+}
+
+/* Table Cells */
+.callout[data-callout="infobox"] td,
+.callout[data-callout="infobox"] th,
+.callout[data-callout="infoboxright"] td,
+.callout[data-callout="infoboxright"] th,
+.callout[data-callout="infoboxleft"] td,
+.callout[data-callout="infoboxleft"] th {
+    font-size: var(--ic-table-font-size);
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.callout[data-callout="infobox"] td,
+.callout[data-callout="infoboxright"] td,
+.callout[data-callout="infoboxleft"] td {
+    border-top: none;
+}
+
+/* Table Width - Full Width */
+.ic-table-full .callout[data-callout="infobox"] .callout-content,
+.ic-table-full .callout[data-callout="infoboxright"] .callout-content,
+.ic-table-full .callout[data-callout="infoboxleft"] .callout-content {
+    overflow: visible;
+}
+
+.ic-table-full .callout[data-callout="infobox"] table,
+.ic-table-full .callout[data-callout="infoboxright"] table,
+.ic-table-full .callout[data-callout="infoboxleft"] table {
+    width: calc(100% + 2 * var(--ic-inside-padding));
+    min-width: calc(100% + 2 * var(--ic-inside-padding));
+    margin-left: calc(-1 * var(--ic-inside-padding));
+    --table-column-first-border-width: 0;
+    --table-column-last-border-width: 0;
+}
+
+/* Table Width - Padded Content */
+.ic-table-padded .callout[data-callout="infobox"] .callout-content,
+.ic-table-padded .callout[data-callout="infoboxright"] .callout-content,
+.ic-table-padded .callout[data-callout="infoboxleft"] .callout-content {
+    overflow: visible;
+}
+
+.ic-table-padded .callout[data-callout="infobox"] table,
+.ic-table-padded .callout[data-callout="infoboxright"] table,
+.ic-table-padded .callout[data-callout="infoboxleft"] table {
+    width: calc(100% + 2 * var(--ic-inside-padding));
+    min-width: calc(100% + 2 * var(--ic-inside-padding));
+    margin-left: calc(-1 * var(--ic-inside-padding));
+    --table-column-first-border-width: 0;
+    --table-column-last-border-width: 0;
+}
+
+/* Table Width - Padded Content - Pad First and Last Column Content */
+.ic-table-padded .callout[data-callout="infobox"] td:first-child,
+.ic-table-padded .callout[data-callout="infobox"] th:first-child,
+.ic-table-padded .callout[data-callout="infoboxright"] td:first-child,
+.ic-table-padded .callout[data-callout="infoboxright"] th:first-child,
+.ic-table-padded .callout[data-callout="infoboxleft"] td:first-child,
+.ic-table-padded .callout[data-callout="infoboxleft"] th:first-child {
+    padding-left: var(--ic-inside-padding);
+}
+
+.ic-table-padded .callout[data-callout="infobox"] td:last-child,
+.ic-table-padded .callout[data-callout="infobox"] th:last-child,
+.ic-table-padded .callout[data-callout="infoboxright"] td:last-child,
+.ic-table-padded .callout[data-callout="infoboxright"] th:last-child,
+.ic-table-padded .callout[data-callout="infoboxleft"] td:last-child,
+.ic-table-padded .callout[data-callout="infoboxleft"] th:last-child {
+    padding-right: var(--ic-inside-padding);
+}
+
+/* Table Round Corners */
+.callout[data-callout="infobox"] th:first-child,
+.callout[data-callout="infoboxright"] th:first-child,
+.callout[data-callout="infoboxleft"] th:first-child {
+    border-top-left-radius: var(--ic-table-round-corners);
+}
+
+.callout[data-callout="infobox"] th:last-child,
+.callout[data-callout="infoboxright"] th:last-child,
+.callout[data-callout="infoboxleft"] th:last-child {
+    border-top-right-radius: var(--ic-table-round-corners);
+}
+
+.callout[data-callout="infobox"] tr:last-child td:first-child,
+.callout[data-callout="infoboxright"] tr:last-child td:first-child,
+.callout[data-callout="infoboxleft"] tr:last-child td:first-child {
+    border-bottom-left-radius: var(--ic-table-round-corners);
+}
+
+.callout[data-callout="infobox"] tr:last-child td:last-child,
+.callout[data-callout="infoboxright"] tr:last-child td:last-child,
+.callout[data-callout="infoboxleft"] tr:last-child td:last-child {
+    border-bottom-right-radius: var(--ic-table-round-corners);
+}
+
+/* Table Round Corners - Disabled for Full Width */
+.ic-table-full .callout[data-callout="infobox"] th:first-child,
+.ic-table-full .callout[data-callout="infoboxright"] th:first-child,
+.ic-table-full .callout[data-callout="infoboxleft"] th:first-child {
+    border-top-left-radius: 0;
+}
+
+.ic-table-full .callout[data-callout="infobox"] th:last-child,
+.ic-table-full .callout[data-callout="infoboxright"] th:last-child,
+.ic-table-full .callout[data-callout="infoboxleft"] th:last-child {
+    border-top-right-radius: 0;
+}
+
+.ic-table-full .callout[data-callout="infobox"] tr:last-child td:first-child,
+.ic-table-full .callout[data-callout="infoboxright"] tr:last-child td:first-child,
+.ic-table-full .callout[data-callout="infoboxleft"] tr:last-child td:first-child {
+    border-bottom-left-radius: 0;
+}
+
+.ic-table-full .callout[data-callout="infobox"] tr:last-child td:last-child,
+.ic-table-full .callout[data-callout="infoboxright"] tr:last-child td:last-child,
+.ic-table-full .callout[data-callout="infoboxleft"] tr:last-child td:last-child {
+    border-bottom-right-radius: 0;
+}
+
+/* Table Round Corners - Disabled for Padded Content */
+.ic-table-padded .callout[data-callout="infobox"] th:first-child,
+.ic-table-padded .callout[data-callout="infoboxright"] th:first-child,
+.ic-table-padded .callout[data-callout="infoboxleft"] th:first-child {
+    border-top-left-radius: 0;
+}
+
+.ic-table-padded .callout[data-callout="infobox"] th:last-child,
+.ic-table-padded .callout[data-callout="infoboxright"] th:last-child,
+.ic-table-padded .callout[data-callout="infoboxleft"] th:last-child {
+    border-top-right-radius: 0;
+}
+
+.ic-table-padded .callout[data-callout="infobox"] tr:last-child td:first-child,
+.ic-table-padded .callout[data-callout="infoboxright"] tr:last-child td:first-child,
+.ic-table-padded .callout[data-callout="infoboxleft"] tr:last-child td:first-child {
+    border-bottom-left-radius: 0;
+}
+
+.ic-table-padded .callout[data-callout="infobox"] tr:last-child td:last-child,
+.ic-table-padded .callout[data-callout="infoboxright"] tr:last-child td:last-child,
+.ic-table-padded .callout[data-callout="infoboxleft"] tr:last-child td:last-child {
+    border-bottom-right-radius: 0;
+}
+
+
+
+
+
+
+
+/* TABLE PATTERNS! THIS SECTION WILL GET LONG */
+
+/* Table Pattern - Infoboxes (Default) */
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] table,
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: bold;
+}
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] th,
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] th {
+    background-color: var(--ic-table-header-background-color);
+}
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] tbody tr:not(:last-child) td,
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] tbody tr:not(:last-child) td,
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] tbody tr:not(:last-child) td {
+    border-bottom: none;
+}
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] td:not(:first-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] th:not(:first-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] td:not(:first-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] th:not(:first-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] td:not(:first-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] th:not(:first-child) {
+    border-left: none;
+}
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] td:not(:last-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] th:not(:last-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] td:not(:last-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] th:not(:last-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] td:not(:last-child),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] th:not(:last-child) {
+    border-right: none;
+}
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] tbody tr:nth-child(odd),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] tbody tr:nth-child(odd),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] tbody tr:nth-child(odd) {
+    background-color: var(--ic-table-row-background-color);
+}
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] tbody tr:nth-child(even),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] tbody tr:nth-child(even),
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] tbody tr:nth-child(even) {
+    background-color: var(--ic-table-alt-row-background-color);
+}
+.ic-table-pattern-infoboxes .callout[data-callout="infobox"] td,
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-infoboxes .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
+}
+
+
+/* Table Pattern - Stripes */
+.ic-table-pattern-stripes .callout[data-callout="infobox"] table,
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: normal;
+}
+.ic-table-pattern-stripes .callout[data-callout="infobox"] th,
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] th {
+    background-color: var(--ic-table-alt-row-background-color);
+    border-bottom: none;
+    font-weight: normal;
+}
+.ic-table-pattern-stripes .callout[data-callout="infobox"] tbody tr:not(:last-child) td,
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] tbody tr:not(:last-child) td,
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] tbody tr:not(:last-child) td {
+    border-bottom: none;
+}
+.ic-table-pattern-stripes .callout[data-callout="infobox"] td:not(:first-child),
+.ic-table-pattern-stripes .callout[data-callout="infobox"] th:not(:first-child),
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] td:not(:first-child),
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] th:not(:first-child),
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] td:not(:first-child),
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] th:not(:first-child) {
+    border-left: none;
+}
+.ic-table-pattern-stripes .callout[data-callout="infobox"] td:not(:last-child),
+.ic-table-pattern-stripes .callout[data-callout="infobox"] th:not(:last-child),
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] td:not(:last-child),
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] th:not(:last-child),
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] td:not(:last-child),
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] th:not(:last-child) {
+    border-right: none;
+}
+.ic-table-pattern-stripes .callout[data-callout="infobox"] tbody tr:nth-child(odd),
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] tbody tr:nth-child(odd),
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] tbody tr:nth-child(odd) {
+    background-color: var(--ic-table-row-background-color);
+}
+.ic-table-pattern-stripes .callout[data-callout="infobox"] tbody tr:nth-child(even),
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] tbody tr:nth-child(even),
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] tbody tr:nth-child(even) {
+    background-color: var(--ic-table-alt-row-background-color);
+}
+.ic-table-pattern-stripes .callout[data-callout="infobox"] td,
+.ic-table-pattern-stripes .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-stripes .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
+}
+
+
+
+/* Table Pattern - Left Header */
+.ic-table-pattern-left-header .callout[data-callout="infobox"] table,
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: normal;
+}
+.ic-table-pattern-left-header .callout[data-callout="infobox"] th,
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] th {
+    font-weight: normal;
+}
+.ic-table-pattern-left-header .callout[data-callout="infobox"] td:first-child,
+.ic-table-pattern-left-header .callout[data-callout="infobox"] th:first-child,
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] td:first-child,
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] th:first-child,
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] td:first-child,
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] th:first-child {
+    background-color: var(--ic-table-header-background-color);
+    font-weight: bold;
+}
+.ic-table-pattern-left-header .callout[data-callout="infobox"] td:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header .callout[data-callout="infobox"] th:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] td:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] th:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] td:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] th:not(:first-child):not(:nth-child(2)) {
+    border-left: none;
+}
+.ic-table-pattern-left-header .callout[data-callout="infobox"] td:not(:last-child),
+.ic-table-pattern-left-header .callout[data-callout="infobox"] th:not(:last-child),
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] td:not(:last-child),
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] th:not(:last-child),
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] td:not(:last-child),
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] th:not(:last-child) {
+    border-right: none;
+}
+.ic-table-pattern-left-header .callout[data-callout="infobox"] td,
+.ic-table-pattern-left-header .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-left-header .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
+}
+
+
+
+
+/* Table Pattern - Left Header Stripes */
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] table,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: normal;
+}
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] th,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] th {
+    background-color: var(--ic-table-alt-row-background-color);
+    border-bottom: none;
+    font-weight: normal;
+}
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] td:first-child,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] th:first-child,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] td:first-child,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] th:first-child,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] td:first-child,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] th:first-child {
+    background-color: var(--ic-table-header-background-color);
+    font-weight: bold;
+}
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] tbody tr:not(:last-child) td,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] tbody tr:not(:last-child) td,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] tbody tr:not(:last-child) td {
+    border-bottom: none;
+}
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] td:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] th:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] td:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] th:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] td:not(:first-child):not(:nth-child(2)),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] th:not(:first-child):not(:nth-child(2)) {
+    border-left: none;
+}
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] td:not(:last-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] th:not(:last-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] td:not(:last-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] th:not(:last-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] td:not(:last-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] th:not(:last-child) {
+    border-right: none;
+}
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] tbody tr:nth-child(odd) td:not(:first-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] tbody tr:nth-child(odd) td:not(:first-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] tbody tr:nth-child(odd) td:not(:first-child) {
+    background-color: var(--ic-table-row-background-color);
+}
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] tbody tr:nth-child(even) td:not(:first-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] tbody tr:nth-child(even) td:not(:first-child),
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] tbody tr:nth-child(even) td:not(:first-child) {
+    background-color: var(--ic-table-alt-row-background-color);
+}
+.ic-table-pattern-left-header-stripes .callout[data-callout="infobox"] td,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-left-header-stripes .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
+}
+
+
+
+
+
+/* Table Pattern - Minimal All */
+.ic-table-pattern-minimal-all .callout[data-callout="infobox"] table,
+.ic-table-pattern-minimal-all .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-minimal-all .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: normal;
+}
+.ic-table-pattern-minimal-all .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-all .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-all .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-all .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-all .callout[data-callout="infoboxleft"] td,
+.ic-table-pattern-minimal-all .callout[data-callout="infoboxleft"] th {
+    background-color: var(--ic-infobox-color);
+    font-weight: normal;
+}
+.ic-table-pattern-minimal-all .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-all .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-all .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
+}
+
+
+
+
+/* Table Pattern - Minimal Outside */
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] table,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: normal;
+}
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] td,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] th {
+    background-color: var(--ic-infobox-color);
+    font-weight: normal;
+}
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] th {
+    border-bottom: none;
+}
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] tbody tr:not(:last-child) td,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] tbody tr:not(:last-child) td,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] tbody tr:not(:last-child) td {
+    border-bottom: none;
+}
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] td:not(:first-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] th:not(:first-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] td:not(:first-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] th:not(:first-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] td:not(:first-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] th:not(:first-child) {
+    border-left: none;
+}
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] td:not(:last-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] th:not(:last-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] td:not(:last-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] th:not(:last-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] td:not(:last-child),
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] th:not(:last-child) {
+    border-right: none;
+}
+.ic-table-pattern-minimal-outside .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-outside .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
+}
+
+
+
+
+/* Table Pattern - Minimal Inside */
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] table,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: normal;
+}
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] td,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] th {
+    background-color: var(--ic-infobox-color);
+    font-weight: normal;
+}
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] th {
+    border-top: none;
+}
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] tbody tr:last-child td,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] tbody tr:last-child td,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] tbody tr:last-child td {
+    border-bottom: none;
+}
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] td:first-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] th:first-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] td:first-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] th:first-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] td:first-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] th:first-child {
+    border-left: none;
+}
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] td:last-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] th:last-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] td:last-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] th:last-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] td:last-child,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] th:last-child {
+    border-right: none;
+}
+.ic-table-pattern-minimal-inside .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-inside .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
+}
+
+
+
+
+/* Table Pattern - Minimal Horizontal */
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infobox"] table,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: normal;
+}
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxleft"] td,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxleft"] th {
+    background-color: var(--ic-infobox-color);
+    font-weight: normal;
+    border-left: none;
+    border-right: none;
+}
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxleft"] th {
+    border-top: none;
+}
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infobox"] tbody tr:last-child td,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxright"] tbody tr:last-child td,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxleft"] tbody tr:last-child td {
+    border-bottom: none;
+}
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-horizontal .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
+}
+
+
+
+/* Table Pattern - Minimal Vertical */
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] table,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] table,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] table {
+    --table-border-color: var(--ic-table-border-color);
+    --table-header-border-color: var(--ic-table-border-color);
+    --table-header-border-width: var(--ic-table-border);
+    --table-header-color: var(--ic-table-header-text-color);
+    --table-header-font-weight: normal;
+}
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] th {
+    background-color: var(--ic-infobox-color);
+    font-weight: normal;
+    border-right: none;
+}
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] th,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] th,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] th {
+    border-top: none;
+    border-bottom: none;
+}
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] td:first-child,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] th:first-child,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] td:first-child,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] th:first-child,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] td:first-child,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] th:first-child {
+    border-left: none;
+}
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] tbody tr:not(:last-child) td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] tbody tr:not(:last-child) td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] tbody tr:not(:last-child) td {
+    border-bottom: none;
+}
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] tbody tr:last-child td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] tbody tr:last-child td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] tbody tr:last-child td {
+    border-bottom: none;
+}
+.ic-table-pattern-minimal-vertical .callout[data-callout="infobox"] td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxright"] td,
+.ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] td {
+    color: var(--ic-table-body-text-color);
 }
