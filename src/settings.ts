@@ -1,4 +1,4 @@
-import {App, FileSystemAdapter, Notice, PluginSettingTab, Setting, setIcon, Plugin} from 'obsidian';
+import {App, FileSystemAdapter, Notice, Platform, PluginSettingTab, Setting, setIcon, Plugin} from 'obsidian';
 import InfoboxPlugin from './main';
 
 const SECTION_ID = 'infoboxes';
@@ -63,17 +63,18 @@ export class InfoboxSettingTab extends PluginSettingTab {
 
 	// UI for themes
 	private showThemeManager(styleSettings: StyleSettingsPlugin): void {
-
 		// section header + reload/open buttons
-		new Setting(this.containerEl)
+		const heading = new Setting(this.containerEl)
 			.setName('Infobox themes')
 			.setHeading()
 			.addExtraButton(btn=>{
 				btn.setIcon('refresh-cw');
 				btn.setTooltip('Reload themes');
 				btn.onClick(()=>this.display());
-			})
-			.addExtraButton(btn=>{
+			});
+
+		if (Platform.isDesktop) {
+			heading.addExtraButton(btn=>{
 				btn.setIcon('folder-open');
 				btn.setTooltip('Open themes folder');
 				btn.onClick(async ()=>{
@@ -81,10 +82,10 @@ export class InfoboxSettingTab extends PluginSettingTab {
 					this.openThemesFolder();
 				});
 			});
+		}
 
 		let themeName = '';
 		let inputEl: HTMLInputElement | null = null;
-
 		// save current settings as new theme
 		new Setting(this.containerEl)
 			.setName('Save current settings as theme')
