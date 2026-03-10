@@ -71,7 +71,37 @@ export default class InfoboxPlugin extends Plugin {
 				const callout = paragraph.closest(INFOBOX_SELECTOR);
 				if (!callout) return;
 				const paragraphChildren = Array.from(paragraph.childNodes);
+
+				// active inline target
+				let activeInlineTarget: HTMLElement | null = null;
+
 				paragraphChildren.forEach((node) => {
+					// absorb siblings
+					if (activeInlineTarget) {
+						if (node.nodeName === 'BR') {
+							activeInlineTarget = null;
+							return;
+						}
+						if (node.nodeType === Node.TEXT_NODE) {
+							const text = node.textContent || '';
+							const isSectionStart = /^\s*\/\/\s*.+$/.test(text);
+							const isNewLabel = text.includes('->');
+							const isYaml = /^~(!)?(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i.test(text.trim());
+
+							// new token - close and fall through
+							if (isSectionStart || isNewLabel || isYaml) {
+								activeInlineTarget = null;
+							} else {
+								activeInlineTarget.appendChild(node);
+								return;
+							}
+						} else {
+							// element node - move it in
+							activeInlineTarget.appendChild(node);
+							return;
+						}
+					}
+
 					if (node.nodeType !== Node.TEXT_NODE) return;
 					const nodeText = node.textContent || "";
 
@@ -80,8 +110,9 @@ export default class InfoboxPlugin extends Plugin {
 					if (sectionMatch) {
 						const section = document.createElement("span");
 						section.addClass("section");
-						section.appendText(sectionMatch[1]!.trim());
+						section.appendText(sectionMatch[1]!);
 						node.replaceWith(section);
+						activeInlineTarget = section;
 						return;
 					}
 
@@ -97,6 +128,7 @@ export default class InfoboxPlugin extends Plugin {
 						node.replaceWith(container);
 						const child = new YamlRenderChild(container, this, context.sourcePath, filter, exclude);
 						context.addChild(child);
+						activeInlineTarget = null;
 						return;
 					}
 
@@ -104,11 +136,14 @@ export default class InfoboxPlugin extends Plugin {
 					if (nodeText.includes("->")) {
 						const labelParts = nodeText.split("->");
 						const labelText = labelParts[0]!.trim();
-						const infoText = labelParts.slice(1).join("->").trim();
+						const infoText = labelParts.slice(1).join("->").trimStart();
 						const labelLine = paragraph.createEl("span", { cls: "label-line" });
 						labelLine.createEl("span", { cls: "label", text: labelText });
-						labelLine.appendChild(document.createTextNode(infoText));
+						// value wrapper - keeps inline elements as one flex item
+						const valueSpan = labelLine.createEl("span");
+						if (infoText) valueSpan.appendChild(document.createTextNode(infoText));
 						node.replaceWith(labelLine);
+						activeInlineTarget = valueSpan;
 					}
 				});
 
