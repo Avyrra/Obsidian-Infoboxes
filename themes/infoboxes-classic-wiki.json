@@ -1,0 +1,23 @@
+{
+  "infoboxes@@ic-width": 270,
+  "infoboxes@@ic-round-corners": 0,
+  "infoboxes@@ic-border": 1,
+  "infoboxes@@ic-body-font-size": 0.85,
+  "infoboxes@@ic-inside-padding": 12,
+  "infoboxes@@ic-horizontal-rule-mode": "ic-hr-full",
+  "infoboxes@@ic-image-width-mode": "ic-image-full",
+  "infoboxes@@ic-image-round-corners": 0,
+  "infoboxes@@ic-section-round-corners": 0,
+  "infoboxes@@ic-section-background-mode": "ic-section-bg-full",
+  "infoboxes@@ic-section-vertical-padding": 0.3,
+  "infoboxes@@ic-section-border": 1,
+  "infoboxes@@ic-table-width-mode": "ic-table-full",
+  "infoboxes@@ic-table-round-corners": 0,
+  "infoboxes@@ic-table-border": 1,
+  "infoboxes@@ic-scrollable-toggle": true,
+  "infoboxes@@ic-scrollbar-toggle": true,
+  "infoboxes@@ic-height-limit": 1800,
+  "infoboxes@@ic-outside-padding": 12,
+  "infoboxes@@ic-label-width": 100,
+  "infoboxes@@ic-table-pattern": "ic-table-pattern-infoboxes"
+}

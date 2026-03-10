@@ -1,4 +1,5 @@
 import {MarkdownRenderChild, Plugin, TFile} from 'obsidian';
+import {InfoboxSettingTab} from './settings';
 
 // The classes we're fuckin' dealing with
 const INFOBOX_SELECTOR =
@@ -15,7 +16,7 @@ const HIDDEN_FRONTMATTER_KEYS = new Set([
 
 export default class InfoboxPlugin extends Plugin {
 	async onload() {
-		
+		this.addSettingTab(new InfoboxSettingTab(this.app, this));
         // COMMAND PALETTE
 		this.addCommand({
 			id: 'add-infobox',
