@@ -157,11 +157,16 @@ export class InfoboxSettingTab extends PluginSettingTab {
 		if(themeName !== 'previous-settings' && currentSettings){
 			await this.ensureThemesFolder();
 			await this.app.vault.adapter.write(`${this.themesPath}/previous-settings.json`, JSON.stringify(currentSettings,null,2));
-			new Notice('Previous settings - theme overwritten');
 		}
 
 		// clear infobox section
 		styleSettings.settingsManager.clearSection(SECTION_ID);
+		
+		// Default theme is just a cleared section — no file needed
+		if (themeName === 'default') {
+		    new Notice('Loaded theme: infoboxes (default)');
+		    return;
+		}
 
 		// resolve theme file
 		const themeFile = themeName==='default' ? `${this.themesPath}/default.json` : `${this.themesPath}/${themeName}.json`;
