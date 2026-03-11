@@ -1018,7 +1018,6 @@ settings:
     font-size: var(--ic-title-size);
     font-weight: var(--ic-title-weight);
     width: 100%;
-    margin: var(--ic-title-margin) 0;
     color: var(--ic-infobox-title-color);
 }
 
@@ -1032,6 +1031,13 @@ settings:
 .ic-title-align-right .callout[data-callout="infoboxright"] .callout-title-inner,
 .ic-title-align-right .callout[data-callout="infoboxleft"] .callout-title-inner {
     text-align: right;
+}
+
+/* Title to Content Spacing */
+.callout[data-callout="infobox"] .callout-title,
+.callout[data-callout="infoboxright"] .callout-title,
+.callout[data-callout="infoboxleft"] .callout-title {
+    margin-bottom: var(--ic-title-margin);
 }
 
 /* Extended Typography for Infobox Title */
