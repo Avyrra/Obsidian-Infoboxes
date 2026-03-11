@@ -939,6 +939,9 @@ settings:
     border-radius: var(--ic-round-corners);
     border: var(--ic-border) solid;
     border-color: var(--ic-border-color);
+    
+    position: relative;
+    z-index: 30;
 }
 
 .callout[data-callout="infoboxleft"] {
@@ -951,6 +954,9 @@ settings:
     border-radius: var(--ic-round-corners);
     border: var(--ic-border) solid;
     border-color: var(--ic-border-color);
+    
+    position: relative;
+    z-index: 30;
 }
 
 /* INFOBOX / INFOBOXRIGHT - Float Right in Live Preview */
