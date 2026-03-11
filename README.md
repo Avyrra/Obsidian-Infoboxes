@@ -1,5 +1,7 @@
-![](images/infobox-light.png)
-![](images/infobox-dark.png)
+<p align="left">
+  <img src="images/infobox-light.png" width="45%" />
+  <img src="images/infobox-dark.png" width="45%" />
+</p>
 
 This plugin allows you to create wiki-like sidebars. It utilizes callouts and custom syntax to make creating infoboxes simple and intuitive.
 
