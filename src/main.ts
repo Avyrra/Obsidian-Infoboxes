@@ -287,7 +287,7 @@ class YamlRenderChild extends MarkdownRenderChild {
 				el.addEventListener("click", (evt: MouseEvent) => {
 					evt.preventDefault();
 					const href = el.getAttribute("href");
-					if (href) this.plugin.app.workspace.openLinkText(href, this.sourcePath, Keymap.isModEvent(evt));
+					if (href) void this.plugin.app.workspace.openLinkText(href, this.sourcePath, Keymap.isModEvent(evt));
 				});
 				el.addEventListener("mouseover", (evt: MouseEvent) => {
 					evt.preventDefault();
