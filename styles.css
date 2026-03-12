@@ -925,6 +925,7 @@ settings:
 .callout[data-callout="infoboxright"] .callout-content,
 .callout[data-callout="infoboxleft"] .callout-content {
     font-size: var(--ic-body-font-size);
+    overflow: hidden;
 }
 
 /* Reading Mode */
@@ -933,7 +934,7 @@ settings:
     float: right;
     width: var(--ic-width);
     margin-left: var(--ic-outside-padding);
-    background: var(--ic-infobox-color);
+    background-color: var(--ic-infobox-color);
 
     padding: var(--ic-inside-padding);
     border-radius: var(--ic-round-corners);
@@ -1238,7 +1239,7 @@ settings:
 .callout[data-callout="infoboxleft"] hr,
 .callout[data-callout="infoboxright"] hr {
     border: none;
-    border-top: var(--ic-horizontal-rule-size) solid var(--ic-horizontal-rule-color, #cccccc);
+    border-top: var(--ic-horizontal-rule-size) solid var(--ic-horizontal-rule-color);
     margin: var(--ic-horizontal-rule-margins) 0;
 }
 
@@ -1271,11 +1272,8 @@ settings:
 
 /* Section Class */
 .callout[data-callout="infobox"] .section,
-.callout[data-callout="infobox"] .s,
 .callout[data-callout="infoboxright"] .section,
-.callout[data-callout="infoboxright"] .s,
-.callout[data-callout="infoboxleft"] .section,
-.callout[data-callout="infoboxleft"] .s {
+.callout[data-callout="infoboxleft"] .section {
     display: inline-block;
     width: 100%;
     text-align: var(--ic-section-alignment);
@@ -1288,30 +1286,21 @@ settings:
 }
 
 .ic-section-background-toggle .callout[data-callout="infobox"] .section,
-.ic-section-background-toggle .callout[data-callout="infobox"] .s,
 .ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
-.ic-section-background-toggle .callout[data-callout="infoboxright"] .s,
-.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section,
-.ic-section-background-toggle .callout[data-callout="infoboxleft"] .s {
+.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section {
     background-color: var(--ic-section-background-color);
 }
 
 .ic-section-typography-toggle .callout[data-callout="infobox"] .section,
-.ic-section-typography-toggle .callout[data-callout="infobox"] .s,
 .ic-section-typography-toggle .callout[data-callout="infoboxright"] .section,
-.ic-section-typography-toggle .callout[data-callout="infoboxright"] .s,
-.ic-section-typography-toggle .callout[data-callout="infoboxleft"] .section,
-.ic-section-typography-toggle .callout[data-callout="infoboxleft"] .s {
+.ic-section-typography-toggle .callout[data-callout="infoboxleft"] .section {
     font-family: var(--ic-section-font);
     font-feature-settings: var(--ic-section-stylistic-sets);
 }
 
 .ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infobox"] .section,
-.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infobox"] .s,
 .ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxright"] .section,
-.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxright"] .s,
-.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxleft"] .section,
-.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxleft"] .s {
+.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxleft"] .section {
     font-variant: small-caps;
 }
 
@@ -1324,20 +1313,14 @@ settings:
 
 /* Remove paragraph padding so negative margin can reach callout edges */
 .ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .callout-content p:has(.section),
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .callout-content p:has(.s),
 .ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .callout-content p:has(.section),
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .callout-content p:has(.s),
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .callout-content p:has(.section),
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .callout-content p:has(.s) {
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .callout-content p:has(.section) {
     padding: 0;
 }
 
 .ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .section,
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .s,
 .ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .s,
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section,
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .s {
+.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section {
     width: calc(100% + 2 * var(--ic-inside-padding));
     margin-left: calc(-1 * var(--ic-inside-padding));
     padding-left: var(--ic-inside-padding);
@@ -1355,45 +1338,29 @@ settings:
 
 /* To Text Section Background */
 .ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infobox"] .section,
-.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infobox"] .s,
 .ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
-.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxright"] .s,
-.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section,
-.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxleft"] .s {
+.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section {
     width: fit-content;
     display: inline-block;
 }
 
 /* Parent alignment for To Text mode */
 .ic-section-bg-text .callout[data-callout="infobox"] .callout-content p:has(.section),
-.ic-section-bg-text .callout[data-callout="infobox"] .callout-content p:has(.s),
 .ic-section-bg-text .callout[data-callout="infoboxright"] .callout-content p:has(.section),
-.ic-section-bg-text .callout[data-callout="infoboxright"] .callout-content p:has(.s),
-.ic-section-bg-text .callout[data-callout="infoboxleft"] .callout-content p:has(.section),
-.ic-section-bg-text .callout[data-callout="infoboxleft"] .callout-content p:has(.s) {
+.ic-section-bg-text .callout[data-callout="infoboxleft"] .callout-content p:has(.section) {
     text-align: var(--ic-section-alignment);
 }
 
 /* Labels */
 .callout[data-callout="infobox"] .label,
-.callout[data-callout="infobox"] .l,
 .callout[data-callout="infoboxright"] .label,
-.callout[data-callout="infoboxright"] .l,
-.callout[data-callout="infoboxleft"] .label,
-.callout[data-callout="infoboxleft"] .l {
+.callout[data-callout="infoboxleft"] .label {
     font-weight: bold;
     font-size: var(--ic-label-font-size);
     width: var(--ic-label-width);
     display: inline-block;
     margin-right: var(--ic-label-padding);
     text-align: var(--ic-label-alignment);
-}
-
-/* Legacy - The old info class. Keeping for backwards compatibility with snippet version */
-.info,
-.i {
-    display: block;
-    padding-left: calc(var(--ic-label-width) + var(--ic-label-padding));
 }
 
 /* Markdown Labels using Slashes - Replaces the legacy*/
@@ -1438,32 +1405,24 @@ settings:
 
 /* Center it if needed */
 .callout.ic-centered {
-    float: none !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    display: block !important;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 /* Live Preview if Centered */
 .cm-embed-block:has(.callout.ic-centered) {
-    display: block !important;
+    display: block;
 }
 
 
-
-/* Tables - Base */
-.callout[data-callout="infobox"] .callout-content,
-.callout[data-callout="infoboxright"] .callout-content,
-.callout[data-callout="infoboxleft"] .callout-content {
-    overflow: hidden;
-}
 
 /* Table Base */
 .callout[data-callout="infobox"] table,
 .callout[data-callout="infoboxright"] table,
 .callout[data-callout="infoboxleft"] table {
     width: 100%;
-    min-width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     box-sizing: border-box;
@@ -1485,7 +1444,6 @@ settings:
 .callout[data-callout="infoboxleft"] td,
 .callout[data-callout="infoboxleft"] th {
     font-size: var(--ic-table-font-size);
-    word-break: break-word;
     overflow-wrap: break-word;
 }
 
@@ -1506,7 +1464,6 @@ settings:
 .ic-table-full .callout[data-callout="infoboxright"] table,
 .ic-table-full .callout[data-callout="infoboxleft"] table {
     width: calc(100% + 2 * var(--ic-inside-padding));
-    min-width: calc(100% + 2 * var(--ic-inside-padding));
     margin-left: calc(-1 * var(--ic-inside-padding));
     --table-column-first-border-width: 0;
     --table-column-last-border-width: 0;
@@ -1523,7 +1480,6 @@ settings:
 .ic-table-padded .callout[data-callout="infoboxright"] table,
 .ic-table-padded .callout[data-callout="infoboxleft"] table {
     width: calc(100% + 2 * var(--ic-inside-padding));
-    min-width: calc(100% + 2 * var(--ic-inside-padding));
     margin-left: calc(-1 * var(--ic-inside-padding));
     --table-column-first-border-width: 0;
     --table-column-last-border-width: 0;
