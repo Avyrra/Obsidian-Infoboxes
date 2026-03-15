@@ -75,3 +75,13 @@ Your infobox themes can now be saved and loaded as easily as switching your Obsi
 
 ## Obsidian Theme Compatibilities and Incompatibilities
 Testing has shown that Infoboxes will work with most Obsidian themes and the default settings are designed to blend in as nicely as possible with whatever theme you throw at it. However, some themes apply styling to callouts that may interfere with the look of your infoboxes. It's worth looking to see if that theme comes with any options (likely within Style Settings) that removes the theme's special callout styling.
+
+
+# To Do
+The following tasks are on my To-Do list.
+
+## Infoboxleft Live Preview
+Obsidian's Live Preview seems to struggle with floating elements that are left aligned. While Reading Mode looks perfect, Live Preview strugges and currently the text wrapping struggles to find the proper margins. The solution is likely going to require some hardcoding via typescript, so be aware that leftsided infoboxes in Live Preview are likely to be less performative once the fix is in place.
+
+## CSS Tweaks
+The current goal with css right now is to unset very specific variables so that the infobox behaves well with as many themes as possible without interfering with those theme's custom callout stylings. While I'm confident that this will work for most themes, it is likely that some themes with extensive tweaks to callouts will most likely need a snippet to patch the infobox's appearance.
