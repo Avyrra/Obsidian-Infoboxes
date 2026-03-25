@@ -913,11 +913,33 @@ settings:
 	--ic-table-border-color: var(--ic-table-border-color-dark, #808080);
 }
 
-/* Clear Styles by everyone but me */
+/* Defensive CSS to help Infoboxes integrate better with themes */
 .callout[data-callout="infobox"],
 .callout[data-callout="infoboxright"],
 .callout[data-callout="infoboxleft"] {
-    all: unset;
+    --callout-padding: 0px;
+    --callout-content-padding: 0px;
+    --callout-title-padding: 0px;
+    --callout-radius: 0px;
+    --callout-border-width: 0px;
+    --callout-border-opacity: 1;
+    --callout-title-size: unset;
+    --callout-title-weight: unset;
+    --callout-title-color: unset;
+    --callout-content-background: unset;
+}
+
+.callout[data-callout="infobox"] .callout-content,
+.callout[data-callout="infoboxright"] .callout-content,
+.callout[data-callout="infoboxleft"] .callout-content {
+    padding: 0px;
+}
+
+.callout[data-callout="infobox"] .callout-title,
+.callout[data-callout="infoboxright"] .callout-title,
+.callout[data-callout="infoboxleft"] .callout-title {
+    padding: 0px;
+    margin: 0px;
 }
 
 /* Font Size */
@@ -2036,10 +2058,6 @@ settings:
 .ic-table-pattern-minimal-vertical .callout[data-callout="infoboxleft"] td {
     color: var(--ic-table-body-text-color);
 }
-
-
-
-
 
 
 
