@@ -15,14 +15,14 @@ settings:
         title: Body Font Size
         description: Note - Sections, labels, and tables inherit by default
         type: variable-number
-        default: 1
+        default: 0.9
         format: rem
 
     -
         id: ic-width
         title: Callout Width
         type: variable-number
-        default: 300
+        default: 320
         format: px
 
     -
@@ -45,7 +45,7 @@ settings:
         id: ic-round-corners
         title: Round Corners
         type: variable-number
-        default: 8
+        default: 10
         format: px
 
     -
@@ -106,6 +106,31 @@ settings:
                 value: ic-title-align-right
 
     -
+        id: ic-title-background-toggle
+        title: Toggle Title Background
+        type: class-toggle
+        default: false
+        
+    -
+        id: ic-title-style
+        title: Style
+        type: class-select
+        default: ic-title-bg-margins
+        options:
+            -
+                label: To Margins
+                value: ic-title-bg-margins
+            -
+                label: Full Width
+                value: ic-title-bg-full-width
+            -
+                label: Full Area
+                value: ic-title-bg-full-area
+            -
+                label: To Text
+                value: ic-title-bg-text
+
+    -
         id: ic-title-size
         title: Font Size
         type: variable-number
@@ -117,6 +142,34 @@ settings:
         title: Font Weight
         type: variable-number
         default: 700
+
+    -
+        id: ic-title-border
+        title: Border
+        type: variable-number
+        default: 0
+        format: px
+
+    -
+        id: ic-title-round-corners
+        title: Round Corners
+        type: variable-number
+        default: 0
+        format: px
+
+    -
+        id: ic-title-horizontal-padding
+        title: Inside Horizontal Padding
+        type: variable-number
+        default: 0
+        format: rem
+
+    -
+        id: ic-title-vertical-padding
+        title: Inside Vertical Padding
+        type: variable-number
+        default: 0
+        format: rem
 
     -
         id: ic-title-margin
@@ -270,8 +323,8 @@ settings:
         default: true
         
     -
-        id: ic-section-background-mode
-        title: Background Width
+        id: ic-section-style
+        title: Section Style
         type: class-select
         default: ic-section-bg-margins
         options:
@@ -309,21 +362,21 @@ settings:
         id: ic-section-round-corners
         title: Round Corners
         type: variable-number
-        default: 8
+        default: 10
         format: px
 
     -
         id: ic-section-horizontal-padding
         title: Inside Horizontal Padding
         type: variable-number
-        default: 0.3
+        default: 0.5
         format: rem
 
     -
         id: ic-section-vertical-padding
         title: Inside Vertical Padding
         type: variable-number
-        default: 0.125
+        default: 0.25
         format: rem
     -
         id: ic-section-extended-typography
@@ -652,7 +705,7 @@ settings:
         id: ic-property-separation
         title: Property Separation
         type: class-select
-        default: ic-property-separation-horizontal
+        default: ic-property-separation-spaces
         options:
             -
                 label: None
@@ -686,6 +739,12 @@ settings:
         default: 'var(--background-secondary)'
 
     -
+        id: ic-title-background-color-light
+        title: Title Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), white 50%)'
+
+    -
         id: ic-section-background-color-light
         title: Section Background
         type: variable-text
@@ -700,6 +759,12 @@ settings:
     -
         id: ic-image-border-color-light
         title: Image Border
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-title-border-color-light
+        title: Title Border
         type: variable-text
         default: '#000000'
 
@@ -772,6 +837,12 @@ settings:
         default: 'var(--background-secondary)'
 
     -
+        id: ic-title-background-color-dark
+        title: Title Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), black 60%)'
+
+    -
         id: ic-section-background-color-dark
         title: Section Background
         type: variable-text
@@ -786,6 +857,12 @@ settings:
     -
         id: ic-image-border-color-dark
         title: Image Border
+        type: variable-text
+        default: '#808080'
+
+    -
+        id: ic-title-border-color-dark
+        title: Title Border
         type: variable-text
         default: '#808080'
 
@@ -846,15 +923,19 @@ settings:
 */
 
 :root {
-    --ic-body-font-size: 1rem;
-    --ic-width: 300px;
+    --ic-body-font-size: 0.9rem;
+    --ic-width: 320px;
     --ic-outside-padding: 20px;
     --ic-inside-padding: 24px;
-    --ic-round-corners: 8px;
+    --ic-round-corners: 10px;
     --ic-title-size: 1.2rem;
     --ic-title-weight: 700;
     --ic-title-margin: 0rem;
     --ic-title-font: "Noto Sans";
+    --ic-title-border: 0px;
+    --ic-title-round-corners: 0px;
+    --ic-title-horizontal-padding: 0rem;
+    --ic-title-vertical-padding: 0rem;
     --ic-border: 0px;
     --ic-horizontal-rule-size: 1px;
     --ic-horizontal-rule-margins: 0.5rem;
@@ -863,9 +944,9 @@ settings:
     --ic-section-weight: 700;
     --ic-section-alignment: Center;
     --ic-section-border: 0px;
-    --ic-section-round-corners: 8px;
-    --ic-section-horizontal-padding: 0.3rem;
-    --ic-section-vertical-padding: 0.125rem;
+    --ic-section-round-corners: 10px;
+    --ic-section-horizontal-padding: 0.5rem;
+    --ic-section-vertical-padding: 0.25rem;
     
     --ic-label-width: 110px;
     --ic-label-padding: 0.5rem;
@@ -883,7 +964,9 @@ settings:
 	--ic-infobox-color: var(--ic-infobox-color-light, var(--background-secondary));
     --ic-border-color: var(--ic-border-color-light, #000000);
     --ic-image-border-color: var(--ic-image-border-color-light, #000000);
+    --ic-title-background-color: var(--ic-title-background-color-light, color-mix(in srgb, var(--color-accent), white 50%));
     --ic-section-background-color: var(--ic-section-background-color-light, color-mix(in srgb, var(--color-accent), white 50%));
+    --ic-title-border-color: var(--ic-title-border-color-light, #000000);
     --ic-section-border-color: var(--ic-section-border-color-light, #000000);
     --ic-horizontal-rule-color: var(--ic-horizontal-rule-color-light, #000000);
     --ic-infobox-title-color: var(--ic-infobox-title-color-light, #000000);
@@ -900,7 +983,9 @@ settings:
 	--ic-infobox-color: var(--ic-infobox-color-dark, var(--background-secondary));
     --ic-border-color: var(--ic-border-color-dark, #808080);
     --ic-image-border-color: var(--ic-image-border-color-dark, #808080);
+    --ic-title-background-color: var(--ic-title-background-color-dark, color-mix(in srgb, var(--color-accent), black 60%));
     --ic-section-background-color: var(--ic-section-background-color-dark, color-mix(in srgb, var(--color-accent), black 25%));
+    --ic-title-border-color: var(--ic-title-border-color-dark, #808080);
     --ic-section-border-color: var(--ic-section-border-color-dark, #808080);
     --ic-horizontal-rule-color: var(--ic-horizontal-rule-color-dark, #808080);
     --ic-infobox-title-color: var(--ic-infobox-title-color-dark, var(--color-accent));
@@ -1060,13 +1145,6 @@ settings:
 .ic-title-align-right .callout[data-callout="infoboxright"] .callout-title-inner,
 .ic-title-align-right .callout[data-callout="infoboxleft"] .callout-title-inner {
     text-align: right;
-}
-
-/* Title to Content Spacing */
-.callout[data-callout="infobox"] .callout-title,
-.callout[data-callout="infoboxright"] .callout-title,
-.callout[data-callout="infoboxleft"] .callout-title {
-    margin-bottom: var(--ic-title-margin);
 }
 
 /* Extended Typography for Infobox Title */
@@ -1301,48 +1379,34 @@ settings:
     text-align: var(--ic-section-alignment);
     font-size: var(--ic-section-size);
     font-weight: var(--ic-section-weight);
+}
+
+/* Section - To Margins */
+.ic-section-bg-margins .callout[data-callout="infobox"] .section,
+.ic-section-bg-margins .callout[data-callout="infoboxright"] .section,
+.ic-section-bg-margins .callout[data-callout="infoboxleft"] .section {
     padding: var(--ic-section-vertical-padding) var(--ic-section-horizontal-padding);
-    border: var(--ic-section-border) solid;
+    border: var(--ic-section-border) solid var(--ic-section-border-color);
     border-radius: var(--ic-section-round-corners);
-    border-color: var(--ic-section-border-color);
 }
 
-.ic-section-background-toggle .callout[data-callout="infobox"] .section,
-.ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
-.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section {
-    background-color: var(--ic-section-background-color);
-}
-
-.ic-section-typography-toggle .callout[data-callout="infobox"] .section,
-.ic-section-typography-toggle .callout[data-callout="infoboxright"] .section,
-.ic-section-typography-toggle .callout[data-callout="infoboxleft"] .section {
-    font-family: var(--ic-section-font);
-    font-feature-settings: var(--ic-section-stylistic-sets);
-}
-
-.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infobox"] .section,
-.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxright"] .section,
-.ic-section-typography-toggle.ic-section-smallcaps .callout[data-callout="infoboxleft"] .section {
-    font-variant: small-caps;
-}
-
-/* Full Width Section Background */
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .callout-content,
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .callout-content,
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .callout-content {
+/* Section - Full Width */
+.ic-section-bg-full .callout[data-callout="infobox"] .callout-content,
+.ic-section-bg-full .callout[data-callout="infoboxright"] .callout-content,
+.ic-section-bg-full .callout[data-callout="infoboxleft"] .callout-content {
     overflow: visible;
 }
 
 /* Remove paragraph padding so negative margin can reach callout edges */
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .callout-content p:has(.section),
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .callout-content p:has(.section),
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .callout-content p:has(.section) {
+.ic-section-bg-full .callout[data-callout="infobox"] .callout-content p:has(.section),
+.ic-section-bg-full .callout[data-callout="infoboxright"] .callout-content p:has(.section),
+.ic-section-bg-full .callout[data-callout="infoboxleft"] .callout-content p:has(.section) {
     padding: 0;
 }
 
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infobox"] .section,
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
-.ic-section-bg-full.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section {
+.ic-section-bg-full .callout[data-callout="infobox"] .section,
+.ic-section-bg-full .callout[data-callout="infoboxright"] .section,
+.ic-section-bg-full .callout[data-callout="infoboxleft"] .section {
     width: calc(100% + 2 * var(--ic-inside-padding));
     margin-left: calc(-1 * var(--ic-inside-padding));
     padding-left: var(--ic-inside-padding);
@@ -1357,13 +1421,15 @@ settings:
     border-radius: 0;
 }
 
-
-/* To Text Section Background */
-.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infobox"] .section,
-.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxright"] .section,
-.ic-section-bg-text.ic-section-background-toggle .callout[data-callout="infoboxleft"] .section {
+/* Section - To Text */
+.ic-section-bg-text .callout[data-callout="infobox"] .section,
+.ic-section-bg-text .callout[data-callout="infoboxright"] .section,
+.ic-section-bg-text .callout[data-callout="infoboxleft"] .section {
     width: fit-content;
     display: inline-block;
+    padding: var(--ic-section-vertical-padding) var(--ic-section-horizontal-padding);
+    border: var(--ic-section-border) solid var(--ic-section-border-color);
+    border-radius: var(--ic-section-round-corners);
 }
 
 /* Parent alignment for To Text mode */
@@ -1372,6 +1438,28 @@ settings:
 .ic-section-bg-text .callout[data-callout="infoboxleft"] .callout-content p:has(.section) {
     text-align: var(--ic-section-alignment);
 }
+
+/* Section Background - To Margins */
+.ic-section-background-toggle.ic-section-bg-margins .callout[data-callout="infobox"] .section,
+.ic-section-background-toggle.ic-section-bg-margins .callout[data-callout="infoboxright"] .section,
+.ic-section-background-toggle.ic-section-bg-margins .callout[data-callout="infoboxleft"] .section {
+    background-color: var(--ic-section-background-color);
+}
+
+/* Section Background - Full Width */
+.ic-section-background-toggle.ic-section-bg-full .callout[data-callout="infobox"] .section,
+.ic-section-background-toggle.ic-section-bg-full .callout[data-callout="infoboxright"] .section,
+.ic-section-background-toggle.ic-section-bg-full .callout[data-callout="infoboxleft"] .section {
+    background-color: var(--ic-section-background-color);
+}
+
+/* Section Background - To Text */
+.ic-section-background-toggle.ic-section-bg-text .callout[data-callout="infobox"] .section,
+.ic-section-background-toggle.ic-section-bg-text .callout[data-callout="infoboxright"] .section,
+.ic-section-background-toggle.ic-section-bg-text .callout[data-callout="infoboxleft"] .section {
+    background-color: var(--ic-section-background-color);
+}
+
 
 /* Labels */
 .callout[data-callout="infobox"] .label,
@@ -1399,7 +1487,6 @@ settings:
 .callout[data-callout="infoboxleft"] .label-line .label {
   flex-shrink: 0;
 }
-
 
 
 /* Make Scrollable for Reading Mode to Account for DOM Unload issues */
@@ -1437,7 +1524,6 @@ settings:
 .cm-embed-block:has(.callout.ic-centered) {
     display: block;
 }
-
 
 
 /* Table Base */
@@ -2076,4 +2162,96 @@ settings:
 
 .infobox-theme-dropdown option[value="previous-settings"] {
     font-style: italic;
+}
+
+
+
+
+
+/* Title Border - To Margins */
+.ic-title-bg-margins .callout[data-callout="infobox"] .callout-title,
+.ic-title-bg-margins .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-bg-margins .callout[data-callout="infoboxleft"] .callout-title {
+    padding-top: var(--ic-title-vertical-padding);
+    padding-bottom: var(--ic-title-vertical-padding);
+    padding-left: var(--ic-title-horizontal-padding);
+    padding-right: var(--ic-title-horizontal-padding);
+    margin-bottom: var(--ic-title-margin);
+    border: var(--ic-title-border) solid var(--ic-title-border-color);
+    border-radius: var(--ic-title-round-corners);
+}
+
+/* Title Border - Full Width */
+.ic-title-bg-full-width .callout[data-callout="infobox"] .callout-title,
+.ic-title-bg-full-width .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-bg-full-width .callout[data-callout="infoboxleft"] .callout-title {
+    width: calc(100% + 2 * var(--ic-inside-padding));
+    margin-left: calc(-1 * var(--ic-inside-padding));
+    padding-top: var(--ic-title-vertical-padding);
+    padding-bottom: var(--ic-title-vertical-padding);
+    padding-left: calc(var(--ic-inside-padding) + var(--ic-title-horizontal-padding));
+    padding-right: calc(var(--ic-inside-padding) + var(--ic-title-horizontal-padding));
+    margin-bottom: var(--ic-title-margin);
+    box-sizing: border-box;
+    border-top: var(--ic-title-border) solid var(--ic-title-border-color);
+    border-bottom: var(--ic-title-border) solid var(--ic-title-border-color);
+    border-left: none;
+    border-right: none;
+}
+
+/* Title Border - Full Area */
+.ic-title-bg-full-area .callout[data-callout="infobox"] .callout-title,
+.ic-title-bg-full-area .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-bg-full-area .callout[data-callout="infoboxleft"] .callout-title {
+    width: calc(100% + 2 * var(--ic-inside-padding));
+    margin-left: calc(-1 * var(--ic-inside-padding));
+    margin-top: calc(-1 * var(--ic-inside-padding));
+    padding-left: calc(var(--ic-inside-padding) + var(--ic-title-horizontal-padding));
+    padding-right: calc(var(--ic-inside-padding) + var(--ic-title-horizontal-padding));
+    padding-top: calc(var(--ic-inside-padding) + var(--ic-title-vertical-padding));
+    padding-bottom: calc(var(--ic-title-margin) + var(--ic-title-vertical-padding));
+    box-sizing: border-box;
+    border-bottom: var(--ic-title-border) solid var(--ic-title-border-color);
+    border-radius: 0 0 var(--ic-title-round-corners) var(--ic-title-round-corners);
+}
+
+/* Title Border - To Text */
+.ic-title-bg-text .callout[data-callout="infobox"] .callout-title,
+.ic-title-bg-text .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-bg-text .callout[data-callout="infoboxleft"] .callout-title {
+    padding: 0;
+    margin-bottom: var(--ic-title-margin);
+}
+.ic-title-bg-text .callout[data-callout="infobox"] .callout-title-inner,
+.ic-title-bg-text .callout[data-callout="infoboxright"] .callout-title-inner,
+.ic-title-bg-text .callout[data-callout="infoboxleft"] .callout-title-inner {
+    width: fit-content;
+    padding: var(--ic-title-vertical-padding) var(--ic-title-horizontal-padding);
+    border: var(--ic-title-border) solid var(--ic-title-border-color);
+    border-radius: var(--ic-title-round-corners);
+}
+
+/* Title Background - To Margins */
+.ic-title-background-toggle.ic-title-bg-margins .callout[data-callout="infobox"] .callout-title,
+.ic-title-background-toggle.ic-title-bg-margins .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-background-toggle.ic-title-bg-margins .callout[data-callout="infoboxleft"] .callout-title {
+    background-color: var(--ic-title-background-color);
+}
+/* Title Background - Full Width */
+.ic-title-background-toggle.ic-title-bg-full-width .callout[data-callout="infobox"] .callout-title,
+.ic-title-background-toggle.ic-title-bg-full-width .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-background-toggle.ic-title-bg-full-width .callout[data-callout="infoboxleft"] .callout-title {
+    background-color: var(--ic-title-background-color);
+}
+/* Title Background - Full Area */
+.ic-title-background-toggle.ic-title-bg-full-area .callout[data-callout="infobox"] .callout-title,
+.ic-title-background-toggle.ic-title-bg-full-area .callout[data-callout="infoboxright"] .callout-title,
+.ic-title-background-toggle.ic-title-bg-full-area .callout[data-callout="infoboxleft"] .callout-title {
+    background-color: var(--ic-title-background-color);
+}
+/* Title Background - To Text */
+.ic-title-background-toggle.ic-title-bg-text .callout[data-callout="infobox"] .callout-title-inner,
+.ic-title-background-toggle.ic-title-bg-text .callout[data-callout="infoboxright"] .callout-title-inner,
+.ic-title-background-toggle.ic-title-bg-text .callout[data-callout="infoboxleft"] .callout-title-inner {
+    background-color: var(--ic-title-background-color);
 }
