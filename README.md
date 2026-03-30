@@ -67,21 +67,19 @@ The following aliases can be used instead of `~yaml`
 ### Style Settings (Highly Recommended)
 Styles, colors, and additional tweaks can be customized by installing the **Style Settings** plugin. Once installed, the infoboxes customization menu will be displayed within the Style Settings plugin options.
 
-### Snippets
-The .css file for infoboxes does not utilize the `!important` rule. If you would like to make adjustments to infoboxes, you can do so with a snippet. 
+### CSS
+The .css file for infoboxes does not utilize the `!important` rule. If you would like to make adjustments to infoboxes, you can do so with a snippet.
+
+Target infobox via css with the following:
+
+`.callout[data-callout="infobox"]`
+
+`.callout[data-callout="infoboxright"]`
+
+`.callout[data-callout="infoboxleft"]`
 
 ### Infobox Themes
 Your infobox themes can now be saved and loaded as easily as switching your Obsidian themes. The themes system piggybacks off of Style Settings, so having Style Settings installed is a necessity. Once installed, the themes menu will appear in the Infoboxes options menu and a new folder called "themes" will be added to the plugin directory once that menu is opened for the first time. Once you've created a style you like in Style Settings, you can save and load it via Infoboxes options menu. Themes are shared as .json files so sharing themes is as easy as adding them to the themes folder.
 
 ## Obsidian Theme Compatibilities and Incompatibilities
 Testing has shown that Infoboxes will work with most Obsidian themes and the default settings are designed to blend in as nicely as possible with whatever theme you throw at it. However, some themes apply styling to callouts that may interfere with the look of your infoboxes. It's worth looking to see if that theme comes with any options (likely within Style Settings) that removes the theme's special callout styling.
-
-
-# To Do
-The following tasks are on my To-Do list.
-
-## Infoboxleft Live Preview
-Obsidian's Live Preview seems to struggle with floating elements that are left aligned. While Reading Mode looks perfect, Live Preview strugges and currently the text wrapping struggles to find the proper margins. The solution is likely going to require some hardcoding via typescript, so be aware that leftsided infoboxes in Live Preview are likely to be less performative once the fix is in place.
-
-## CSS Tweaks
-The current goal with css right now is to unset very specific variables so that the infobox behaves well with as many themes as possible without interfering with those theme's custom callout stylings. While I'm confident that this will work for most themes, it is likely that some themes with extensive tweaks to callouts will most likely need a snippet to patch the infobox's appearance.
