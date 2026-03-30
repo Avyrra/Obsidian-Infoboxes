@@ -72,11 +72,13 @@ The .css file for infoboxes does not utilize the `!important` rule. If you would
 
 Target infobox via css with the following:
 
-`.callout[data-callout="infobox"]`
+```
+.callout[data-callout="infobox"],
+.callout[data-callout="infoboxright"],
+.callout[data-callout="infoboxleft"] {
 
-`.callout[data-callout="infoboxright"]`
-
-`.callout[data-callout="infoboxleft"]`
+}
+```
 
 ### Infobox Themes
 Your infobox themes can now be saved and loaded as easily as switching your Obsidian themes. The themes system piggybacks off of Style Settings, so having Style Settings installed is a necessity. Once installed, the themes menu will appear in the Infoboxes options menu and a new folder called "themes" will be added to the plugin directory once that menu is opened for the first time. Once you've created a style you like in Style Settings, you can save and load it via Infoboxes options menu. Themes are shared as .json files so sharing themes is as easy as adding them to the themes folder.
