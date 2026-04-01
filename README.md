@@ -80,8 +80,8 @@ Target infobox via css with the following:
 }
 ```
 
-### Infobox Themes
-Your infobox themes can now be saved and loaded as easily as switching your Obsidian themes. The themes system piggybacks off of Style Settings, so having Style Settings installed is a necessity. Once installed, the themes menu will appear in the Infoboxes options menu and a new folder called "themes" will be added to the plugin directory once that menu is opened for the first time. Once you've created a style you like in Style Settings, you can save and load it via Infoboxes options menu. Themes are shared as .json files so sharing themes is as easy as adding them to the themes folder.
+### Infobox Presets
+Your infobox presets can now be saved and loaded as easily as switching your Obsidian themes. The presets system piggybacks off of Style Settings, so having Style Settings installed is a necessity. Once installed, the presets menu will appear in the Infoboxes options menu and a new folder called "presets" will be added to the plugin directory once that menu is opened for the first time. Once you've created a style you like in Style Settings, you can save and load it via Infoboxes options menu. Presets are saved as .json files so sharing presets is as easy as adding them to the presets folder.
 
 ## Obsidian Theme Compatibilities and Incompatibilities
 Testing has shown that Infoboxes will work with most Obsidian themes and the default settings are designed to blend in as nicely as possible with whatever theme you throw at it. However, some themes apply styling to callouts that may interfere with the look of your infoboxes. It's worth looking to see if that theme comes with any options (likely within Style Settings) that removes the theme's special callout styling.

@@ -34,13 +34,13 @@ function isSettingsRecord(value: unknown): value is Record<string, unknown> {
 
 export class InfoboxSettingTab extends PluginSettingTab {
 	plugin: InfoboxPlugin;
-	private themesPath: string;
+	private presetsPath: string;
 	private styleSettingsPath: string;
 
 	constructor(app: App, plugin: InfoboxPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.themesPath = `${this.plugin.manifest.dir ?? ''}/themes`;
+		this.presetsPath = `${this.plugin.manifest.dir ?? ''}/presets`;
 		this.styleSettingsPath = `${this.app.vault.configDir}/plugins/obsidian-style-settings/data.json`;
 	}
 
@@ -52,7 +52,7 @@ export class InfoboxSettingTab extends PluginSettingTab {
 			this.showStyleSettingsRequired();
 			return;
 		}
-		this.showThemeManager(styleSettings);
+		this.showPresetManager(styleSettings);
 	}
 
 	// get the style settings plugin
@@ -61,93 +61,93 @@ export class InfoboxSettingTab extends PluginSettingTab {
 		return isStyleSettingsPlugin(plugin) ? plugin : null;
 	}
 
-	// UI for themes
-	private showThemeManager(styleSettings: StyleSettingsPlugin): void {
+	// UI for presets
+	private showPresetManager(styleSettings: StyleSettingsPlugin): void {
 		// section header + reload/open buttons
 		const heading = new Setting(this.containerEl)
-			.setName('Infobox themes')
+			.setName('Presets')
 			.setHeading()
 			.addExtraButton(btn=>{
 				btn.setIcon('refresh-cw');
-				btn.setTooltip('Reload themes');
+				btn.setTooltip('Reload presets');
 				btn.onClick(()=>this.display());
 			});
 
 		if (Platform.isDesktop) {
 			heading.addExtraButton(btn=>{
 				btn.setIcon('folder-open');
-				btn.setTooltip('Open themes folder');
+				btn.setTooltip('Open presets folder');
 				btn.onClick(async ()=>{
-					await this.ensureThemesFolder();
-					this.openThemesFolder();
+					await this.ensurePresetsFolder();
+					this.openPresetsFolder();
 				});
 			});
 		}
 
-		let themeName = '';
+		let presetName = '';
 		let inputEl: HTMLInputElement | null = null;
-		// save current settings as new theme
+		// save current settings as new preset
 		new Setting(this.containerEl)
-			.setName('Save current settings as theme')
-			.setDesc('Save your current infobox settings as a reusable theme.')
+			.setName('Save current settings as preset')
+			.setDesc('Save your current infobox settings as a reusable preset.')
 			.addText(text=>{
-				text.setPlaceholder('Enter a theme name');
-				text.onChange(v=>themeName=v);
+				text.setPlaceholder('Enter a preset name');
+				text.onChange(v=>presetName=v);
 				inputEl=text.inputEl;
 			})
 			.addButton(btn=>{
 				btn.setIcon('save');
 				btn.setCta();
 				btn.onClick(async ()=>{
-					if(!themeName.trim()){
+					if(!presetName.trim()){
 						if(inputEl){
 							inputEl.addClass('infobox-input-error');
 							setTimeout(()=>inputEl?.removeClass('infobox-input-error'),1500);
 						}
 						return;
 					}
-					await this.saveTheme(themeName);
+					await this.savePreset(presetName);
 					if(inputEl) inputEl.value='';
-					themeName='';
+					presetName='';
 				});
 			});
 
-		// load theme dropdown
+		// load preset dropdown
 		new Setting(this.containerEl)
-			.setName('Load a theme')
-			.setDesc('Select a theme to apply. Current settings are backed up automatically.')
+			.setName('Load a preset')
+			.setDesc('Select a preset to apply. Current settings are backed up automatically.')
 			.addDropdown(dropdown=>{
 
-				dropdown.selectEl.addClass('infobox-theme-dropdown');
+				dropdown.selectEl.addClass('infobox-preset-dropdown');
 				dropdown.addOption('',''); // blank by default
 
 				// populate dropdown
-				void this.listThemes().then(themes=>{
-					for (const theme of themes) {
-						dropdown.addOption(theme, this.formatDisplayName(theme));
+				void this.listPresets().then(presets=>{
+					for (const preset of presets) {
+						dropdown.addOption(preset, this.formatDisplayName(preset));
 					}
 					dropdown.setValue(''); // blank selection
 				});
 
 				dropdown.onChange(selected=>{
 					if(!selected) return;
-					void this.loadTheme(selected);
+					void this.loadPreset(selected);
 				});
 			});
 	}
 
-	// write theme file
-	private async saveTheme(name:string):Promise<void>{
+	// write preset file
+	private async savePreset(name:string):Promise<void>{
 		const settings=await this.readInfoboxSettings();
 		if(!settings) return;
-		await this.ensureThemesFolder();
-		const fileName=await this.formatThemeFileName(name);
-		await this.app.vault.adapter.write(`${this.themesPath}/${fileName}`,JSON.stringify(settings,null,2));
-		new Notice(`Theme saved as ${fileName}`);
+		await this.ensurePresetsFolder();
+		const fileName=await this.formatPresetFileName(name);
+		await this.app.vault.adapter.write(`${this.presetsPath}/${fileName}`,JSON.stringify(settings,null,2));
+		new Notice(`Preset saved as ${fileName}`);
 	}
 
-	// load theme
-	private async loadTheme(themeName:string):Promise<void>{
+	// load preset
+	private async loadPreset(presetName:string):Promise<void>{
 
 		const styleSettings=this.getStyleSettings();
 		if(!styleSettings) return;
@@ -155,35 +155,35 @@ export class InfoboxSettingTab extends PluginSettingTab {
 		const currentSettings=await this.readInfoboxSettings();
 
 		// save previous settings if not loading previous-settings itself
-		if(themeName !== 'previous-settings' && currentSettings){
-			await this.ensureThemesFolder();
-			await this.app.vault.adapter.write(`${this.themesPath}/previous-settings.json`, JSON.stringify(currentSettings,null,2));
+		if(presetName !== 'previous-settings' && currentSettings){
+			await this.ensurePresetsFolder();
+			await this.app.vault.adapter.write(`${this.presetsPath}/previous-settings.json`, JSON.stringify(currentSettings,null,2));
 		}
 
 		// clear infobox section
 		styleSettings.settingsManager.clearSection(SECTION_ID);
 		
-		// Default theme is just a cleared section — no file needed
-		if (themeName === 'default') {
-		    new Notice('Loaded theme: infoboxes (default)');
+		// Default preset is just a cleared section — no file needed
+		if (presetName === 'default') {
+		    new Notice('Loaded preset: infoboxes (default)');
 		    return;
 		}
 
-		// resolve theme file
-		const themeFile = themeName==='default' ? `${this.themesPath}/default.json` : `${this.themesPath}/${themeName}.json`;
+		// resolve preset file
+		const presetFile = presetName==='default' ? `${this.presetsPath}/default.json` : `${this.presetsPath}/${presetName}.json`;
 
 		// make sure file exists
-		if(!(await this.app.vault.adapter.exists(themeFile))){
-			new Notice(`Theme file not found: ${themeName}.json`);
+		if(!(await this.app.vault.adapter.exists(presetFile))){
+			new Notice(`Preset file not found: ${presetName}.json`);
 			return;
 		}
 
-		// read + parse theme
-		const raw=await this.app.vault.adapter.read(themeFile);
+		// read + parse preset
+		const raw=await this.app.vault.adapter.read(presetFile);
 		const parsed:unknown=JSON.parse(raw);
 
 		if(!isSettingsRecord(parsed)){
-			new Notice('Invalid theme file format');
+			new Notice('Invalid preset file format');
 			return;
 		}
 
@@ -198,27 +198,27 @@ export class InfoboxSettingTab extends PluginSettingTab {
 		// apply settings
 		styleSettings.settingsManager.setSettings(settings);
 
-		new Notice(`Loaded theme: ${this.formatDisplayName(themeName)}`);
+		new Notice(`Loaded preset: ${this.formatDisplayName(presetName)}`);
 	}
 
-	// list all theme files, previous-settings first, default second
-	private async listThemes():Promise<string[]>{
-		await this.ensureThemesFolder();
-		const listing=await this.app.vault.adapter.list(this.themesPath);
+	// list all preset files, previous-settings first, default second
+	private async listPresets():Promise<string[]>{
+		await this.ensurePresetsFolder();
+		const listing=await this.app.vault.adapter.list(this.presetsPath);
 
 		const files = listing.files
 			.filter(f=>f.endsWith('.json'))
 			.map(f=>f.split('/').pop()?.replace('.json', '') ?? '')
 			.filter(n=>n !== '');
 
-		const themes: string[] = [];
-		if (files.includes('previous-settings')) themes.push('previous-settings');
-		themes.push('default'); // always include default theme
+		const presets: string[] = [];
+		if (files.includes('previous-settings')) presets.push('previous-settings');
+		presets.push('default'); // always include default preset
 		for (const f of files) {
-			if (f !== 'previous-settings' && f !== 'default') themes.push(f);
+			if (f !== 'previous-settings' && f !== 'default') presets.push(f);
 		}
 
-		return themes;
+		return presets;
 	}
 
 	// grab current infobox settings from style-settings
@@ -253,7 +253,7 @@ export class InfoboxSettingTab extends PluginSettingTab {
 
 		const body=callout.createDiv({cls:'callout-content'});
 		const p=body.createEl('p');
-		p.appendText('The Style Settings plugin must be installed to use infobox themes. ');
+		p.appendText('The Style Settings plugin must be installed to use infobox presets. ');
 		const link=p.createEl('a',{text:'Get it here',href:'#'});
 		link.addEventListener('click',e=>{
 			e.preventDefault();
@@ -262,17 +262,17 @@ export class InfoboxSettingTab extends PluginSettingTab {
 	}
 
 	// make sure folder exists
-	private async ensureThemesFolder():Promise<void>{
-		if(!(await this.app.vault.adapter.exists(this.themesPath)))
-			await this.app.vault.adapter.mkdir(this.themesPath);
+	private async ensurePresetsFolder():Promise<void>{
+		if(!(await this.app.vault.adapter.exists(this.presetsPath)))
+			await this.app.vault.adapter.mkdir(this.presetsPath);
 	}
 
 	// turn user input into clean filename, add number if exists
-	private async formatThemeFileName(name:string):Promise<string>{
+	private async formatPresetFileName(name:string):Promise<string>{
 		const cleaned=name.trim().toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');
 		let file=`${cleaned}.json`;
 		let i=2;
-		while(await this.app.vault.adapter.exists(`${this.themesPath}/${file}`)){
+		while(await this.app.vault.adapter.exists(`${this.presetsPath}/${file}`)){
 			file=`${cleaned}-${i}.json`;
 			i++;
 		}
@@ -280,10 +280,10 @@ export class InfoboxSettingTab extends PluginSettingTab {
 	}
 
 	// open folder in OS file browser
-	private openThemesFolder():void{
+	private openPresetsFolder():void{
 		const adapter=this.app.vault.adapter;
 		if(!(adapter instanceof FileSystemAdapter)) return;
-		const full=adapter.getFullPath(this.themesPath);
+		const full=adapter.getFullPath(this.presetsPath);
 		window.open('file://'+full);
 	}
 

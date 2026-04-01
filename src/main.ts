@@ -85,7 +85,7 @@ export default class InfoboxPlugin extends Plugin {
 						if (node.nodeType === Node.TEXT_NODE) {
 							const text = node.textContent || '';
 							const isSectionStart = /^\s*\/\/\s*.+$/.test(text);
-							const isNewLabel = text.includes('->');
+							const isNewLabel = /->|→/.test(text);
 							const isYaml = /^~(!)?(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i.test(text.trim());
 
 							// new token - close and fall through
@@ -115,6 +115,20 @@ export default class InfoboxPlugin extends Plugin {
 						activeInlineTarget = section;
 						return;
 					}
+					
+					//Labels example: label -> info
+					if (/->|→/.test(nodeText)) {
+						const labelParts = nodeText.split(/->|→/);
+						const labelText = labelParts[0]!.trim();
+						const infoText = labelParts.slice(1).join("->").trimStart();
+						const labelLine = paragraph.createEl("span", { cls: "label-line" });
+						labelLine.createEl("span", { cls: "label", text: labelText });
+						// value wrapper - keeps inline elements as one flex item
+						const valueSpan = labelLine.createEl("span");
+						if (infoText) valueSpan.appendChild(document.createTextNode(infoText));
+						node.replaceWith(labelLine);
+						activeInlineTarget = valueSpan;
+					}
 
 					// YAML Properties: ~yaml or ~!yaml or ~yaml, property1, property2.... - Aliases included
 					// Use ! to exclude properties: ~!yaml, property1...
@@ -132,19 +146,7 @@ export default class InfoboxPlugin extends Plugin {
 						return;
 					}
 
-					//Labels example: label -> info
-					if (nodeText.includes("->")) {
-						const labelParts = nodeText.split("->");
-						const labelText = labelParts[0]!.trim();
-						const infoText = labelParts.slice(1).join("->").trimStart();
-						const labelLine = paragraph.createEl("span", { cls: "label-line" });
-						labelLine.createEl("span", { cls: "label", text: labelText });
-						// value wrapper - keeps inline elements as one flex item
-						const valueSpan = labelLine.createEl("span");
-						if (infoText) valueSpan.appendChild(document.createTextNode(infoText));
-						node.replaceWith(labelLine);
-						activeInlineTarget = valueSpan;
-					}
+					
 				});
 
 				// Remove <br> between consecutive labels
