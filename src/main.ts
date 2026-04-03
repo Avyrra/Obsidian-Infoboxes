@@ -1,5 +1,5 @@
-import {Keymap, MarkdownRenderChild, MarkdownRenderer, Plugin, TFile} from 'obsidian';
-import {InfoboxSettingTab} from './settings';
+import {Keymap, MarkdownRenderChild, MarkdownRenderer, moment, Plugin, TFile} from 'obsidian';
+import {InfoboxSettingTab, PluginSettings, DEFAULT_SETTINGS} from './settings';
 
 // The classes we're fuckin' dealing with
 const INFOBOX_SELECTOR =
@@ -15,7 +15,9 @@ const HIDDEN_FRONTMATTER_KEYS = new Set([
 ]);
 
 export default class InfoboxPlugin extends Plugin {
+	settings: PluginSettings;
 	async onload() {
+		await this.loadSettings();
 		this.addSettingTab(new InfoboxSettingTab(this.app, this));
         // COMMAND PALETTE
 		this.addCommand({
@@ -175,6 +177,16 @@ export default class InfoboxPlugin extends Plugin {
 		this.registerEvent(this.app.workspace.on('css-change', updateCentering));
 		this.app.workspace.onLayoutReady(updateCentering);
 	}
+	
+	// Saving and Loading Shit
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<PluginSettings>);
+	}
+	
+	async saveSettings() {
+	    await this.saveData(this.settings);
+	    document.dispatchEvent(new Event('infobox-settings-changed'));
+	}
 }
 
 // Live-Updating YAML Render Child
@@ -208,6 +220,10 @@ class YamlRenderChild extends MarkdownRenderChild {
 			attributes: true,
 			attributeFilter: ["class"]
 		});
+		
+		// Re-render when infobox settings change
+		this.registerDomEvent(window.document, 'infobox-settings-changed' as keyof DocumentEventMap, () => void this.render());
+		
 	}
 
 	onunload() {
@@ -266,10 +282,51 @@ class YamlRenderChild extends MarkdownRenderChild {
 			}
 			isFirstProperty = false;
 			
-			// The part that matters
+			// THE PART THAT MATTERS
 			const displayKey = this.formatKey(key);
-			const displayValue = this.formatValue(value);
+			const dateFormat = this.plugin.settings.dateFormat || 'YYYY-MM-DD';
+			const datetimeFormat = this.plugin.settings.datetimeFormat || 'YYYY-MM-DD HH:mm';
+			let displayValue: string;
+			if (value instanceof Date) {
+				const m = moment(value);
+				const hasTime = m.hours() !== 0 || m.minutes() !== 0 || m.seconds() !== 0;
+				displayValue = hasTime
+					? m.format(datetimeFormat)
+					: m.format(dateFormat);
+			} else {
+				const valueStr = typeof value === 'string' ? value : String(value as string | number | boolean);
+				const dateType = this.getDateType(valueStr);
+				displayValue = dateType === 'datetime'
+					? moment(valueStr).format(datetimeFormat)
+					: dateType === 'date'
+						? moment(valueStr).format(dateFormat)
+						: this.formatValue(value);
+			}
+			
+			// - Make Lists render as separate lines
+			if (Array.isArray(value)) {
+				for (let i = 0; i < value.length; i++) {
+					const listItemLine = document.createElement("span");
+					listItemLine.addClass("label-line");
+					// Only show the key on the first item
+					listItemLine.createEl("span", { cls: "label", text: i === 0 ? displayKey : '' });
+					const listItemEl = listItemLine.createEl("span");
+					const listItemTemp = document.createElement("div");
+					await MarkdownRenderer.render(this.plugin.app, String(value[i]), listItemTemp, this.sourcePath, this);
+					const listItemP = listItemTemp.querySelector("p");
+					if (listItemP) {
+						listItemEl.append(...Array.from(listItemP.childNodes));
+					} else {
+						listItemEl.appendChild(document.createTextNode(String(value[i])));
+					}
+					insertAfter.after(listItemLine);
+					insertAfter = listItemLine;
+					this.generatedElements.push(listItemLine);
+				}
+				continue;
+			}
 
+			// - continue being the part that matters
 			const labelLine = document.createElement("span");
 			labelLine.addClass("label-line");
 			labelLine.createEl("span", { cls: "label", text: displayKey });
@@ -340,5 +397,12 @@ class YamlRenderChild extends MarkdownRenderChild {
 	private formatValue(value: unknown): string {
 		if (Array.isArray(value)) return value.join(", ");
 		return String(value);
+	}
+
+	// Detect if a value is a date or datetime ISO string
+	private getDateType(value: string): 'date' | 'datetime' | null {
+		if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)) return 'datetime';
+		if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return 'date';
+		return null;
 	}
 }

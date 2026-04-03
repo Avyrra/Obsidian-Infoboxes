@@ -1,4 +1,4 @@
-import {App, FileSystemAdapter, Notice, Platform, PluginSettingTab, Setting, setIcon, Plugin} from 'obsidian';
+import {App, FileSystemAdapter, MomentFormatComponent, Notice, Platform, PluginSettingTab, Setting, setIcon, Plugin} from 'obsidian';
 import InfoboxPlugin from './main';
 
 const SECTION_ID = 'infoboxes';
@@ -32,6 +32,17 @@ function isSettingsRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null;
 }
 
+// Plugin Settings File shit
+export interface PluginSettings {
+	dateFormat: string;
+	datetimeFormat: string;
+}
+
+export const DEFAULT_SETTINGS: PluginSettings = {
+	dateFormat: 'YYYY-MM-DD',
+	datetimeFormat: 'YYYY-MM-DD HH:mm'
+}
+
 export class InfoboxSettingTab extends PluginSettingTab {
 	plugin: InfoboxPlugin;
 	private presetsPath: string;
@@ -50,9 +61,11 @@ export class InfoboxSettingTab extends PluginSettingTab {
 		const styleSettings = this.getStyleSettings();
 		if (!styleSettings) {
 			this.showStyleSettingsRequired();
+			this.showDateFormat();
 			return;
 		}
 		this.showPresetManager(styleSettings);
+		this.showDateFormat();
 	}
 
 	// get the style settings plugin
@@ -63,6 +76,7 @@ export class InfoboxSettingTab extends PluginSettingTab {
 
 	// UI for presets
 	private showPresetManager(styleSettings: StyleSettingsPlugin): void {
+		
 		// section header + reload/open buttons
 		const heading = new Setting(this.containerEl)
 			.setName('Presets')
@@ -86,6 +100,7 @@ export class InfoboxSettingTab extends PluginSettingTab {
 
 		let presetName = '';
 		let inputEl: HTMLInputElement | null = null;
+		
 		// save current settings as new preset
 		new Setting(this.containerEl)
 			.setName('Save current settings as preset')
@@ -135,6 +150,7 @@ export class InfoboxSettingTab extends PluginSettingTab {
 				});
 			});
 	}
+	
 
 	// write preset file
 	private async savePreset(name:string):Promise<void>{
@@ -249,7 +265,7 @@ export class InfoboxSettingTab extends PluginSettingTab {
 		const icon=header.createDiv({cls:'callout-icon'});
 		setIcon(icon,'alert-triangle');
 
-		header.createDiv({cls:'callout-title-inner',text:'Style Settings required'});
+		header.createDiv({cls:'callout-title-inner',text:'Install Style Settings to use Presets'});
 
 		const body=callout.createDiv({cls:'callout-content'});
 		const p=body.createEl('p');
@@ -292,5 +308,77 @@ export class InfoboxSettingTab extends PluginSettingTab {
 		if(name==='previous-settings') return 'Previous Settings';
 		if(name==='default') return 'Infoboxes (Default)';
 		return name.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	// UI for Date and time Format
+	private showDateFormat(): void {
+		new Setting(this.containerEl)
+			.setName('Formatting')
+			.setHeading();
+		
+		// Date
+		let dateSampleEl: HTMLElement;
+		new Setting(this.containerEl)
+			.setName('Date format')
+			.setDesc('Format used when rendering date properties.')
+			.addMomentFormat((format: MomentFormatComponent) => {
+				dateSampleEl = document.createElement('b');
+				dateSampleEl.addClass('u-pop');
+				format
+					.setDefaultFormat('YYYY-MM-DD')
+					.setSampleEl(dateSampleEl)
+					.setValue(this.plugin.settings.dateFormat)
+					.onChange(async (value: string) => {
+						this.plugin.settings.dateFormat = value;
+						await this.plugin.saveSettings();
+					});
+			})
+			.then(setting => {
+				setting.descEl.createEl('br');
+				const referLine = setting.descEl.createEl('span');
+				referLine.appendText('For more syntax, refer to ');
+				// eslint-disable-next-line obsidianmd/ui/sentence-case
+				referLine.createEl('a', { text: 'format reference', href: 'https://momentjs.com/docs/#/displaying/format/' });
+				setting.descEl.createEl('br');
+				const previewLine = setting.descEl.createEl('span');
+				previewLine.appendText('Your current syntax looks like this: ');
+				previewLine.appendChild(dateSampleEl);
+			});
+
+		// Date and time
+		let datetimeSampleEl: HTMLElement;
+		new Setting(this.containerEl)
+			.setName('Date and time format')
+			.setDesc('Format used when rendering date and time properties.')
+			.addMomentFormat((format: MomentFormatComponent) => {
+				datetimeSampleEl = document.createElement('b');
+				datetimeSampleEl.addClass('u-pop');
+				format
+					.setDefaultFormat('YYYY-MM-DD HH:mm')
+					.setSampleEl(datetimeSampleEl)
+					.setValue(this.plugin.settings.datetimeFormat)
+					.onChange(async (value: string) => {
+						this.plugin.settings.datetimeFormat = value;
+						await this.plugin.saveSettings();
+					});
+			})
+			.then(setting => {
+				setting.descEl.createEl('br');
+				const referLine = setting.descEl.createEl('span');
+				referLine.appendText('For more syntax, refer to ');
+				// eslint-disable-next-line obsidianmd/ui/sentence-case
+				referLine.createEl('a', { text: 'format reference', href: 'https://momentjs.com/docs/#/displaying/format/' });
+				setting.descEl.createEl('br');
+				const previewLine = setting.descEl.createEl('span');
+				previewLine.appendText('Your current syntax looks like this: ');
+				previewLine.appendChild(datetimeSampleEl);
+			});
 	}
 }
