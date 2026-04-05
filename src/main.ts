@@ -14,6 +14,55 @@ const HIDDEN_FRONTMATTER_KEYS = new Set([
 	'tags', 'tag', 'aliases', 'alias'
 ]);
 
+// Group all labels dynamically into first, middle, and last - in order to make styling them more effictient
+// New classes: label-line-first, label-line-last, label-line-middle
+function processLabelGroups(callout: Element) {
+	const lines = Array.from(callout.querySelectorAll('.label-line'));
+
+	// Clear stale classes
+	for (const line of lines) {
+		line.classList.remove('label-line-first', 'label-line-last', 'label-line-middle');
+	}
+
+	// Build groups
+	const groups: Element[][] = [];
+	let currentGroup: Element[] = [];
+
+	for (const line of lines) {
+		const label = line.querySelector('.label');
+		const isEmpty = !label || label.textContent?.trim() === '';
+		const prevIslabelLine = line.previousElementSibling?.classList.contains('label-line') ?? false;
+
+		if (isEmpty && prevIslabelLine) {
+			// Continuation of the current group
+			currentGroup.push(line);
+		} else {
+			// Start of a new group
+			if (currentGroup.length > 0) groups.push(currentGroup);
+			currentGroup = [line];
+		}
+	}
+	if (currentGroup.length > 0) groups.push(currentGroup);
+
+	// Assign classes
+	for (const group of groups) {
+		const first = group[0];
+		const last = group[group.length - 1];
+		if (!first || !last) continue;
+
+		if (group.length === 1) {
+			first.classList.add('label-line-first', 'label-line-last');
+		} else {
+			first.classList.add('label-line-first');
+			last.classList.add('label-line-last');
+			for (let i = 1; i < group.length - 1; i++) {
+				const middle = group[i];
+				if (middle) middle.classList.add('label-line-middle');
+			}
+		}
+	}
+}
+
 export default class InfoboxPlugin extends Plugin {
 	settings: PluginSettings;
 	async onload() {
@@ -69,9 +118,11 @@ export default class InfoboxPlugin extends Plugin {
         // DO SHIT
 		this.registerMarkdownPostProcessor((element, context) => {
 			const paragraphs = element.querySelectorAll("p");
+			const affectedCallouts = new Set<Element>();
 			paragraphs.forEach((paragraph) => {
 				const callout = paragraph.closest(INFOBOX_SELECTOR);
 				if (!callout) return;
+				affectedCallouts.add(callout);
 				const paragraphChildren = Array.from(paragraph.childNodes);
 
 				// active inline target
@@ -156,6 +207,8 @@ export default class InfoboxPlugin extends Plugin {
 					if (br.previousElementSibling?.classList.contains("label-line") && br.nextElementSibling?.classList.contains("label-line")) br.remove();
 				});
 			});
+
+			affectedCallouts.forEach(callout => processLabelGroups(callout));
 		});
 
 		// Center infobox when content pane is too narrow
@@ -384,6 +437,9 @@ class YamlRenderChild extends MarkdownRenderChild {
 				this.generatedElements.push(labelLine);
 			}
 		}
+
+		const callout = this.containerEl.closest(INFOBOX_SELECTOR);
+		if (callout) processLabelGroups(callout);
 	}
 
 	// Make it readable: eg., "date-of-birth" to "Date of Birth"

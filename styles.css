@@ -489,27 +489,76 @@ settings:
         type: heading
         level: 1
         collapsed: true
-        
+
+    -
+        id: ic-label-alignment
+        title: Alignment
+        type: variable-select
+        default: Left
+        options:
+            - Left
+            - Center
+            - Right
+    
+    -
+        id: ic-label-background-toggle
+        title: Toggle Label Background
+        type: class-toggle
+        default: false
+
+    -
+        id: ic-label-style
+        title: Label Style
+        type: class-select
+        default: ic-label-bg-margins
+        options:
+            -
+                label: To Margins
+                value: ic-label-bg-margins
+            -
+                label: Full Width
+                value: ic-label-bg-full
+
     -
         id: ic-label-font-size
         title: Label Font Size
-        description: Note - Overrides Body Font Size
+        description: Overrides general body font size
         type: variable-number
         default: 1
         format: rem
 
     -
-        id: ic-info-font-size
-        title: Info Font Size
-        description: Note - Overrides Body Font Size
+        id: ic-label-content-font-size
+        title: Content Font Size
+        description: Overrides general body font size
         type: variable-number
         default: 1
         format: rem
+
+    -
+        id: ic-label-border
+        title: Border
+        type: variable-number
+        default: 0
+        format: px
+
+    -
+        id: ic-label-inside-border-toggle
+        title: Toggle Inside Border
+        type: class-toggle
+        default: false
+
+    -
+        id: ic-label-round-corners
+        title: Round Corners
+        type: variable-number
+        default: 0
+        format: px
 
     -
         id: ic-label-width
         title: Label Width
-        description: How wide a label can be before it wraps to a new line
+        description: Distance between label and content
         type: variable-number
         default: 110
         format: px
@@ -517,20 +566,23 @@ settings:
     -
         id: ic-label-padding
         title: Label to Info Padding
-        description: Space added after label width before information is presented
+        description: Padding between label and content. No format restriction.
+        type: variable-text
+        default: 5px
+
+    -
+        id: ic-label-group-horizontal-padding
+        title: Label Group Inside Horizontal Padding
         type: variable-number
-        default: 0.5
+        default: 0
         format: rem
 
     -
-        id: ic-label-alignment
-        title: Label Alignment
-        type: variable-select
-        default: Left
-        options:
-            - Left
-            - Center
-            - Right
+        id: ic-label-group-vertical-padding
+        title: Label Group Inside Vertical Padding
+        type: variable-number
+        default: 0
+        format: rem
 
     -
         id: ic-images-heading
@@ -710,7 +762,7 @@ settings:
         id: ic-property-separation
         title: Property Separation
         type: class-select
-        default: ic-property-separation-spaces
+        default: ic-property-separation-none
         options:
             -
                 label: None
@@ -756,6 +808,12 @@ settings:
         default: 'color-mix(in srgb, var(--color-accent), white 50%)'
 
     -
+        id: ic-label-background-color-light
+        title: Label Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), white 75%)'
+
+    -
         id: ic-border-color-light
         title: Infobox Border
         type: variable-text
@@ -776,6 +834,12 @@ settings:
     -
         id: ic-section-border-color-light
         title: Section Border
+        type: variable-text
+        default: '#000000'
+
+    -
+        id: ic-label-border-color-light
+        title: Label Border
         type: variable-text
         default: '#000000'
 
@@ -854,6 +918,12 @@ settings:
         default: 'color-mix(in srgb, var(--color-accent), black 25%)'
 
     -
+        id: ic-label-background-color-dark
+        title: Label Background
+        type: variable-text
+        default: 'color-mix(in srgb, var(--color-accent), black 25%)'
+
+    -
         id: ic-border-color-dark
         title: Infobox Border
         type: variable-text
@@ -874,6 +944,12 @@ settings:
     -
         id: ic-section-border-color-dark
         title: Section Border
+        type: variable-text
+        default: '#808080'
+    
+    -
+        id: ic-label-border-color-dark
+        title: Label Border
         type: variable-text
         default: '#808080'
 
@@ -946,7 +1022,6 @@ settings:
     --ic-horizontal-rule-margins: 0.5rem;
     --ic-title-vertical-alignment: 0rem;
     
-    --ic-section-size: inherit;
     --ic-section-weight: 700;
     --ic-section-alignment: Center;
     --ic-section-border: 0px;
@@ -955,15 +1030,18 @@ settings:
     --ic-section-vertical-padding: 0.25rem;
     
     --ic-label-width: 110px;
-    --ic-label-padding: 0.5rem;
+    --ic-label-padding: 5px;
     --ic-label-alignment: left;
+    --ic-label-border: 0px;
+    --ic-label-round-corners: 0px;
+    --ic-label-group-horizontal-padding: 0rem;
+    --ic-label-group-vertical-padding: 0rem;
     
     --ic-image-border: 0px;
     --ic-image-round-corners: 8px;
     
     --ic-table-round-corners: 8px;
     --ic-table-border: 0px;
-    --ic-table-font-size: inherit;
 }
 
 .theme-light {
@@ -972,8 +1050,10 @@ settings:
     --ic-image-border-color: var(--ic-image-border-color-light, #000000);
     --ic-title-background-color: var(--ic-title-background-color-light, color-mix(in srgb, var(--color-accent), white 50%));
     --ic-section-background-color: var(--ic-section-background-color-light, color-mix(in srgb, var(--color-accent), white 50%));
+    --ic-label-background-color: var(--ic-label-background-color-light, color-mix(in srgb, var(--color-accent), white 75%));
     --ic-title-border-color: var(--ic-title-border-color-light, #000000);
     --ic-section-border-color: var(--ic-section-border-color-light, #000000);
+    --ic-label-border-color: var(--ic-label-border-color-light, #000000);
     --ic-horizontal-rule-color: var(--ic-horizontal-rule-color-light, #000000);
     --ic-infobox-title-color: var(--ic-infobox-title-color-light, #000000);
     
@@ -991,8 +1071,10 @@ settings:
     --ic-image-border-color: var(--ic-image-border-color-dark, #808080);
     --ic-title-background-color: var(--ic-title-background-color-dark, color-mix(in srgb, var(--color-accent), black 60%));
     --ic-section-background-color: var(--ic-section-background-color-dark, color-mix(in srgb, var(--color-accent), black 25%));
+    --ic-label-background-color: var(--ic-label-background-color-dark, color-mix(in srgb, var(--color-accent), black 25%));
     --ic-title-border-color: var(--ic-title-border-color-dark, #808080);
     --ic-section-border-color: var(--ic-section-border-color-dark, #808080);
+    --ic-label-border-color: var(--ic-label-border-color-dark, #808080);
     --ic-horizontal-rule-color: var(--ic-horizontal-rule-color-dark, #808080);
     --ic-infobox-title-color: var(--ic-infobox-title-color-dark, var(--color-accent));
     
@@ -1476,6 +1558,11 @@ settings:
 }
 
 
+
+
+
+
+
 /* Labels */
 .callout[data-callout="infobox"] .label,
 .callout[data-callout="infoboxright"] .label,
@@ -1485,23 +1572,193 @@ settings:
     width: var(--ic-label-width);
     display: inline-block;
     margin-right: var(--ic-label-padding);
+    padding-right: var(--ic-label-padding);
     text-align: var(--ic-label-alignment);
 }
 
-/* Markdown Labels using Slashes - Replaces the legacy*/
+.callout[data-callout="infobox"] .label-line > span:last-child,
+.callout[data-callout="infoboxright"] .label-line > span:last-child,
+.callout[data-callout="infoboxleft"] .label-line > span:last-child {
+    font-size: var(--ic-label-content-font-size);
+}
+
+/* Label Line - Structure */
 .callout[data-callout="infobox"] .label-line,
 .callout[data-callout="infoboxright"] .label-line,
 .callout[data-callout="infoboxleft"] .label-line {
-  display: flex;
-  align-items: flex-start;
-  font-size: var(--ic-info-font-size);
+    display: flex;
+    align-items: flex-start;
 }
 
 .callout[data-callout="infobox"] .label-line .label,
 .callout[data-callout="infoboxright"] .label-line .label,
 .callout[data-callout="infoboxleft"] .label-line .label {
-  flex-shrink: 0;
+    flex-shrink: 0;
+    padding-right: var(--ic-label-padding);
+    align-self: stretch;
 }
+
+/* Label Line Borders - Top and Bottom */
+.callout[data-callout="infobox"] .label-line-first,
+.callout[data-callout="infoboxright"] .label-line-first,
+.callout[data-callout="infoboxleft"] .label-line-first {
+    border-top: var(--ic-label-border) solid var(--ic-label-border-color);
+    border-top-left-radius: var(--ic-label-round-corners);
+    border-top-right-radius: var(--ic-label-round-corners);
+}
+.callout[data-callout="infobox"] .label-line-first .label,
+.callout[data-callout="infoboxright"] .label-line-first .label,
+.callout[data-callout="infoboxleft"] .label-line-first .label {
+    border-top-left-radius: var(--ic-label-round-corners);
+    padding-top: var(--ic-label-group-vertical-padding);
+}
+.callout[data-callout="infobox"] .label-line-first > span:last-child,
+.callout[data-callout="infoboxright"] .label-line-first > span:last-child,
+.callout[data-callout="infoboxleft"] .label-line-first > span:last-child {
+    padding-top: var(--ic-label-group-vertical-padding);
+}
+.callout[data-callout="infobox"] .label-line-last,
+.callout[data-callout="infoboxright"] .label-line-last,
+.callout[data-callout="infoboxleft"] .label-line-last {
+    border-bottom: var(--ic-label-border) solid var(--ic-label-border-color);
+    border-bottom-left-radius: var(--ic-label-round-corners);
+    border-bottom-right-radius: var(--ic-label-round-corners);
+}
+.callout[data-callout="infobox"] .label-line-last .label,
+.callout[data-callout="infoboxright"] .label-line-last .label,
+.callout[data-callout="infoboxleft"] .label-line-last .label {
+    border-bottom-left-radius: var(--ic-label-round-corners);
+    padding-bottom: var(--ic-label-group-vertical-padding);
+}
+.callout[data-callout="infobox"] .label-line-last > span:last-child,
+.callout[data-callout="infoboxright"] .label-line-last > span:last-child,
+.callout[data-callout="infoboxleft"] .label-line-last > span:last-child {
+    padding-bottom: var(--ic-label-group-vertical-padding);
+}
+
+/* Collapsed Border Between Adjacent Groups */
+.callout[data-callout="infobox"] .label-line-last + .label-line-first,
+.callout[data-callout="infoboxright"] .label-line-last + .label-line-first,
+.callout[data-callout="infoboxleft"] .label-line-last + .label-line-first {
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.callout[data-callout="infobox"] .label-line-last + .label-line-first .label,
+.callout[data-callout="infoboxright"] .label-line-last + .label-line-first .label,
+.callout[data-callout="infoboxleft"] .label-line-last + .label-line-first .label {
+    border-top-left-radius: 0;
+}
+.callout[data-callout="infobox"] .label-line-last:has(+ .label-line-first),
+.callout[data-callout="infoboxright"] .label-line-last:has(+ .label-line-first),
+.callout[data-callout="infoboxleft"] .label-line-last:has(+ .label-line-first) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.callout[data-callout="infobox"] .label-line-last:has(+ .label-line-first) .label,
+.callout[data-callout="infoboxright"] .label-line-last:has(+ .label-line-first) .label,
+.callout[data-callout="infoboxleft"] .label-line-last:has(+ .label-line-first) .label {
+    border-bottom-left-radius: 0;
+}
+
+/* Inside Border Toggle */
+.ic-label-inside-border-toggle .callout[data-callout="infobox"] .label,
+.ic-label-inside-border-toggle .callout[data-callout="infoboxright"] .label,
+.ic-label-inside-border-toggle .callout[data-callout="infoboxleft"] .label {
+    border-right: var(--ic-label-border) solid var(--ic-label-border-color);
+}
+
+
+
+/* Label - To Margins */
+.ic-label-bg-margins .callout[data-callout="infobox"] .label-line,
+.ic-label-bg-margins .callout[data-callout="infoboxright"] .label-line,
+.ic-label-bg-margins .callout[data-callout="infoboxleft"] .label-line {
+    border-left: var(--ic-label-border) solid var(--ic-label-border-color);
+    border-right: var(--ic-label-border) solid var(--ic-label-border-color);
+    padding-right: var(--ic-label-group-horizontal-padding);
+}
+.ic-label-bg-margins .callout[data-callout="infobox"] .label-line .label,
+.ic-label-bg-margins .callout[data-callout="infoboxright"] .label-line .label,
+.ic-label-bg-margins .callout[data-callout="infoboxleft"] .label-line .label {
+    width: var(--ic-label-width);
+    padding-left: var(--ic-label-group-horizontal-padding);
+    box-sizing: border-box;
+}
+.ic-label-bg-margins .callout[data-callout="infobox"] .label-line > span:last-child,
+.ic-label-bg-margins .callout[data-callout="infoboxright"] .label-line > span:last-child,
+.ic-label-bg-margins .callout[data-callout="infoboxleft"] .label-line > span:last-child {
+    padding-left: var(--ic-label-group-horizontal-padding);
+}
+
+/* Label Background - To Margins */
+.ic-label-background-toggle.ic-label-bg-margins .callout[data-callout="infobox"] .label,
+.ic-label-background-toggle.ic-label-bg-margins .callout[data-callout="infoboxright"] .label,
+.ic-label-background-toggle.ic-label-bg-margins .callout[data-callout="infoboxleft"] .label {
+    background-color: var(--ic-label-background-color);
+}
+
+
+/* Label - Full Width */
+.ic-label-bg-full .callout[data-callout="infobox"] .label-line,
+.ic-label-bg-full .callout[data-callout="infoboxright"] .label-line,
+.ic-label-bg-full .callout[data-callout="infoboxleft"] .label-line {
+    width: calc(100% + 2 * var(--ic-inside-padding));
+    margin-left: calc(-1 * var(--ic-inside-padding));
+    padding-left: 0;
+    padding-right: calc(var(--ic-inside-padding) + var(--ic-label-group-horizontal-padding));
+    box-sizing: border-box;
+    border-left: none;
+    border-right: none;
+}
+.ic-label-bg-full .callout[data-callout="infobox"] .label-line-first,
+.ic-label-bg-full .callout[data-callout="infoboxright"] .label-line-first,
+.ic-label-bg-full .callout[data-callout="infoboxleft"] .label-line-first {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.ic-label-bg-full .callout[data-callout="infobox"] .label-line-last,
+.ic-label-bg-full .callout[data-callout="infoboxright"] .label-line-last,
+.ic-label-bg-full .callout[data-callout="infoboxleft"] .label-line-last {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.ic-label-bg-full .callout[data-callout="infobox"] .label-line-first .label,
+.ic-label-bg-full .callout[data-callout="infoboxright"] .label-line-first .label,
+.ic-label-bg-full .callout[data-callout="infoboxleft"] .label-line-first .label {
+    border-top-left-radius: 0;
+}
+.ic-label-bg-full .callout[data-callout="infobox"] .label-line-last .label,
+.ic-label-bg-full .callout[data-callout="infoboxright"] .label-line-last .label,
+.ic-label-bg-full .callout[data-callout="infoboxleft"] .label-line-last .label {
+    border-bottom-left-radius: 0;
+}
+.ic-label-bg-full .callout[data-callout="infobox"] .label,
+.ic-label-bg-full .callout[data-callout="infoboxright"] .label,
+.ic-label-bg-full .callout[data-callout="infoboxleft"] .label {
+    width: calc(var(--ic-label-width) + var(--ic-inside-padding));
+    padding-left: calc(var(--ic-inside-padding) + var(--ic-label-group-horizontal-padding));
+    box-sizing: border-box;
+}
+
+/* Label Background - Full Width */
+.ic-label-background-toggle.ic-label-bg-full .callout[data-callout="infobox"] .label,
+.ic-label-background-toggle.ic-label-bg-full .callout[data-callout="infoboxright"] .label,
+.ic-label-background-toggle.ic-label-bg-full .callout[data-callout="infoboxleft"] .label {
+    background-color: var(--ic-label-background-color);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* Make Scrollable for Reading Mode to Account for DOM Unload issues */
