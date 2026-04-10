@@ -203,16 +203,17 @@ export class InfoboxSettingTab extends PluginSettingTab {
 			return;
 		}
 
-		// filter out non-string values
-		const settings:Record<string,string>={};
+		// filter out non-string values while preserving booleans
+		const settings: Record<string, string | boolean | number> = {};
 		for(const key in parsed){
-			const value=parsed[key];
-			if(typeof value==='string'||typeof value==='number'||typeof value==='boolean')
-				settings[key]=String(value);
+			const value = parsed[key];
+			if(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+				settings[key] = value;
+			}
 		}
-
-		// apply settings
-		styleSettings.settingsManager.setSettings(settings);
+		
+		// apply settings - use type assertion since setSettings actually accepts mixed types
+		styleSettings.settingsManager.setSettings(settings as any);
 
 		new Notice(`Loaded preset: ${this.formatDisplayName(presetName)}`);
 	}
