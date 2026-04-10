@@ -13,7 +13,7 @@ settings:
     -
         id: ic-body-font-size
         title: Body Font Size
-        description: Note - Sections, labels, and tables inherit by default
+        description: Sections, labels, and tables inherit by default
         type: variable-number
         default: 0.9
         format: rem
@@ -210,13 +210,6 @@ settings:
         collapsed: true
 
     -
-        id: ic-title-typography-disclaimer
-        title: Disclaimer
-        description: Other themes, snippets, or plugins may interfere with these settings and cause them to work incorrectly.
-        type: info-text
-        markdown: false
-
-    -
         id: ic-title-typography-toggle
         title: Use Extended Typography
         type: class-toggle
@@ -389,13 +382,6 @@ settings:
         type: heading
         level: 2
         collapsed: true
-
-    -
-        id: ic-section-typography-disclaimer
-        title: Disclaimer
-        description: Other themes, snippets, or plugins may interfere with these settings and cause them to work incorrectly.
-        type: info-text
-        markdown: false
 
     -
         id: ic-section-typography-toggle
@@ -739,7 +725,7 @@ settings:
         id: ic-shadow-content-strength
         title: Content Strength
         type: variable-number
-        description: How strong content in the infobox is relative to the outside.
+        description: Multiplier for content shadows inside the infobox.
         default: 0.5
 
     -
@@ -789,7 +775,7 @@ settings:
         id: ic-revert-nested-callouts
         title: Revert Nested Callouts
         type: class-toggle
-        description: Aggressively reverts styles for callouts nested inside of infoboxes. Will most likely interfere with theme styles.
+        description: Aggressively reverts styles for callouts nested inside of infoboxes. Disable if interfering with theme or snippet styles.
         default: true
         
     -
@@ -803,7 +789,7 @@ settings:
         id: ic-scroll-tweaks-info
         title: Information
         type: info-text
-        description: By default, reading mode may struggle to scroll very long infoboxes. Enable these tweaks to limit the infobox height in reading mode and make it scrollable.
+        description: Obsidian may struggle to render very long infoboxes. Enable these tweaks to limit the infobox height and make it scrollable.
         
     -
         id: ic-scrollable-toggle
@@ -1575,6 +1561,20 @@ settings:
     text-align: var(--ic-section-alignment);
     font-size: var(--ic-section-size);
     font-weight: var(--ic-section-weight);
+}
+
+/* Extended Typography for Sections */
+.ic-section-typography-toggle .callout[data-callout="infobox"] .section,
+.ic-section-typography-toggle .callout[data-callout="infoboxright"] .section,
+.ic-section-typography-toggle .callout[data-callout="infoboxleft"] .section {
+    font-family: var(--ic-title-font);
+    font-feature-settings: var(--ic-title-stylistic-sets);
+}
+
+.ic-section-typography-toggle.ic-title-smallcaps .callout[data-callout="infobox"] .section,
+.ic-section-typography-toggle.ic-title-smallcaps .callout[data-callout="infoboxright"] .section,
+.ic-section-typography-toggle.ic-title-smallcaps .callout[data-callout="infoboxleft"] .section {
+    font-variant: small-caps;
 }
 
 /* Section - To Margins */
