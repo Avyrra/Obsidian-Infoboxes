@@ -2,11 +2,7 @@
   "dateFormat": "YYYY-MM-DD",
   "datetimeFormat": "YYYY-MM-DD HH:mm",
   "sectionSyntax": "//",
-  "sectionSyntaxAlt": "",
+  "sectionSyntaxAlt": "/#",
   "labelSyntax": "->",
   "labelSyntaxAlt": "",
-  "sectionToken": "//",
-  "sectionTokenAlt": "+++",
-  "labelToken": "->",
-  "labelTokenAlt": ""
 }
