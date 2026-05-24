@@ -1,3 +1,5 @@
+# Infoboxes
+
 <p align="left">
   <img src="images/infobox-light.png" width="45%" />
   <img src="images/infobox-dark.png" width="45%" />
@@ -5,7 +7,7 @@
 
 This plugin allows you to create wiki-like sidebars. It utilizes callouts and custom syntax to make creating infoboxes simple and intuitive.
 
-# How to Install
+## How to Install
 This plugin is not yet on the community plugins browser, however it can still be installed and updated via the BRAT plugin.
 
 1. Enable Community plugins in obsidian and install the BRAT plugin. Enable it.
@@ -15,7 +17,7 @@ This plugin is not yet on the community plugins browser, however it can still be
 5. Select latest version
 6. Click Add Plugin
    
-# How to use
+## How to use
 To create an infobox, insert a callout and change the type to **infobox:**
 `> [!infobox] Title Name` 
 
@@ -25,7 +27,7 @@ Within the callout, you can use two slashes to create a section. `// Section Nam
 
 To create a label, use an arrow to separate the name of your label with the information that you'd like to to display next to it: `Label Name -> Add information here`
 
-### Example
+#### Example
 ``` markdown
 > [!infobox] Title Name
 > ![](https://obsidian.md/images/2023-06-logo.png)
@@ -35,7 +37,7 @@ To create a label, use an arrow to separate the name of your label with the info
 > Label -> Info
 ```
 
-## Dynamically Insert Properties
+### Dynamically Insert Properties
 You can use the `~yaml` command to dynamically insert properties within an infobox. All properties will be displayed as labels. Functional properties such as aliases or tags will not be displayed. When properties are updated, they will automatically be reflected in the infobox.
 
 If you would like to display only a specific selection of properties, you can use commas to denote which properties you'd like to use. With this method, you can also choose to display functional properties that were previously filtered.
@@ -44,7 +46,7 @@ Example: `~yaml, aliases, tags, size, color`
 Additionally, you can choose to render all but a selection by appending it with an exclamation point. All properties will be displayed as labels with the exception of functional properties and your selection.
 Example: `~!yaml, size, color`
 
-### Example
+#### Example
 ``` markdown
 > [!infobox] Title Name
 > 
@@ -53,7 +55,7 @@ Example: `~!yaml, size, color`
 > ~yaml
 ```
 
-### Aliases
+#### Aliases
 The following aliases can be used instead of `~yaml`
 
 `~metadata`
@@ -62,12 +64,12 @@ The following aliases can be used instead of `~yaml`
 `~data`
 `~fields`
 
-## Customization
+### Customization
 
-### Style Settings (Highly Recommended)
+#### Style Settings (Highly Recommended)
 Styles, colors, and additional tweaks can be customized by installing the **Style Settings** plugin. Once installed, the infoboxes customization menu will be displayed within the Style Settings plugin options.
 
-### CSS
+#### CSS
 The .css file for infoboxes does not utilize the `!important` rule. If you would like to make adjustments to infoboxes, you can do so with a snippet.
 
 Target infobox via css with the following:
@@ -80,8 +82,8 @@ Target infobox via css with the following:
 }
 ```
 
-### Infobox Presets
+#### Infobox Presets
 Your infobox presets can now be saved and loaded as easily as switching your Obsidian themes. The presets system piggybacks off of Style Settings, so having Style Settings installed is a necessity. Once installed, the presets menu will appear in the Infoboxes options menu and a new folder called "presets" will be added to the plugin directory once that menu is opened for the first time. Once you've created a style you like in Style Settings, you can save and load it via Infoboxes options menu. Presets are saved as .json files so sharing presets is as easy as adding them to the presets folder.
 
-## Obsidian Theme Compatibilities and Incompatibilities
+### Obsidian Theme Compatibilities and Incompatibilities
 Testing has shown that Infoboxes will work with most Obsidian themes and the default settings are designed to blend in as nicely as possible with whatever theme you throw at it. However, some themes apply styling to callouts that may interfere with the look of your infoboxes. It's worth looking to see if that theme comes with any options (likely within Style Settings) that removes the theme's special callout styling.
