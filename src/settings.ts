@@ -15,7 +15,7 @@ declare module 'obsidian' {
 // pieces of Style Settings we use
 interface StyleSettingsManager {
 	clearSection(sectionId: string): void;
-	setSettings(settings: Record<string, string>): void;
+	setSettings(settings: Record<string, string | boolean | number>): void;
 }
 
 interface StyleSettingsPlugin extends Plugin {
@@ -36,11 +36,19 @@ function isSettingsRecord(value: unknown): value is Record<string, unknown> {
 export interface PluginSettings {
 	dateFormat: string;
 	datetimeFormat: string;
+	sectionSyntax: string;
+	sectionSyntaxAlt: string;
+	labelSyntax: string;
+	labelSyntaxAlt: string;
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
 	dateFormat: 'YYYY-MM-DD',
-	datetimeFormat: 'YYYY-MM-DD HH:mm'
+	datetimeFormat: 'YYYY-MM-DD HH:mm',
+	sectionSyntax: '//',
+	sectionSyntaxAlt: '',
+	labelSyntax: '->',
+	labelSyntaxAlt: '',
 }
 
 export class InfoboxSettingTab extends PluginSettingTab {
@@ -61,10 +69,12 @@ export class InfoboxSettingTab extends PluginSettingTab {
 		const styleSettings = this.getStyleSettings();
 		if (!styleSettings) {
 			this.showStyleSettingsRequired();
+			this.showSyntax();
 			this.showDateFormat();
 			return;
 		}
 		this.showPresetManager(styleSettings);
+		this.showSyntax();
 		this.showDateFormat();
 	}
 
@@ -212,8 +222,8 @@ export class InfoboxSettingTab extends PluginSettingTab {
 			}
 		}
 		
-		// apply settings - use type assertion since setSettings actually accepts mixed types
-		styleSettings.settingsManager.setSettings(settings as any);
+		// apply settings
+		styleSettings.settingsManager.setSettings(settings);
 
 		new Notice(`Loaded preset: ${this.formatDisplayName(presetName)}`);
 	}
@@ -318,6 +328,59 @@ export class InfoboxSettingTab extends PluginSettingTab {
 	
 	
 	
+	// UI for Syntax customization
+	private showSyntax(): void {
+		new Setting(this.containerEl)
+			.setName('Syntax')
+			.setHeading();
+
+		new Setting(this.containerEl)
+			.setName('Section')
+			.setDesc('The syntax used to define a section header inside an infobox.')
+			.addText(text => {
+				text
+					.setPlaceholder('//')
+					.setValue(this.plugin.settings.sectionSyntax)
+					.onChange(async (value) => {
+						this.plugin.settings.sectionSyntax = value;
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.setCssProps({ width: '80px' });
+			})
+			.addText(text => {
+				text
+					.setValue(this.plugin.settings.sectionSyntaxAlt)
+					.onChange(async (value) => {
+						this.plugin.settings.sectionSyntaxAlt = value;
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.setCssProps({ width: '80px' });
+			});
+
+		new Setting(this.containerEl)
+			.setName('Label')
+			.setDesc('The syntax used to separate a label from its value.')
+			.addText(text => {
+				text
+					.setPlaceholder('->')
+					.setValue(this.plugin.settings.labelSyntax)
+					.onChange(async (value) => {
+						this.plugin.settings.labelSyntax = value;
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.setCssProps({ width: '80px' });
+			})
+			.addText(text => {
+				text
+					.setValue(this.plugin.settings.labelSyntaxAlt)
+					.onChange(async (value) => {
+						this.plugin.settings.labelSyntaxAlt = value;
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.setCssProps({ width: '80px' });
+			});
+	}
+
 	// UI for Date and time Format
 	private showDateFormat(): void {
 		new Setting(this.containerEl)

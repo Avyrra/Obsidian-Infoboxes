@@ -1,4 +1,4 @@
-import {Keymap, MarkdownRenderChild, MarkdownRenderer, moment, Plugin, TFile} from 'obsidian';
+import {Keymap, MarkdownRenderChild, MarkdownRenderer, MarkdownView, moment, Plugin, TFile} from 'obsidian';
 import {InfoboxSettingTab, PluginSettings, DEFAULT_SETTINGS} from './settings';
 
 // The classes we're fuckin' dealing with
@@ -61,6 +61,11 @@ function processLabelGroups(callout: Element) {
 			}
 		}
 	}
+}
+
+// Escape special regex characters in a user-supplied syntax string
+function regexEscape(syntax: string): string {
+	return syntax.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 export default class InfoboxPlugin extends Plugin {
@@ -137,8 +142,14 @@ export default class InfoboxPlugin extends Plugin {
 						}
 						if (node.nodeType === Node.TEXT_NODE) {
 							const text = node.textContent || '';
-							const isSectionStart = /^\s*\/\/\s*.+$/.test(text);
-							const isNewLabel = /->|→/.test(text);
+							const sectionSyntax = regexEscape(this.settings.sectionSyntax || '//');
+							const sectionSyntaxAlt = this.settings.sectionSyntaxAlt ? regexEscape(this.settings.sectionSyntaxAlt) : null;
+							const sectionSyntaxPattern = sectionSyntaxAlt ? `(?:${sectionSyntax}|${sectionSyntaxAlt})` : sectionSyntax;
+							const isSectionStart = new RegExp(`^\\s*${sectionSyntaxPattern}\\s*.+$`).test(text);
+							const labelSyntax = regexEscape(this.settings.labelSyntax || '->');
+							const labelSyntaxAlt = this.settings.labelSyntaxAlt ? regexEscape(this.settings.labelSyntaxAlt) : null;
+							const labelSyntaxPattern = labelSyntaxAlt ? `${labelSyntax}|${labelSyntaxAlt}` : labelSyntax;
+							const isNewLabel = new RegExp(labelSyntaxPattern).test(text);
 							const isYaml = /^~(!)?(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i.test(text.trim());
 
 							// new token - close and fall through
@@ -159,7 +170,10 @@ export default class InfoboxPlugin extends Plugin {
 					const nodeText = node.textContent || "";
 
 					//Section example: // Section
-					const sectionMatch = nodeText.match(/^\s*\/\/\s*(.+)$/);
+					const sectionSyntax = regexEscape(this.settings.sectionSyntax || '//');
+					const sectionSyntaxAlt = this.settings.sectionSyntaxAlt ? regexEscape(this.settings.sectionSyntaxAlt) : null;
+					const sectionSyntaxPattern = sectionSyntaxAlt ? `(?:${sectionSyntax}|${sectionSyntaxAlt})` : sectionSyntax;
+					const sectionMatch = nodeText.match(new RegExp(`^\\s*${sectionSyntaxPattern}\\s*(.+)$`));
 					if (sectionMatch) {
 						const section = document.createElement("span");
 						section.addClass("section");
@@ -170,10 +184,13 @@ export default class InfoboxPlugin extends Plugin {
 					}
 					
 					//Labels example: label -> info
-					if (/->|→/.test(nodeText)) {
-						const labelParts = nodeText.split(/->|→/);
+					const labelSyntax = regexEscape(this.settings.labelSyntax || '->');
+					const labelSyntaxAlt = this.settings.labelSyntaxAlt ? regexEscape(this.settings.labelSyntaxAlt) : null;
+					const labelSyntaxPattern = labelSyntaxAlt ? `${labelSyntax}|${labelSyntaxAlt}` : labelSyntax;
+					if (new RegExp(labelSyntaxPattern).test(nodeText)) {
+						const labelParts = nodeText.split(new RegExp(labelSyntaxPattern));
 						const labelText = labelParts[0]!.trim();
-						const infoText = labelParts.slice(1).join("->").trimStart();
+						const infoText = labelParts.slice(1).join(this.settings.labelSyntax || '->').trimStart();
 						const labelLine = paragraph.createEl("span", { cls: "label-line" });
 						labelLine.createEl("span", { cls: "label", text: labelText });
 						// value wrapper - keeps inline elements as one flex item
@@ -229,6 +246,15 @@ export default class InfoboxPlugin extends Plugin {
 		this.registerEvent(this.app.workspace.on('layout-change', updateCentering));
 		this.registerEvent(this.app.workspace.on('css-change', updateCentering));
 		this.app.workspace.onLayoutReady(updateCentering);
+
+		// Re-render all open markdown views when syntax settings change
+		this.registerDomEvent(document, 'infobox-settings-changed' as keyof DocumentEventMap, () => {
+			this.app.workspace.iterateAllLeaves(leaf => {
+				if (leaf.view instanceof MarkdownView) {
+					leaf.view.previewMode.rerender(true);
+				}
+			});
+		});
 	}
 	
 	// Saving and Loading Shit
