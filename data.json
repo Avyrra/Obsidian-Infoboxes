@@ -1,8 +1,8 @@
 {
-  "dateFormat": "YYYY-MM-DD",
-  "datetimeFormat": "YYYY-MM-DD HH:mm",
+  "dateFormat": "LL",
+  "datetimeFormat": "LLL",
   "sectionSyntax": "//",
-  "sectionSyntaxAlt": "/#",
+  "sectionSyntaxAlt": "",
   "labelSyntax": "->",
-  "labelSyntaxAlt": "",
+  "labelSyntaxAlt": ""
 }

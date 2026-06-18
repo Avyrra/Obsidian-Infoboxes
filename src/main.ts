@@ -1,167 +1,132 @@
-import {Keymap, MarkdownRenderChild, MarkdownRenderer, moment, Plugin, TFile} from 'obsidian';
-import {InfoboxSettingTab, PluginSettings, DEFAULT_SETTINGS} from './settings';
+import { Keymap, MarkdownRenderChild, MarkdownRenderer, moment, Plugin, TFile } from 'obsidian';
+import { InfoboxSettingTab, PluginSettings, DEFAULT_SETTINGS } from './settings';
 
-// The classes we're fuckin' dealing with
-const INFOBOX_SELECTOR =
-	'.callout[data-callout="infobox"],' +
-	'.callout[data-callout="infoboxright"],' +
-	'.callout[data-callout="infoboxleft"]';
+declare global {
+	interface DocumentEventMap {
+		'infobox-settings-changed': Event;
+	}
+}
 
-// Frontmatter keys that are internal/functional 
-// and shouldn't be displayed by default with ~yaml
+// Target all three infobox callout types
+const INFOBOX_SELECTOR = '.callout[data-callout="infobox"],.callout[data-callout="infoboxright"],.callout[data-callout="infoboxleft"]';
+
+// Obsidian properties that control behavior rather than content; hidden from ~yaml display by default
 const HIDDEN_FRONTMATTER_KEYS = new Set([
 	'position', 'cssclasses', 'cssclass', 'publish', 'kanban-plugin',
-	'tags', 'tag', 'aliases', 'alias'
+	'tags', 'tag', 'aliases', 'alias',
 ]);
 
-// Group all labels dynamically into first, middle, and last - in order to make styling them more effictient
-// New classes: label-line-first, label-line-last, label-line-middle
-function processLabelGroups(callout: Element) {
-	const lines = Array.from(callout.querySelectorAll('.label-line'));
+// Identify the ~yaml directive and any filtering options that follow it
+const YAML_DIRECTIVE_PATTERN = /^~(!)?(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i;
 
-	// Clear stale classes
+type SyntaxPatterns = { section: RegExp; label: RegExp; yaml: RegExp };
+type SeparationMode = 'horizontal' | 'spaces' | null;
+
+// Make user-supplied text safe to use inside a regex
+function escapeForRegex(syntax: string): string {
+	return syntax.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Build a pattern that matches either the primary or alternate syntax
+function buildAlternationPattern(primary: string, alternate: string, defaultPrimary: string): string {
+	const main = escapeForRegex(primary || defaultPrimary);
+	return alternate ? `(?:${main}|${escapeForRegex(alternate)})` : main;
+}
+
+// Tag each group of label rows with their position so the top and bottom rows can be styled differently
+function processLabelGroups(callout: Element): void {
+	const lines = Array.from(callout.querySelectorAll('.label-line'));
 	for (const line of lines) {
 		line.classList.remove('label-line-first', 'label-line-last', 'label-line-middle');
 	}
 
-	// Build groups
 	const groups: Element[][] = [];
 	let currentGroup: Element[] = [];
-
 	for (const line of lines) {
 		const label = line.querySelector('.label');
-		const isEmpty = !label || label.textContent?.trim() === '';
-		const prevIslabelLine = line.previousElementSibling?.classList.contains('label-line') ?? false;
-
-		if (isEmpty && prevIslabelLine) {
-			// Continuation of the current group
+		if ((!label || label.textContent?.trim() === '') && line.previousElementSibling?.classList.contains('label-line')) {
 			currentGroup.push(line);
 		} else {
-			// Start of a new group
 			if (currentGroup.length > 0) groups.push(currentGroup);
 			currentGroup = [line];
 		}
 	}
 	if (currentGroup.length > 0) groups.push(currentGroup);
 
-	// Assign classes
 	for (const group of groups) {
 		const first = group[0];
 		const last = group[group.length - 1];
 		if (!first || !last) continue;
-
-		if (group.length === 1) {
-			first.classList.add('label-line-first', 'label-line-last');
-		} else {
-			first.classList.add('label-line-first');
-			last.classList.add('label-line-last');
-			for (let i = 1; i < group.length - 1; i++) {
-				const middle = group[i];
-				if (middle) middle.classList.add('label-line-middle');
-			}
+		first.classList.add('label-line-first');
+		last.classList.add('label-line-last');
+		for (let index = 1; index < group.length - 1; index++) {
+			group[index]?.classList.add('label-line-middle');
 		}
 	}
 }
 
-// Escape special regex characters in a user-supplied syntax string
-function regexEscape(syntax: string): string {
-	return syntax.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 export default class InfoboxPlugin extends Plugin {
 	settings: PluginSettings;
-	async onload() {
+
+	// Plugin initialization
+	async onload(): Promise<void> {
 		await this.loadSettings();
 		this.addSettingTab(new InfoboxSettingTab(this.app, this));
-        // COMMAND PALETTE
-		this.addCommand({
-			id: 'add-infobox',
-			name: 'Add an infobox',
-			editorCallback: (editor) => {
-				const template =
-					'> [!infobox] Title\n' +
-					'> Contents\n' +
-					'> \n' +
-					'> //Section\n' +
-					'> \n' +
-					'> Label -> Add information here\n';
-				editor.replaceSelection(template);
-			}
-		});
-		
-		this.addCommand({
-			id: 'add-infobox-left',
-			name: 'Add a left-sided infobox',
-			editorCallback: (editor) => {
-				const template =
-					'> [!infoboxleft] Title\n' +
-					'> Contents\n' +
-					'> \n' +
-					'> //Section\n' +
-					'> \n' +
-					'> Label -> Add information here\n';
-				editor.replaceSelection(template);
-			}
-		});
-		
-		this.addCommand({
-			id: 'add-infobox-right',
-			name: 'Add a right-sided infobox',
-			editorCallback: (editor) => {
-				const template =
-					'> [!infoboxright] Title\n' +
-					'> Contents\n' +
-					'> \n' +
-					'> //Section\n' +
-					'> \n' +
-					'> Label -> Add information here\n';
-				editor.replaceSelection(template);
-			}
-		}); 
-		
-		
-        // DO SHIT
+
+		// Editor commands for inserting infobox templates
+		for (const { id, name, calloutType } of [
+			{ id: 'add-infobox', name: 'Add an infobox', calloutType: 'infobox' },
+			{ id: 'add-infobox-left', name: 'Add a left-sided infobox', calloutType: 'infoboxleft' },
+			{ id: 'add-infobox-right', name: 'Add a right-sided infobox', calloutType: 'infoboxright' },
+		]) {
+			this.addCommand({
+				id,
+				name,
+				editorCallback: editor => {
+					editor.replaceSelection(`> [!${calloutType}] Title\n> Contents\n> \n> //Section\n> \n> Label -> Add information here\n`);
+				},
+			});
+		}
+
+		// Build each infobox when Obsidian renders the page
 		this.registerMarkdownPostProcessor((element, context) => {
 			element.querySelectorAll(INFOBOX_SELECTOR).forEach(callout => {
 				const content = callout.querySelector<HTMLElement>('.callout-content');
 				if (!content) return;
-				const originalNodes = Array.from(content.childNodes).map(n => n.cloneNode(true));
+				const originalNodes = Array.from(content.childNodes).map(node => node.cloneNode(true));
 				context.addChild(new InfoboxRenderChild(content, originalNodes, this, context.sourcePath));
 			});
 		});
 
-		// Center infobox when content pane is too narrow
-		const updateCentering = () => {
-			const style = getComputedStyle(document.body);
-			const width = parseFloat(style.getPropertyValue('--ic-width')) || 300;
-			const padding = parseFloat(style.getPropertyValue('--ic-outside-padding')) || 20;
-			const threshold = width + padding + 250;
-
-			document.querySelectorAll(INFOBOX_SELECTOR).forEach(el => {
-				const sizer = el.closest('.markdown-preview-sizer') || el.closest('.cm-sizer');
-				const areaWidth = sizer ? sizer.clientWidth : window.innerWidth;
-				el.classList.toggle('ic-centered', areaWidth < threshold);
+		// Center infoboxes when the panel is too narrow to float them alongside content
+		const updateCentering = (): void => {
+			const bodyStyle = getComputedStyle(document.body);
+			const threshold = (parseFloat(bodyStyle.getPropertyValue('--ic-width')) || 300)
+				+ (parseFloat(bodyStyle.getPropertyValue('--ic-outside-padding')) || 20) + 250;
+			document.querySelectorAll(INFOBOX_SELECTOR).forEach(element => {
+				const sizer = element.closest('.markdown-preview-sizer') ?? element.closest('.cm-sizer');
+				element.classList.toggle('ic-centered', (sizer ? sizer.clientWidth : window.innerWidth) < threshold);
 			});
 		};
 
+		// Re-run centering on resize and theme changes
 		this.registerEvent(this.app.workspace.on('resize', updateCentering));
 		this.registerEvent(this.app.workspace.on('layout-change', updateCentering));
 		this.registerEvent(this.app.workspace.on('css-change', updateCentering));
 		this.app.workspace.onLayoutReady(updateCentering);
 	}
-	
-	// Saving and Loading Shit
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<PluginSettings>);
+
+	async loadSettings(): Promise<void> {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, (await this.loadData() as Partial<PluginSettings> | null) ?? {});
 	}
-	
-	async saveSettings() {
-	    await this.saveData(this.settings);
-	    document.dispatchEvent(new Event('infobox-settings-changed'));
+
+	async saveSettings(): Promise<void> {
+		await this.saveData(this.settings);
+		document.dispatchEvent(new Event('infobox-settings-changed'));
 	}
 }
 
-// Live-Updating Infobox Render Child
+// Handles building and updating a single infobox
 class InfoboxRenderChild extends MarkdownRenderChild {
 	private readonly originalNodes: Node[];
 	private readonly plugin: InfoboxPlugin;
@@ -175,289 +140,275 @@ class InfoboxRenderChild extends MarkdownRenderChild {
 		this.sourcePath = sourcePath;
 	}
 
-	onload() {
+	// Build the infobox and watch for anything that should trigger an update
+	onload(): void {
 		this.renderSync();
 		void this.renderYaml().then(() => {
 			const callout = this.containerEl.closest(INFOBOX_SELECTOR);
 			if (callout) processLabelGroups(callout);
 		});
 
-		this.registerDomEvent(window.document, 'infobox-settings-changed' as keyof DocumentEventMap, () => void this.render());
+		this.registerDomEvent(document, 'infobox-settings-changed', () => { void this.render(); });
 		this.registerEvent(this.plugin.app.metadataCache.on('changed', (file: TFile) => {
 			if (file.path === this.sourcePath) void this.render();
 		}));
-		this.bodyClassObserver = new MutationObserver(() => void this.render());
+
+		this.bodyClassObserver = new MutationObserver(() => { void this.render(); });
 		this.bodyClassObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 	}
 
-	onunload() {
+	onunload(): void {
 		this.bodyClassObserver?.disconnect();
+		this.bodyClassObserver = null;
 	}
 
+	// Rebuild the infobox from scratch using the original content
 	private async render(): Promise<void> {
 		this.containerEl.empty();
-		for (const node of this.originalNodes) {
-			this.containerEl.appendChild(node.cloneNode(true));
-		}
+		for (const node of this.originalNodes) this.containerEl.appendChild(node.cloneNode(true));
 		this.renderSync();
 		await this.renderYaml();
 		const callout = this.containerEl.closest(INFOBOX_SELECTOR);
 		if (callout) processLabelGroups(callout);
 	}
 
-	// Synchronous: sections and labels
-	private renderSync(): void {
-		this.containerEl.querySelectorAll('p').forEach(paragraph => {
-			this.transformParagraph(paragraph as HTMLElement);
-		});
+	// Turn the user's syntax settings into something the code can search for
+	private buildSyntaxPatterns(): SyntaxPatterns {
+		const { sectionSyntax, sectionSyntaxAlt, labelSyntax, labelSyntaxAlt } = this.plugin.settings;
+		return {
+			section: new RegExp(`^\\s*${buildAlternationPattern(sectionSyntax, sectionSyntaxAlt, '//')}\\s*(.+)$`),
+			label: new RegExp(buildAlternationPattern(labelSyntax, labelSyntaxAlt, '->')),
+			yaml: YAML_DIRECTIVE_PATTERN,
+		};
 	}
 
-	private transformParagraph(paragraph: HTMLElement): void {
-		const paragraphChildren = Array.from(paragraph.childNodes);
+	// Find and display sections and labels
+	private renderSync(): void {
+		const patterns = this.buildSyntaxPatterns();
+		this.containerEl.querySelectorAll('p').forEach(paragraph => this.transformParagraph(paragraph, patterns));
+	}
+
+	// Replace each line of text with its styled section or label output
+	private transformParagraph(paragraph: HTMLElement, patterns: SyntaxPatterns): void {
 		let activeInlineTarget: HTMLElement | null = null;
 
-		paragraphChildren.forEach((node) => {
-			// absorb siblings
+		for (const node of Array.from(paragraph.childNodes)) {
 			if (activeInlineTarget) {
-				if (node.nodeName === 'BR') {
-					activeInlineTarget = null;
-					return;
-				}
-				if (node.nodeType === Node.TEXT_NODE) {
-					const text = node.textContent || '';
-					const sectionSyntax = regexEscape(this.plugin.settings.sectionSyntax || '//');
-					const sectionSyntaxAlt = this.plugin.settings.sectionSyntaxAlt ? regexEscape(this.plugin.settings.sectionSyntaxAlt) : null;
-					const sectionSyntaxPattern = sectionSyntaxAlt ? `(?:${sectionSyntax}|${sectionSyntaxAlt})` : sectionSyntax;
-					const isSectionStart = new RegExp(`^\\s*${sectionSyntaxPattern}\\s*.+$`).test(text);
-					const labelSyntax = regexEscape(this.plugin.settings.labelSyntax || '->');
-					const labelSyntaxAlt = this.plugin.settings.labelSyntaxAlt ? regexEscape(this.plugin.settings.labelSyntaxAlt) : null;
-					const labelSyntaxPattern = labelSyntaxAlt ? `${labelSyntax}|${labelSyntaxAlt}` : labelSyntax;
-					const isNewLabel = new RegExp(labelSyntaxPattern).test(text);
-					const isYaml = /^~(!)?(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i.test(text.trim());
-
-					if (isSectionStart || isNewLabel || isYaml) {
-						activeInlineTarget = null;
-					} else {
-						activeInlineTarget.appendChild(node);
-						return;
-					}
-				} else {
+				if (node.nodeName === 'BR') { activeInlineTarget = null; continue; }
+				if (node.nodeType !== Node.TEXT_NODE) { activeInlineTarget.appendChild(node); continue; }
+				const text = node.textContent ?? '';
+				if (!patterns.section.test(text) && !patterns.label.test(text) && !patterns.yaml.test(text.trim())) {
 					activeInlineTarget.appendChild(node);
-					return;
+					continue;
 				}
+				activeInlineTarget = null;
 			}
 
-			if (node.nodeType !== Node.TEXT_NODE) return;
-			const nodeText = node.textContent || '';
+			if (node.nodeType !== Node.TEXT_NODE) continue;
+			const text = node.textContent ?? '';
 
-			// Section
-			const sectionSyntax = regexEscape(this.plugin.settings.sectionSyntax || '//');
-			const sectionSyntaxAlt = this.plugin.settings.sectionSyntaxAlt ? regexEscape(this.plugin.settings.sectionSyntaxAlt) : null;
-			const sectionSyntaxPattern = sectionSyntaxAlt ? `(?:${sectionSyntax}|${sectionSyntaxAlt})` : sectionSyntax;
-			const sectionMatch = nodeText.match(new RegExp(`^\\s*${sectionSyntaxPattern}\\s*(.+)$`));
+			const sectionMatch = text.match(patterns.section);
 			if (sectionMatch) {
-				const section = document.createElement('span');
-				section.addClass('section');
-				section.appendText(sectionMatch[1]!);
-				node.replaceWith(section);
-				activeInlineTarget = section;
-				return;
+				const sectionElement = document.createElement('span');
+				sectionElement.addClass('section');
+				sectionElement.appendText(sectionMatch[1]!);
+				node.replaceWith(sectionElement);
+				activeInlineTarget = sectionElement;
+				continue;
 			}
 
-			// Label
-			const labelSyntax = regexEscape(this.plugin.settings.labelSyntax || '->');
-			const labelSyntaxAlt = this.plugin.settings.labelSyntaxAlt ? regexEscape(this.plugin.settings.labelSyntaxAlt) : null;
-			const labelSyntaxPattern = labelSyntaxAlt ? `${labelSyntax}|${labelSyntaxAlt}` : labelSyntax;
-			if (new RegExp(labelSyntaxPattern).test(nodeText)) {
-				const labelParts = nodeText.split(new RegExp(labelSyntaxPattern));
-				const labelText = labelParts[0]!.trim();
-				const infoText = labelParts.slice(1).join(this.plugin.settings.labelSyntax || '->').trimStart();
-				const labelLine = paragraph.createEl('span', { cls: 'label-line' });
-				labelLine.createEl('span', { cls: 'label', text: labelText });
+			if (patterns.label.test(text)) {
+				const parts = text.split(patterns.label);
+				const labelLine = document.createElement('span');
+				labelLine.addClass('label-line');
+				labelLine.createEl('span', { cls: 'label', text: parts[0]!.trim() });
 				const valueSpan = labelLine.createEl('span');
-				if (infoText) valueSpan.appendChild(document.createTextNode(infoText));
+				const valueText = parts.slice(1).join(this.plugin.settings.labelSyntax || '->').trimStart();
+				if (valueText) valueSpan.appendText(valueText);
 				node.replaceWith(labelLine);
 				activeInlineTarget = valueSpan;
 			}
-		});
+		}
 
-		// Remove <br> between consecutive labels
+		// Strip <br> between adjacent label lines so they stack visually
 		paragraph.querySelectorAll('br').forEach(br => {
-			if (br.previousElementSibling?.classList.contains('label-line') &&
-				br.nextElementSibling?.classList.contains('label-line')) br.remove();
+			if (br.previousElementSibling?.classList.contains('label-line') && br.nextElementSibling?.classList.contains('label-line')) {
+				br.remove();
+			}
 		});
 	}
 
-	// Async: yaml properties
+	// Find ~yaml placeholders and replace them with the note's properties
 	private async renderYaml(): Promise<void> {
-		const frontmatter = this.plugin.app.metadataCache.getCache(this.sourcePath)?.frontmatter;
+		const frontmatter = this.plugin.app.metadataCache.getCache(this.sourcePath)?.frontmatter as Record<string, unknown> | undefined;
 
 		for (const paragraph of Array.from(this.containerEl.querySelectorAll('p'))) {
 			for (const node of Array.from(paragraph.childNodes)) {
 				if (node.nodeType !== Node.TEXT_NODE) continue;
-				const yamlMatch = (node.textContent ?? '').trim().match(/^~(!)?(?:yaml|metadata|data|meta|properties|fields)(?:\s*,\s*(.+))?$/i);
-				if (!yamlMatch) continue;
-
-				const exclude = yamlMatch[1] === '!';
-				const filter = yamlMatch[2]
-					? yamlMatch[2].split(',').map(k => k.trim().toLowerCase())
-					: null;
+				const match = (node.textContent ?? '').trim().match(YAML_DIRECTIVE_PATTERN);
+				if (!match) continue;
 
 				const container = document.createElement('span');
 				node.replaceWith(container);
-				if (frontmatter) await this.renderYamlProperties(container, frontmatter, filter, exclude);
+				if (frontmatter) {
+					await this.renderYamlProperties(
+						container,
+						frontmatter,
+						match[2] ? match[2].split(',').map(key => key.trim().toLowerCase()) : null,
+						match[1] === '!',
+					);
+				}
 			}
 		}
 	}
 
-	private async renderYamlProperties(
-		container: HTMLElement,
-		frontmatter: Record<string, unknown>,
-		filter: string[] | null,
-		exclude: boolean
-	): Promise<void> {
-		const separationMode = document.body.classList.contains('ic-property-separation-horizontal') ? 'horizontal'
-			: document.body.classList.contains('ic-property-separation-spaces') ? 'spaces'
-			: null;
-
-		const seenLower = new Set<string>();
-		const keyMap = new Map(
-			Object.keys(frontmatter)
-				.filter(k => {
-					const lower = k.toLowerCase();
-					if (seenLower.has(lower)) return false;
-					seenLower.add(lower);
-					return true;
-				})
-				.map(k => [k.toLowerCase(), k])
-		);
-
-		const keys = filter
-			? exclude
-				? Object.keys(frontmatter).filter(k => !HIDDEN_FRONTMATTER_KEYS.has(k) && !filter.includes(k.toLowerCase()))
-				: filter.map(k => keyMap.get(k)).filter((k): k is string => k !== undefined)
-			: Object.keys(frontmatter).filter(k => !HIDDEN_FRONTMATTER_KEYS.has(k));
-
+	// Display each property as a row in the infobox
+	private async renderYamlProperties(container: HTMLElement, frontmatter: Record<string, unknown>, filter: string[] | null, exclude: boolean): Promise<void> {
+		const separationMode = this.getSeparationMode();
 		let insertAfter: Element = container;
 		let isFirstProperty = true;
 
-		for (const key of keys) {
-			const value: unknown = frontmatter[key];
+		for (const key of this.resolveFrontmatterKeys(frontmatter, filter, exclude)) {
+			const value = frontmatter[key];
 			if (value == null || value === '') continue;
 
 			if (separationMode === 'horizontal' && !isFirstProperty) {
-				const hr = document.createElement('hr');
-				insertAfter.after(hr);
-				insertAfter = hr;
+				const divider = document.createElement('hr');
+				insertAfter.after(divider);
+				insertAfter = divider;
 			}
 			isFirstProperty = false;
 
-			const displayKey = this.formatKey(key);
-			const dateFormat = this.plugin.settings.dateFormat || 'YYYY-MM-DD';
-			const datetimeFormat = this.plugin.settings.datetimeFormat || 'YYYY-MM-DD HH:mm';
-			let displayValue: string;
-
-			if (value instanceof Date) {
-				const m = moment(value);
-				const hasTime = m.hours() !== 0 || m.minutes() !== 0 || m.seconds() !== 0;
-				displayValue = hasTime ? m.format(datetimeFormat) : m.format(dateFormat);
-			} else {
-				const valueStr = typeof value === 'string' ? value : String(value as string | number | boolean);
-				const dateType = this.getDateType(valueStr);
-				displayValue = dateType === 'datetime'
-					? moment(valueStr).format(datetimeFormat)
-					: dateType === 'date'
-						? moment(valueStr).format(dateFormat)
-						: this.formatValue(value);
-			}
-
-			// Lists render as separate lines
 			if (Array.isArray(value)) {
-				for (let i = 0; i < value.length; i++) {
-					const listItemLine = document.createElement('span');
-					listItemLine.addClass('label-line');
-					listItemLine.createEl('span', { cls: 'label', text: i === 0 ? displayKey : '' });
-					const listItemEl = listItemLine.createEl('span');
-					const listItemTemp = document.createElement('div');
-					await MarkdownRenderer.render(this.plugin.app, String(value[i]), listItemTemp, this.sourcePath, this);
-					const listItemP = listItemTemp.querySelector('p');
-					if (listItemP) {
-						listItemEl.append(...Array.from(listItemP.childNodes));
-					} else {
-						listItemEl.appendChild(document.createTextNode(String(value[i])));
-					}
-					insertAfter.after(listItemLine);
-					insertAfter = listItemLine;
-				}
+				insertAfter = await this.renderArrayProperty(key, value, insertAfter);
 				continue;
 			}
-
-			const labelLine = document.createElement('span');
-			labelLine.addClass('label-line');
-			labelLine.createEl('span', { cls: 'label', text: displayKey });
-			const valueEl = labelLine.createEl('span');
-			const temp = document.createElement('div');
-			await MarkdownRenderer.render(this.plugin.app, displayValue, temp, this.sourcePath, this);
-			const p = temp.querySelector('p');
-			if (p) {
-				valueEl.append(...Array.from(p.childNodes));
-			} else {
-				valueEl.appendChild(document.createTextNode(displayValue));
-			}
-
-			// Internal links
-			valueEl.querySelectorAll('a.internal-link').forEach((anchor) => {
-				const el = anchor as HTMLAnchorElement;
-				el.addEventListener('click', (evt: MouseEvent) => {
-					evt.preventDefault();
-					const href = el.getAttribute('href');
-					if (href) void this.plugin.app.workspace.openLinkText(href, this.sourcePath, Keymap.isModEvent(evt));
-				});
-				el.addEventListener('mouseover', (evt: MouseEvent) => {
-					evt.preventDefault();
-					const href = el.getAttribute('href');
-					if (href) this.plugin.app.workspace.trigger('hover-link', {
-						event: evt,
-						source: 'preview',
-						hoverParent: { hoverPopover: null },
-						targetEl: evt.currentTarget,
-						linktext: href,
-						sourcePath: this.sourcePath,
-					});
-				});
-			});
-
-			// External links
-			valueEl.querySelectorAll('a.external-link').forEach((anchor) => {
-				const el = anchor as HTMLAnchorElement;
-				el.addEventListener('click', (evt: MouseEvent) => {
-					evt.preventDefault();
-					const href = el.getAttribute('href');
-					if (href) window.open(href, '_blank');
-				});
-			});
-
-			if (separationMode === 'spaces') {
-				const wrapper = document.createElement('p');
-				wrapper.appendChild(labelLine);
-				insertAfter.after(wrapper);
-				insertAfter = wrapper;
-			} else {
-				insertAfter.after(labelLine);
-				insertAfter = labelLine;
-			}
+			insertAfter = await this.renderScalarProperty(key, this.formatPropertyValue(value), insertAfter, separationMode);
 		}
 	}
 
+	// Check which property separation style is currently active
+	private getSeparationMode(): SeparationMode {
+		const classes = document.body.classList;
+		if (classes.contains('ic-property-separation-horizontal')) return 'horizontal';
+		if (classes.contains('ic-property-separation-spaces')) return 'spaces';
+		return null;
+	}
+
+	// Figure out which properties to show based on the ~yaml options
+	private resolveFrontmatterKeys(frontmatter: Record<string, unknown>, filter: string[] | null, exclude: boolean): string[] {
+		if (!filter) return Object.keys(frontmatter).filter(key => !HIDDEN_FRONTMATTER_KEYS.has(key));
+		if (exclude) return Object.keys(frontmatter).filter(key => !HIDDEN_FRONTMATTER_KEYS.has(key) && !filter.includes(key.toLowerCase()));
+
+		const lowercaseToOriginal = new Map<string, string>();
+		for (const original of Object.keys(frontmatter)) {
+			const lower = original.toLowerCase();
+			if (!lowercaseToOriginal.has(lower)) lowercaseToOriginal.set(lower, original);
+		}
+		return filter.map(key => lowercaseToOriginal.get(key)).filter((key): key is string => key !== undefined);
+	}
+
+	// Format dates; convert all other values to strings
+	private formatPropertyValue(value: unknown): string {
+		const dateFormat = this.plugin.settings.dateFormat || 'YYYY-MM-DD';
+		const datetimeFormat = this.plugin.settings.datetimeFormat || 'YYYY-MM-DD HH:mm';
+
+		if (value instanceof Date) {
+			const momentValue = moment(value);
+			return momentValue.format(
+				momentValue.hours() !== 0 || momentValue.minutes() !== 0 || momentValue.seconds() !== 0 ? datetimeFormat : dateFormat,
+			);
+		}
+
+		const stringValue = typeof value === 'string' ? value : String(value);
+		const dateType = this.getDateType(stringValue);
+		if (dateType === 'datetime') return moment(stringValue).format(datetimeFormat);
+		if (dateType === 'date') return moment(stringValue).format(dateFormat);
+		return stringValue;
+	}
+
+	// List properties render one row per item; the property name only appears on the first
+	private async renderArrayProperty(key: string, items: unknown[], insertAfter: Element): Promise<Element> {
+		let cursor = insertAfter;
+		for (let index = 0; index < items.length; index++) {
+			const itemLine = document.createElement('span');
+			itemLine.addClass('label-line');
+			itemLine.createEl('span', { cls: 'label', text: index === 0 ? this.formatKey(key) : '' });
+			const itemValue = itemLine.createEl('span');
+			await this.renderMarkdownInto(itemValue, String(items[index]));
+			this.attachLinkHandlers(itemValue);
+			cursor.after(itemLine);
+			cursor = itemLine;
+		}
+		return cursor;
+	}
+
+	// Display a property name and its value as a single row
+	private async renderScalarProperty(key: string, displayValue: string, insertAfter: Element, separationMode: SeparationMode): Promise<Element> {
+		const labelLine = document.createElement('span');
+		labelLine.addClass('label-line');
+		labelLine.createEl('span', { cls: 'label', text: this.formatKey(key) });
+		const valueElement = labelLine.createEl('span');
+		await this.renderMarkdownInto(valueElement, displayValue);
+		this.attachLinkHandlers(valueElement);
+
+		if (separationMode === 'spaces') {
+			const wrapper = document.createElement('p');
+			wrapper.appendChild(labelLine);
+			insertAfter.after(wrapper);
+			return wrapper;
+		}
+		insertAfter.after(labelLine);
+		return labelLine;
+	}
+
+	// Convert a markdown value into displayable content
+	private async renderMarkdownInto(target: HTMLElement, markdown: string): Promise<void> {
+		const scratch = document.createElement('div');
+		await MarkdownRenderer.render(this.plugin.app, markdown, scratch, this.sourcePath, this);
+		const paragraph = scratch.querySelector('p');
+		if (paragraph) target.append(...Array.from(paragraph.childNodes));
+		else target.appendText(markdown);
+	}
+
+	// Make links clickable and add hover previews
+	private attachLinkHandlers(container: HTMLElement): void {
+		for (const link of Array.from(container.querySelectorAll<HTMLAnchorElement>('a.internal-link'))) {
+			link.addEventListener('click', (event: MouseEvent) => {
+				event.preventDefault();
+				const href = link.getAttribute('href');
+				if (href) void this.plugin.app.workspace.openLinkText(href, this.sourcePath, Keymap.isModEvent(event));
+			});
+			link.addEventListener('mouseover', (event: MouseEvent) => {
+				event.preventDefault();
+				const href = link.getAttribute('href');
+				if (!href) return;
+				this.plugin.app.workspace.trigger('hover-link', {
+					event,
+					source: 'preview',
+					hoverParent: { hoverPopover: null },
+					targetEl: link,
+					linktext: href,
+					sourcePath: this.sourcePath,
+				});
+			});
+		}
+
+		for (const link of Array.from(container.querySelectorAll<HTMLAnchorElement>('a.external-link'))) {
+			link.addEventListener('click', (event: MouseEvent) => {
+				event.preventDefault();
+				const href = link.getAttribute('href');
+				if (href) window.open(href, '_blank');
+			});
+		}
+	}
+
+	// Format a property name for display
 	private formatKey(key: string): string {
-		return key.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+		return key.replace(/[-_]/g, ' ').replace(/\b\w/g, character => character.toUpperCase());
 	}
 
-	private formatValue(value: unknown): string {
-		if (Array.isArray(value)) return value.join(', ');
-		return String(value);
-	}
-
+	// Detect whether a string value is a date or datetime
 	private getDateType(value: string): 'date' | 'datetime' | null {
 		if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)) return 'datetime';
 		if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return 'date';
