@@ -93,8 +93,7 @@ export default class InfoboxPlugin extends Plugin {
 			element.querySelectorAll(INFOBOX_SELECTOR).forEach(callout => {
 				const content = callout.querySelector<HTMLElement>('.callout-content');
 				if (!content) return;
-				const originalNodes = Array.from(content.childNodes).map(node => node.cloneNode(true));
-				context.addChild(new InfoboxRenderChild(content, originalNodes, this, context.sourcePath));
+				context.addChild(new InfoboxRenderChild(content, this, context.sourcePath));
 			});
 		});
 
@@ -128,42 +127,104 @@ export default class InfoboxPlugin extends Plugin {
 
 // Handles building and updating a single infobox
 class InfoboxRenderChild extends MarkdownRenderChild {
-	private readonly originalNodes: Node[];
+	private originalNodes: Node[] | null = null;
 	private readonly plugin: InfoboxPlugin;
 	private readonly sourcePath: string;
 	private bodyClassObserver: MutationObserver | null = null;
+	private lastSeparationMode: SeparationMode = null;
+	private renderDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-	constructor(containerEl: HTMLElement, originalNodes: Node[], plugin: InfoboxPlugin, sourcePath: string) {
+	constructor(containerEl: HTMLElement, plugin: InfoboxPlugin, sourcePath: string) {
 		super(containerEl);
-		this.originalNodes = originalNodes;
 		this.plugin = plugin;
 		this.sourcePath = sourcePath;
 	}
 
 	// Build the infobox and watch for anything that should trigger an update
 	onload(): void {
-		this.renderSync();
-		void this.renderYaml().then(() => {
-			const callout = this.containerEl.closest(INFOBOX_SELECTOR);
-			if (callout) processLabelGroups(callout);
-		});
+		this.waitForEmbedsAndInitialize();
 
 		this.registerDomEvent(document, 'infobox-settings-changed', () => { void this.render(); });
 		this.registerEvent(this.plugin.app.metadataCache.on('changed', (file: TFile) => {
 			if (file.path === this.sourcePath) void this.render();
 		}));
 
-		this.bodyClassObserver = new MutationObserver(() => { void this.render(); });
+		// Ignore irrelevant body class mutations; only property separation changes require a rebuild
+		this.lastSeparationMode = this.getSeparationMode();
+		this.bodyClassObserver = new MutationObserver(() => {
+			const currentMode = this.getSeparationMode();
+			if (currentMode !== this.lastSeparationMode) {
+				this.lastSeparationMode = currentMode;
+				this.scheduleRender();
+			}
+		});
 		this.bodyClassObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 	}
 
 	onunload(): void {
+		if (this.renderDebounceTimer !== null) {
+			clearTimeout(this.renderDebounceTimer);
+			this.renderDebounceTimer = null;
+		}
 		this.bodyClassObserver?.disconnect();
 		this.bodyClassObserver = null;
 	}
 
-	// Rebuild the infobox from scratch using the original content
+	// Defer snapshotting until embeds resolve to avoid capturing unloaded placeholders
+	private waitForEmbedsAndInitialize(): void {
+		const unresolved = Array.from(this.containerEl.querySelectorAll<HTMLElement>('span.internal-embed'))
+			.filter(el => !el.classList.contains('is-loaded') && !el.classList.contains('mod-empty'));
+
+		if (unresolved.length === 0) {
+			this.takeSnapshotAndRender();
+			return;
+		}
+
+		let settledCount = 0;
+		const embedObservers: MutationObserver[] = [];
+
+		const onEmbedSettled = (): void => {
+			settledCount++;
+			if (settledCount === unresolved.length) {
+				embedObservers.forEach(obs => obs.disconnect());
+				this.takeSnapshotAndRender();
+			}
+		};
+
+		for (const embed of unresolved) {
+			const obs = new MutationObserver(() => {
+				if (embed.classList.contains('is-loaded') || embed.classList.contains('mod-empty')) {
+					obs.disconnect();
+					onEmbedSettled();
+				}
+			});
+			obs.observe(embed, { attributes: true, attributeFilter: ['class'] });
+			embedObservers.push(obs);
+		}
+	}
+
+	// Snapshot the pre-transform DOM then do the initial render
+	private takeSnapshotAndRender(): void {
+		this.originalNodes = Array.from(this.containerEl.childNodes).map(node => node.cloneNode(true));
+		this.renderSync();
+		void this.renderYaml().then(() => {
+			const callout = this.containerEl.closest(INFOBOX_SELECTOR);
+			if (callout) processLabelGroups(callout);
+		});
+	}
+
+	// Collapse rapid body-class mutations into a single render
+	private scheduleRender(): void {
+		if (this.renderDebounceTimer !== null) clearTimeout(this.renderDebounceTimer);
+		this.renderDebounceTimer = setTimeout(() => {
+			this.renderDebounceTimer = null;
+			void this.render();
+		}, 50);
+	}
+
+	// Rebuild the infobox from the snapshot
 	private async render(): Promise<void> {
+		if (!this.originalNodes) return;
 		this.containerEl.empty();
 		for (const node of this.originalNodes) this.containerEl.appendChild(node.cloneNode(true));
 		this.renderSync();
