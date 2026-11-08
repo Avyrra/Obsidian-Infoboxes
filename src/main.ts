@@ -22,6 +22,37 @@ const YAML_DIRECTIVE_PATTERN = /^~(!)?(?:yaml|metadata|data|meta|properties|fiel
 type SyntaxPatterns = { section: RegExp; label: RegExp; yaml: RegExp };
 type SeparationMode = 'horizontal' | 'spaces' | null;
 
+// this will render automatically to HTML syntax. much easier to edit if the user wanted to change the layout.
+const markupTemplate = (markup: string): HTMLTemplateElement => {
+  const element = document.createElement('template');
+  element.innerHTML = markup.trim();
+  return element;
+};
+
+const sectionTemplate = markupTemplate(`
+  <span class="section"></span>
+`);
+
+const labelLineTemplate = markupTemplate(`
+  <span class="label-line">
+    <span class="label"></span>
+    <span data-infobox-value></span>
+  </span>
+`);
+
+const createLabelLine = (labelText: string) => {
+  const line = labelLineTemplate.content.firstElementChild!
+    .cloneNode(true) as HTMLSpanElement;
+
+  const label = line.querySelector<HTMLSpanElement>('.label')!;
+  const value = line.querySelector<HTMLSpanElement>('[data-infobox-value]')!;
+
+  label.textContent = labelText;
+
+  return { line, value };
+};
+
+
 // Make user-supplied text safe to use inside a regex
 function escapeForRegex(syntax: string): string {
 	return syntax.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -270,9 +301,10 @@ class InfoboxRenderChild extends MarkdownRenderChild {
 
 			const sectionMatch = text.match(patterns.section);
 			if (sectionMatch) {
-				const sectionElement = document.createElement('span');
-				sectionElement.addClass('section');
-				sectionElement.appendText(sectionMatch[1]!);
+				const sectionElement = sectionTemplate.content.firstElementChild!
+				  .cloneNode(true) as HTMLSpanElement;
+				
+				sectionElement.textContent = sectionMatch[1]!;
 				node.replaceWith(sectionElement);
 				activeInlineTarget = sectionElement;
 				continue;
@@ -280,10 +312,8 @@ class InfoboxRenderChild extends MarkdownRenderChild {
 
 			if (patterns.label.test(text)) {
 				const parts = text.split(patterns.label);
-				const labelLine = document.createElement('span');
-				labelLine.addClass('label-line');
-				labelLine.createEl('span', { cls: 'label', text: parts[0]!.trim() });
-				const valueSpan = labelLine.createEl('span');
+				const { line: labelLine, value: valueSpan } =
+					createLabelLine(parts[0]!.trim());
 				const valueText = parts.slice(1).join(this.plugin.settings.labelSyntax || '->').trimStart();
 				if (valueText) valueSpan.appendText(valueText);
 				node.replaceWith(labelLine);
@@ -392,10 +422,8 @@ class InfoboxRenderChild extends MarkdownRenderChild {
 	private async renderArrayProperty(key: string, items: unknown[], insertAfter: Element): Promise<Element> {
 		let cursor = insertAfter;
 		for (let index = 0; index < items.length; index++) {
-			const itemLine = document.createElement('span');
-			itemLine.addClass('label-line');
-			itemLine.createEl('span', { cls: 'label', text: index === 0 ? this.formatKey(key) : '' });
-			const itemValue = itemLine.createEl('span');
+			const { line: itemLine, value: itemValue } =
+				createLabelLine(index === 0 ? this.formatKey(key) : '');
 			await this.renderMarkdownInto(itemValue, String(items[index]));
 			this.attachLinkHandlers(itemValue);
 			cursor.after(itemLine);
@@ -406,10 +434,8 @@ class InfoboxRenderChild extends MarkdownRenderChild {
 
 	// Display a property name and its value as a single row
 	private async renderScalarProperty(key: string, displayValue: string, insertAfter: Element, separationMode: SeparationMode): Promise<Element> {
-		const labelLine = document.createElement('span');
-		labelLine.addClass('label-line');
-		labelLine.createEl('span', { cls: 'label', text: this.formatKey(key) });
-		const valueElement = labelLine.createEl('span');
+		const { line: labelLine, value: valueElement } =
+			createLabelLine(this.formatKey(key));
 		await this.renderMarkdownInto(valueElement, displayValue);
 		this.attachLinkHandlers(valueElement);
 
